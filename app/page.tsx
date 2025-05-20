@@ -51,7 +51,7 @@ export default function Home() {
           </div>
 
           {/* Foreground Content */}
-          <div className="relative z-20 flex flex-col md:flex-row items-center justify-between w-full px-6 md:px-16">
+          <div className="relative z-9 flex flex-col md:flex-row items-center justify-between w-full px-6 md:px-16">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
