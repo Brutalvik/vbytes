@@ -5,23 +5,23 @@ export const siteConfig = {
   description: "Experience the future of web development with V-Bytes.",
   navItems: [
     {
-      label: "Home",
+      label: "HOME",
       href: "/",
     },
     {
-      label: "Docs",
+      label: "DOCS",
       href: "/docs",
     },
     {
-      label: "Pricing",
+      label: "PRICING",
       href: "/pricing",
     },
     {
-      label: "Blog",
+      label: "BLOG",
       href: "/blog",
     },
     {
-      label: "About",
+      label: "ABOUT",
       href: "/about",
     },
   ],

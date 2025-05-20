@@ -17,9 +17,8 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "@/components/icons";
-import LanguageDropdown from "@/components/LanguageDropdown";
+import LanguageDropdown from "@/components/language-dropdown";
+import { AnimatedMenu } from "@components/ui/animated-menu";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ track mobile menu open/close
@@ -48,7 +47,7 @@ export const Navbar = () => {
                 color="foreground"
                 href={item.href}
               >
-                {item.label}
+                <AnimatedMenu item={item.label} />
               </NextLink>
             </NavbarItem>
           ))}
@@ -96,7 +95,7 @@ export const Navbar = () => {
                 onClick={handleMenuItemClick}
                 className="text-lg font-semibold"
               >
-                {item.label}
+                <AnimatedMenu item={item.label} />
               </Link>
             </NavbarMenuItem>
           ))}

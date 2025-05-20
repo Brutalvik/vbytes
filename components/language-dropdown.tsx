@@ -31,9 +31,7 @@ const LanguageDropdown = () => {
     console.log("Selected language:", selectedLanguage);
     return selectedLanguage;
   };
-
-  if (loading) return <p>Loading...</p>;
-
+  
   return (
     <Autocomplete
       aria-labelledby="Language"

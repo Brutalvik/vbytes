@@ -2,14 +2,23 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import LoadingScreen from "@/components/ui/LoadingScreen";
+import LoadingScreen from "@/components/ui/loading-screen";
 import { motion, AnimatePresence } from "framer-motion";
+import { FlipWords } from "@/components/ui/flip-words";
 
 // Lazy load heavy 3D component (Robot) with SSR disabled
 const Robot = dynamic(() => import("@components/ui/robot"), {
   ssr: false,
   loading: () => null, // or skeleton fallback
 });
+
+const words = [
+  "Scalable-Systems",
+  "Cloud-Solutions",
+  "Signed-APIs",
+  "Serverless-Apps",
+  "AI-Integration",
+];
 
 export default function Home() {
   const [isReady, setIsReady] = useState(false);
@@ -61,10 +70,10 @@ export default function Home() {
               <h1 className="text-4xl md:text-5xl font-bold leading-tight text-white drop-shadow-lg">
                 Crafting Code. Empowering Ideas.
               </h1>
-              <p className="text-lg md:text-xl text-white/80 drop-shadow">
-                Deploying Scalable Systems · Cloud Solutions · APIs · Serverless
-                Apps
-              </p>
+              <div className="w-10 h-10">
+                <FlipWords words={words} className="text-xl" />
+              </div>
+
               <p className="text-lg md:text-xl text-white/80 drop-shadow">
                 Build with precision. Launch with confidence.
               </p>
