@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -8,33 +11,38 @@ import {
   NavbarMenuItem,
 } from "@heroui/navbar";
 import { Button } from "@heroui/button";
-import { Kbd } from "@heroui/kbd";
 import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
 import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  Logo,
-} from "@/components/icons";
+import { Logo } from "@/components/icons";
 import LanguageDropdown from "@/components/LanguageDropdown";
 
 export const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ track mobile menu open/close
+
+  const handleMenuItemClick = () => {
+    setIsMenuOpen(false); // ✅ close menu when item is clicked
+  };
+
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
+    <HeroUINavbar
+      maxWidth="xl"
+      position="sticky"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
+      {/* Left content: brand and nav items */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
             <Logo />
           </NextLink>
         </NavbarBrand>
+
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
@@ -53,6 +61,7 @@ export const Navbar = () => {
         </ul>
       </NavbarContent>
 
+      {/* Right content */}
       <NavbarContent
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
@@ -65,10 +74,20 @@ export const Navbar = () => {
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
+      {/* Mobile toggle icon */}
+      <NavbarMenuToggle className="lg:hidden z-10" />
+      <NavbarMenu
+        className={clsx(
+          "fixed top-0 right-0 z-9 h-screen w-full", // ✅ Fullscreen
+          "backdrop-blur-xl bg-white/30 dark:bg-black/30", // ✅ Glass effect
+          "p-6 overflow-hidden" // ✅ Prevents scroll bar
+        )}
+      >
+        <div className="flex flex-col items-end gap-6 mt-16">
+          {" "}
+          {/* Add top margin to avoid overlap with hamburger */}
           {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
+            <NavbarMenuItem key={`${item.label}-${index}`}>
               <Link
                 color={
                   index === 2
@@ -77,8 +96,10 @@ export const Navbar = () => {
                       ? "danger"
                       : "foreground"
                 }
-                href="#"
+                href={item.href}
                 size="lg"
+                onClick={handleMenuItemClick}
+                className="text-lg font-semibold"
               >
                 {item.label}
               </Link>
