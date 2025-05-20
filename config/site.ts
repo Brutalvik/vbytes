@@ -27,40 +27,28 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "HOME",
+      href: "/home",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "DOCS",
+      href: "/docs",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "PRICING",
+      href: "/pricing",
     },
     {
-      label: "Team",
-      href: "/team",
+      label: "BLOG",
+      href: "/blog",
     },
     {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
+      label: "ABOUT",
+      href: "/about",
     },
   ],
   links: {
-    github: "https://github.com/heroui-inc/heroui",
+    github: "https://github.com/brutalvik",
     twitter: "https://twitter.com/hero_ui",
     docs: "https://heroui.com",
     discord: "https://discord.gg/9b6yyZKmH4",

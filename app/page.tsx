@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/ui/loading-screen";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlipWords } from "@/components/ui/flip-words";
+import DownloadButton from "@/components/ui/download-button";
 
 // Lazy load heavy 3D component (Robot) with SSR disabled
 const Robot = dynamic(() => import("@components/ui/robot"), {
@@ -84,6 +85,7 @@ export default function Home() {
               >
                 Let’s Connect
               </motion.button>
+              <DownloadButton />
             </motion.div>
           </div>
         </motion.section>
