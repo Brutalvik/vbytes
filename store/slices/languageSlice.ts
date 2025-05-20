@@ -21,12 +21,10 @@ const API_URL: string = CDN.languagesUrl as string;
 export const fetchLanguages = createAsyncThunk(
   "languages/fetchLanguages",
   async (_, thunkAPI) => {
-    console.log("Fetching languages from:", API_URL);
     try {
       const response = await fetch(API_URL);
       if (!response.ok) throw new Error("Failed to fetch languages");
       const data = await response.json();
-      console.log("Fetched languages:", data);
       return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);

@@ -13,40 +13,49 @@ const LanguageDropdown = () => {
   const languages = useSelector(selectLanguages);
   const loading = useSelector(selectLoading);
 
-  const [selectedKey, setSelectedKey] = useState("en"); // ✅ Default to English (US)
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(fetchLanguages());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (languages.length > 0 && !selectedKey) {
+      setSelectedKey(languages[0].key); // ✅ Set first language as default
+    }
+  }, [languages, selectedKey]);
+
+  const handleChange = (key: string | null) => {
+    setSelectedKey(key);
+    const selectedLanguage = languages.find((lang) => lang.key === key);
+    console.log("Selected language:", selectedLanguage);
+    return selectedLanguage;
+  };
+
   if (loading) return <p>Loading...</p>;
 
   return (
     <Autocomplete
+      aria-labelledby="Language"
       className="max-w-xs"
-      size="sm" // 🔽 Smaller input height
-      selectedKey={selectedKey}
-      onSelectionChange={(key) => setSelectedKey(key as string)}
+      size="sm"
+      selectedKey={selectedKey || undefined}
+      onValueChange={handleChange}
       listboxProps={{
         itemClasses: {
-          base: "py-2", // ✅ Gap between dropdown options
+          base: "py-2",
         },
       }}
       inputProps={{
         classNames: {
-          input: "h-8 text-sm", // 🔽 Reduces actual input box height and font size
+          input: "h-8 text-sm",
         },
       }}
     >
-      {languages?.map(({ key, flagUrl, language }) => (
+      {languages.map(({ key, flagUrl, language }) => (
         <AutocompleteItem
           key={key}
-          startContent={
-            <Avatar
-              src={flagUrl}
-              className="w-4 h-4" // 🔽 Smaller avatar
-            />
-          }
+          startContent={<Avatar src={flagUrl} className="w-4 h-4" />}
         >
           {language}
         </AutocompleteItem>

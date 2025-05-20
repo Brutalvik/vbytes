@@ -85,6 +85,7 @@ export const Navbar = () => {
       >
         <div className="flex flex-col items-end gap-6 mt-16">
           {" "}
+          <LanguageDropdown />
           {/* Add top margin to avoid overlap with hamburger */}
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item.label}-${index}`}>
