@@ -1,29 +1,58 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LanguageState } from "@/types";
+// store/languageSlice.ts
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { CDN } from "@/lib/config";
 
-// Ideally imported from an i18n/lib or API
-import isoLanguages from "iso-639-1"; // NPM module for all ISO languages
-
-const supportedLanguages = isoLanguages.getAllNames();
+interface LanguageState {
+  data: any[]; // Replace with more specific types if needed
+  loading: boolean;
+  error: string | null;
+}
 
 const initialState: LanguageState = {
-  selectedLanguage: "English",
-  supportedLanguages,
+  data: [],
+  loading: false,
+  error: null,
 };
 
-export const languageSlice = createSlice({
-  name: "language",
+// Update this to your actual API endpoint
+const API_URL: string = CDN.languagesUrl as string;
+
+// Async thunk to fetch the languages
+export const fetchLanguages = createAsyncThunk(
+  "languages/fetchLanguages",
+  async (_, thunkAPI) => {
+    console.log("Fetching languages from:", API_URL);
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error("Failed to fetch languages");
+      const data = await response.json();
+      console.log("Fetched languages:", data);
+      return data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+const languageSlice = createSlice({
+  name: "languages",
   initialState,
-  reducers: {
-    setLanguage(state, action: PayloadAction<string>) {
-      if (state.supportedLanguages.includes(action.payload)) {
-        state.selectedLanguage = action.payload;
-      }
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchLanguages.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchLanguages.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchLanguages.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const { setLanguage } = languageSlice.actions;
 export default languageSlice.reducer;
-export const selectLanguage = (state: { language: LanguageState }) =>
-  state.language.selectedLanguage;

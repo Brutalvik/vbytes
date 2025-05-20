@@ -9,4 +9,9 @@ export interface LanguageState {
   supportedLanguages: string[];
 }
 
+export type Language = {
+  code: string;
+  name: string;
+};
+
 

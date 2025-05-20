@@ -1,6 +1,5 @@
 export const CDN = {
-  logoUrl:
-    process.env.NEXT_PUBLIC_CDN_URL,
-logoPath:
-    process.env.NEXT_PUBLIC_LOGO_PATH,
+  logoUrl: process.env.NEXT_PUBLIC_CDN_URL,
+  logoPath: process.env.NEXT_PUBLIC_LOGO_PATH,
+  languagesUrl: process.env.NEXT_PUBLIC_LANGUAGES_API_URL,
 };

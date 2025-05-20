@@ -25,6 +25,7 @@ import {
   SearchIcon,
   Logo,
 } from "@/components/icons";
+import LanguageDropdown from "@/components/LanguageDropdown";
 
 export const Navbar = () => {
   const searchInput = (
@@ -80,6 +81,9 @@ export const Navbar = () => {
         justify="end"
       >
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        <NavbarItem className="hidden lg:flex">
+          <LanguageDropdown />
+        </NavbarItem>
         <NavbarItem className="hidden md:flex">
           <ThemeSwitch />
         </NavbarItem>
