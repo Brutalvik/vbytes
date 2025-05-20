@@ -1,20 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { CDN } from "@lib/config";
+import Spline from "@splinetool/react-spline";
 
-// Lazy load Spline with SSR disabled
+// Lazy load Spline with SSR disabled and a fallback loader scene
 const LazySpline = dynamic<{ scene: string }>(
   () => import("@splinetool/react-spline").then((mod) => mod.default),
   {
     ssr: false,
-    loading: () => <div>Loading animation...</div>, // Optional fallback
+    loading: () => <Spline scene={CDN.glassLoaderUrl as string} />,
   }
 );
 
 export default function Robot() {
-  return (
-    <main>
-      <LazySpline scene="https://prod.spline.design/hvUEXfRkyjn1yz4y/scene.splinecode" />
-    </main>
-  );
+  return <LazySpline scene={CDN.robotUrl as string} />;
 }
