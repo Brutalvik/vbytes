@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import { useOutsideClick } from "@hooks/useOutsideClick";
 
+
 interface ModalContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -64,73 +65,53 @@ export const ModalTrigger = ({
 export const ModalBody = ({
   children,
   className,
+  onClose,
 }: {
   children: ReactNode;
   className?: string;
+  onClose?: () => void;
 }) => {
-  const { open } = useModal();
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [open]);
+  const { open, setOpen } = useModal();
 
   const modalRef = useRef(null);
-  const { setOpen } = useModal();
-  useOutsideClick(modalRef, () => setOpen(false));
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "auto";
+  }, [open]);
+
+  useOutsideClick(modalRef, () => {
+    setOpen(false);
+    onClose?.();
+  });
+
+  const handleClose = () => {
+    setOpen(false);
+    onClose?.();
+  };
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-            backdropFilter: "blur(10px)",
-          }}
-          exit={{
-            opacity: 0,
-            backdropFilter: "blur(0px)",
-          }}
-          className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, backdropFilter: "blur(10px)" }}
+          exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+          className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full flex items-center justify-center z-50"
         >
           <Overlay />
 
           <motion.div
             ref={modalRef}
             className={cn(
-              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white bg-white/10 dark:bg-black/20 backdrop-blur-md border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
+              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white/30 dark:bg-neutral-900/30 border border-white/20 dark:border-neutral-700/40 backdrop-blur-xl shadow-xl md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
               className
             )}
-            initial={{
-              opacity: 0,
-              scale: 0.5,
-              rotateX: 40,
-              y: 40,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotateX: 0,
-              y: 0,
-            }}
-            exit={{
-              opacity: 0,
-              scale: 0.8,
-              rotateX: 10,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 15,
-            }}
+            initial={{ opacity: 0, scale: 0.5, rotateX: 40, y: 40 }}
+            animate={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, rotateX: 10 }}
+            transition={{ type: "spring", stiffness: 260, damping: 15 }}
           >
-            <CloseIcon />
+            <CloseIcon onClose={handleClose} />
             {children}
           </motion.div>
         </motion.div>
@@ -184,12 +165,11 @@ const Overlay = ({ className }: { className?: string }) => {
   );
 };
 
-const CloseIcon = () => {
-  const { setOpen } = useModal();
+const CloseIcon = ({ onClose }: { onClose: () => void }) => {
   return (
     <button
-      onClick={() => setOpen(false)}
-      className="absolute top-4 right-4 group"
+      onClick={onClose}
+      className="absolute top-4 right-4 group transition-transform hover:scale-110 active:scale-90"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -201,11 +181,9 @@ const CloseIcon = () => {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-black dark:text-white h-4 w-4 group-hover:scale-125 group-hover:rotate-3 transition duration-200"
+        className="text-black dark:text-white h-4 w-4 group-hover:rotate-3 transition duration-200"
       >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path d="M18 6l-12 12" />
-        <path d="M6 6l12 12" />
+        <path d="M18 6L6 18M6 6l12 12" />
       </svg>
     </button>
   );

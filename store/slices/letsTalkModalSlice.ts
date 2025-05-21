@@ -4,7 +4,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface LetsTalkFormData {
   name: string;
   email: string;
-  phone: string;
   message: string;
 }
 
@@ -18,7 +17,6 @@ const initialState: LetsTalkModalState = {
   form: {
     name: "",
     email: "",
-    phone: "",
     message: "",
   },
 };

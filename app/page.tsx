@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FlipWords } from "@/components/ui/flip-words";
 import DownloadButton from "@/components/ui/download-button";
 import { CDN } from "@/lib/config";
-import { AnimatedModalDemo } from "@/components/lets-talk-modal";
+import { LetsTalkModal } from "@/components/lets-talk-modal";
 
 // Lazy load heavy 3D component (Robot) with SSR disabled
 const Robot = dynamic(() => import("@components/ui/robot"), {
@@ -81,7 +81,7 @@ export default function Home() {
                 Build with precision. Launch with confidence.
               </p>
               <div className="flex items-center gap-10 h-10">
-                <AnimatedModalDemo />
+                <LetsTalkModal />
                 <DownloadButton url={CDN.pdfUrl as string} />
               </div>
             </motion.div>
