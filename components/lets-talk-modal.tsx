@@ -7,7 +7,6 @@ import {
   ModalFooter,
   ModalTrigger,
 } from "@components/ui/animated-modal";
-
 import { motion } from "motion/react";
 
 export function AnimatedModalDemo() {
