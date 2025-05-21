@@ -4,44 +4,31 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@heroui/button";
 import { Download, Loader2, CheckCircle2 } from "lucide-react";
+import { downloadFileWithProgress } from "@/utils/downloadFileWithProgress"; // Adjust path accordingly
 
 export default function DownloadButton({
   duration = 2000,
+  url,
 }: {
   duration?: number;
+  url: string;
 }) {
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState<"idle" | "active" | "done">("idle");
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (state === "active") {
-      const intervalTime = duration / 100;
-      interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setTimeout(() => {
-              setState("done");
-            }, 200);
-            return 100;
-          }
-          return prev + 1;
-        });
-      }, intervalTime);
-    }
-
-    return () => clearInterval(interval);
-  }, [state, duration]);
-
-  const handleClick = () => {
+  const handleClick = async () => {
     if (state === "active") return;
-    if (state === "done") {
-      setProgress(0);
-      setState("active");
-    } else {
-      setState("active");
+    setProgress(0);
+    setState("active");
+
+    try {
+      await downloadFileWithProgress(url, (percent) => {
+        setProgress(percent);
+      });
+      setTimeout(() => setState("done"), 300); // small delay to show 100%
+    } catch (err) {
+      console.error("Download failed", err);
+      setState("idle");
     }
   };
 
