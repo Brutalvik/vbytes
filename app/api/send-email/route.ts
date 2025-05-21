@@ -1,30 +1,57 @@
 // /src/app/api/send-email/route.ts
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { transporter } from "@config/mail-config";
 import { generateEmailHtml } from "@lib/generateEmailHtml";
+import { generateCoverLetterHtml } from "@/lib/generateCoverLetterHtml";
+import { fetchResume } from "./fetch-resume";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const { name, email, message } = body;
 
-    const html = generateEmailHtml(body);
-
-    const transporter = nodemailer.createTransport({
-      service: "Gmail", // or use AWS SES, SendGrid, etc.
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const html = generateEmailHtml({ name, email, message });
+    // Generate HTML cover letter
+    const coverLetterHtml = generateCoverLetterHtml(name);
+    const buffer = await fetchResume();
 
     const mailOptions = {
-      from: `"Vikram Kumar" <${process.env.EMAIL_USER}>`,
-      to: body.email, // or to yourself for now
-      subject: "Thanks for reaching out!",
+      from: `"${name}" <${email}>`,
+      to: process.env.EMAIL_USER,
+      subject: `New Let's Talk Message from ${name}`,
       html,
     };
 
+    const confirmationMailOptionsWithAttachment = {
+      from: `"Vikram Kumar" <no-reply@v-bytes.cloud>`,
+      to: email,
+      subject: `Thanks, ${name}! Here's my CV.`,
+      html: coverLetterHtml,
+      replyTo: process.env.SELF_EMAIL,
+      attachments: [
+        {
+          filename: "Vikram_Kumar_CV.pdf",
+          content: buffer,
+          contentType: "application/pdf",
+        },
+      ],
+    };
+
+    const confirmationMailOptions = {
+      from: `"Vikram Kumar" <no-reply@v-bytes.cloud>`,
+      to: email,
+      subject: `Thanks for reaching out, ${name}!`,
+      html,
+      replyTo: process.env.SELF_EMAIL,
+    };
+
+    // ✅ 1. Send to yourself
     await transporter.sendMail(mailOptions);
+
+    // ✅ 2. Send confirmation to user (masked sender)
+    await transporter.sendMail(
+      buffer ? confirmationMailOptionsWithAttachment : confirmationMailOptions
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

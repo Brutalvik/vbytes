@@ -27,7 +27,9 @@
       "@lib/*": ["./lib/*"],
       "@store/*": ["./store/*"],
       "@validation/*": ["./validation/*"],
-      "@hooks/*": ["./hooks/*"]
+      "@hooks/*": ["./hooks/*"],
+      "@api/*": ["./app/api/*"],
+      "@config/*": ["./config/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
