@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FlipWords } from "@/components/ui/flip-words";
 import DownloadButton from "@/components/ui/download-button";
 import { CDN } from "@/lib/config";
+import { AnimatedModalDemo } from "@/components/lets-talk-modal";
 
 // Lazy load heavy 3D component (Robot) with SSR disabled
 const Robot = dynamic(() => import("@components/ui/robot"), {
@@ -79,14 +80,10 @@ export default function Home() {
               <p className="text-lg md:text-xl text-white/80 drop-shadow">
                 Build with precision. Launch with confidence.
               </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="mt-4 px-6 py-2 bg-primary text-white rounded-xl shadow-md hover:bg-primary/90 transition"
-              >
-                Let’s Connect
-              </motion.button>
-              <DownloadButton url={CDN.pdfUrl as string} />
+              <div className="flex items-center gap-10 h-10">
+                <AnimatedModalDemo />
+                <DownloadButton url={CDN.pdfUrl as string} />
+              </div>
             </motion.div>
           </div>
         </motion.section>
