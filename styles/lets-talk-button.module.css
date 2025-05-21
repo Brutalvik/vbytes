@@ -1,0 +1,42 @@
+.button {
+  @apply relative overflow-hidden px-6 py-2 rounded-md font-semibold text-white dark:text-black bg-black dark:bg-white transition-all duration-500 ease-in-out;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(120deg, #3b82f6, #724dca, #d25564, #3b82f6);
+  background-size: 300% 300%;
+  animation: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.button:hover::before {
+  animation: waveFlow 3s ease-in-out infinite;
+  opacity: 1;
+}
+
+.button:hover {
+  color: white;
+}
+
+@keyframes waveFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.text {
+  position: relative;
+  z-index: 10;
+  user-select: none;
+}

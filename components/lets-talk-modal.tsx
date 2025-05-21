@@ -7,15 +7,17 @@ import {
   ModalFooter,
   ModalTrigger,
 } from "@components/ui/animated-modal";
-import { motion } from "motion/react";
-import { Button } from "@heroui/button";
+import styles from "@styles/lets-talk-button.module.css";
 
 export function AnimatedModalDemo() {
   return (
     <div className="py-40  flex items-center justify-center">
       <Modal>
-        <ModalTrigger className="bg-black dark:bg-white dark:text-black text-white flex justify-center group/modal-btn">
-          Lets Talk
+        <ModalTrigger
+          className={`bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105 ${styles.button}`}
+        >
+          <div className={styles.waveOverlay}></div>
+          <span className={styles.text}>Let's Talk</span>
         </ModalTrigger>
         <ModalBody>
           <ModalContent>
