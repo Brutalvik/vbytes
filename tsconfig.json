@@ -25,7 +25,9 @@
       "@app/*": ["./app/*"],
       "@styles/*": ["./styles/*"],
       "@lib/*": ["./lib/*"],
-      "@store/*": ["./store/*"]
+      "@store/*": ["./store/*"],
+      "@validation/*": ["./validation/*"],
+      "@hooks/*": ["./hooks/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

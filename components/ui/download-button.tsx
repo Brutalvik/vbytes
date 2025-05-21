@@ -100,7 +100,7 @@ export default function DownloadButton({
               }}
               className="absolute"
             >
-              Download
+              Download CV
             </motion.span>
           )}
           {state === "active" && (

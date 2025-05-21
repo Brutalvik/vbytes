@@ -9,6 +9,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useOutsideClick } from "@hooks/useOutsideClick";
 
 interface ModalContextType {
   open: boolean;
@@ -103,7 +104,7 @@ export const ModalBody = ({
           <motion.div
             ref={modalRef}
             className={cn(
-              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white dark:bg-neutral-950 border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
+              "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white bg-white/10 dark:bg-black/20 backdrop-blur-md border border-transparent dark:border-neutral-800 md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
               className
             )}
             initial={{
@@ -160,14 +161,7 @@ export const ModalFooter = ({
   className?: string;
 }) => {
   return (
-    <div
-      className={cn(
-        "flex justify-end p-4 bg-gray-100 dark:bg-neutral-900",
-        className
-      )}
-    >
-      {children}
-    </div>
+    <div className={cn("flex justify-end p-4", className)}>{children}</div>
   );
 };
 
@@ -215,29 +209,4 @@ const CloseIcon = () => {
       </svg>
     </button>
   );
-};
-
-// Hook to detect clicks outside of a component.
-// Add it in a separate file, I've added here for simplicity
-export const useOutsideClick = (
-  ref: React.RefObject<HTMLDivElement>,
-  callback: Function
-) => {
-  useEffect(() => {
-    const listener = (event: any) => {
-      // DO NOTHING if the element being clicked is the target element or their children
-      if (!ref.current || ref.current.contains(event.target)) {
-        return;
-      }
-      callback(event);
-    };
-
-    document.addEventListener("mousedown", listener);
-    document.addEventListener("touchstart", listener);
-
-    return () => {
-      document.removeEventListener("mousedown", listener);
-      document.removeEventListener("touchstart", listener);
-    };
-  }, [ref, callback]);
 };
