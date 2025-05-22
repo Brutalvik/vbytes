@@ -10,19 +10,19 @@ export const siteConfig = {
     },
     {
       label: "PROFILE",
-      href: "/profile",
+      href: "/coming-soon",
     },
     {
-      label: "PRICING",
-      href: "/pricing",
+      label: "TIMELINE",
+      href: "/coming-soon",
     },
     {
-      label: "BLOG",
-      href: "/blog",
+      label: "SKILLS",
+      href: "/coming-soon",
     },
     {
       label: "ABOUT",
-      href: "/about",
+      href: "/coming-soon",
     },
   ],
   navMenuItems: [
@@ -32,19 +32,19 @@ export const siteConfig = {
     },
     {
       label: "PROFILE",
-      href: "/profile",
+      href: "/coming-soon",
     },
     {
-      label: "PRICING",
-      href: "/pricing",
+      label: "TIMELINE",
+      href: "/coming-soon",
     },
     {
-      label: "BLOG",
-      href: "/blog",
+      label: "SKILLS",
+      href: "/coming-soon",
     },
     {
       label: "ABOUT",
-      href: "/about",
+      href: "/coming-soon",
     },
   ],
   links: {

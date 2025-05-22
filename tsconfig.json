@@ -29,7 +29,8 @@
       "@validation/*": ["./validation/*"],
       "@hooks/*": ["./hooks/*"],
       "@api/*": ["./app/api/*"],
-      "@config/*": ["./config/*"]
+      "@config/*": ["./config/*"],
+      "@assets/*": ["./assets/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

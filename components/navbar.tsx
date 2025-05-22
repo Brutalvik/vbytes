@@ -35,7 +35,7 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
-            <li key={item.href}>
+            <li key={Date.now() + item.label}>
               <NextLink
                 href={item.href}
                 className={clsx(
