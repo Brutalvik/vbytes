@@ -6,7 +6,6 @@ import {
   NavbarContent,
   NavbarMenu,
   NavbarMenuToggle,
-  NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
 } from "@heroui/navbar";
@@ -21,11 +20,9 @@ import LanguageDropdown from "@/components/language-dropdown";
 import { AnimatedMenu } from "@components/ui/animated-menu";
 
 export const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ track mobile menu open/close
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleMenuItemClick = () => {
-    setIsMenuOpen(false); // ✅ close menu when item is clicked
-  };
+  const handleMenuItemClick = () => setIsMenuOpen(false);
 
   return (
     <HeroUINavbar
@@ -34,27 +31,26 @@ export const Navbar = () => {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
-      {/* Left content: brand and nav items */}
+      {/* Left Content (Desktop Menu) */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
+            <li key={item.href}>
               <NextLink
+                href={item.href}
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  "data-[active=true]:text-primary data-[active=true]:font-medium text-base"
                 )}
-                color="foreground"
-                href={item.href}
               >
-                <AnimatedMenu item={item.label} />
+                <AnimatedMenu item={item.label} className="text-base" />
               </NextLink>
-            </NavbarItem>
+            </li>
           ))}
         </ul>
       </NavbarContent>
 
-      {/* Right content */}
+      {/* Right Content (Desktop) */}
       <NavbarContent
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
@@ -67,38 +63,40 @@ export const Navbar = () => {
         </NavbarItem> */}
       </NavbarContent>
 
-      {/* Mobile toggle icon */}
+      {/* Mobile Toggle */}
       <NavbarMenuToggle className="lg:hidden z-10" />
+
+      {/* Mobile Menu */}
       <NavbarMenu
         className={clsx(
-          "fixed top-0 right-0 z-9 h-screen w-full", // ✅ Fullscreen
-          "backdrop-blur-xl bg-white/30 dark:bg-black/30", // ✅ Glass effect
-          "p-6 overflow-hidden" // ✅ Prevents scroll bar
+          "fixed top-0 right-0 z-10 h-screen w-full",
+          "backdrop-blur-xl bg-white/30 dark:bg-black/30",
+          "p-6 overflow-hidden"
         )}
       >
         <div className="flex flex-col items-end gap-6 mt-16">
-          {" "}
           <LanguageDropdown />
-          {/* Add top margin to avoid overlap with hamburger */}
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item.label}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href={item.href}
-                size="lg"
-                onClick={handleMenuItemClick}
-                className="text-lg font-semibold"
-              >
-                <AnimatedMenu item={item.label} />
-              </Link>
-            </NavbarMenuItem>
-          ))}
+          <ul className="flex flex-col items-end gap-4">
+            {siteConfig.navMenuItems.map((item, index) => (
+              <li key={`${item.label}-${index}`}>
+                <Link
+                  href={item.href}
+                  size="sm"
+                  onClick={handleMenuItemClick}
+                  className={clsx(
+                    "text-lg font-semibold",
+                    index === 2
+                      ? "text-primary"
+                      : index === siteConfig.navMenuItems.length - 1
+                        ? "text-danger"
+                        : "text-foreground"
+                  )}
+                >
+                  <AnimatedMenu item={item.label} className="text-lg" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </NavbarMenu>
     </HeroUINavbar>

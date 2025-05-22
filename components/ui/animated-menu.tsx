@@ -31,7 +31,7 @@ export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ item, className }) =
     const textArray = originalText.current.split("");
 
     const animate = () => {
-      if (frame < 30) {
+      if (frame < 15) {
         if (frame % 3 === 0) {
           const scrambled = textArray.map(
             () =>
