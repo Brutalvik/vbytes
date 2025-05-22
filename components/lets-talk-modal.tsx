@@ -112,7 +112,7 @@ export function LetsTalkModal() {
             ) : (
               <>
                 <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
-                  Let's
+                  Let&apos;s
                   <span className="mx-4 px-4 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
                     Talk
                   </span>
