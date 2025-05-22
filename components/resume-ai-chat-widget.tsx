@@ -146,14 +146,33 @@ export function ResumeAIChatWidget() {
                     {messages.map((msg, idx) => (
                       <div
                         key={idx}
-                        className={cn("px-3 py-2 rounded-md text-sm", {
-                          "bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white":
-                            msg.role === "user",
-                          "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
-                            msg.role === "assistant",
-                        })}
+                        className={cn(
+                          "flex flex-col gap-1",
+                          msg.role === "user" ? "items-end" : "items-start"
+                        )}
                       >
-                        {msg.content}
+                        <div
+                          className={cn(
+                            "px-3 py-2 rounded-md text-sm max-w-[80%]",
+                            {
+                              "bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white":
+                                msg.role === "user",
+                              "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
+                                msg.role === "assistant",
+                            }
+                          )}
+                        >
+                          <span className="font-semibold mr-2">
+                            {msg.role === "user" ? "You" : "Assistant"}
+                          </span>
+                          {msg.content}
+                        </div>
+                        <span className="text-xs text-neutral-400 mt-0.5">
+                          {new Date().toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
                       </div>
                     ))}
                     {loading && <TypingIndicator />}
