@@ -165,6 +165,12 @@ export function ResumeAIChatWidget() {
                       placeholder="Ask something about my experience..."
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSend();
+                        }
+                      }}
                       rows={2}
                     />
                     <Button onPress={handleSend} disabled={!input.trim()}>

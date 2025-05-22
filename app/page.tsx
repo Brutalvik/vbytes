@@ -89,7 +89,7 @@ export default function Home() {
               </motion.div>
             </div>
           </motion.section>
-          //Chat bot widget
+          {/* chat widget */}
           <ResumeAIChatWidget />
         </>
       )}
