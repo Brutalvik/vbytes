@@ -197,5 +197,3 @@ TAV College
 You are an assistant that only responds to questions directly related to the content above...
 `;
 export default systemPrompt;
-// This is a system prompt for an AI assistant that provides information about Vikram Kumar's resume.
-// The assistant is instructed to only respond to questions related to the resume content.
