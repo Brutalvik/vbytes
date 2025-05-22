@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@heroui/button";
 import { MailIcon } from "lucide-react";
-import { motion } from "framer-motion";
-import SplitFlapDigit from "@/components/ui/split-flap-digit";
 
 export default function ComingSoon() {
   const [time, setTime] = useState(new Date());
@@ -15,40 +14,23 @@ export default function ComingSoon() {
   }, []);
 
   const formatTime = (date: Date) =>
-    date
-      .toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      })
-      .replace(/:/g, " : ");
-
-  function getTimeDigits(date: Date): string[] {
-        const timeStr = date
-          .toLocaleTimeString("en-US", { hour12: false })
-          .replace(/:/g, "")
-          .padStart(6, "0");
-        return timeStr.split(""); // ["0", "9", "3", "4", "5", "6"]
-      }
-
-      const digits = getTimeDigits(time);
+    date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
 
   return (
-    <div className="overflow-hidden bg-black flex flex-col items-center justify-center text-white px-4">
-      {/* Flip-style digital clock */}
+    <div className="min-h-full overflow-hidden bg-black flex flex-col items-center justify-center text-white px-4">
+      {/* Digital Clock */}
       <motion.div
-        className="flex items-center justify-center gap-1 sm:gap-2 mb-10"
+        className="mb-10 text-6xl sm:text-7xl md:text-8xl font-mono tracking-widest text-white"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        {digits.map((digit, i) => (
-          <div key={i} className="flex items-center">
-            <SplitFlapDigit value={digit} />
-            {[1, 3].includes(i) && <span className="text-4xl text-white mx-1 sm:mx-2">:</span>}
-          </div>
-        ))}
+        {formatTime(time)}
       </motion.div>
 
       {/* Heading */}
@@ -58,11 +40,11 @@ export default function ComingSoon() {
         transition={{ duration: 1, delay: 0.2 }}
         className="text-center"
       >
-        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold mb-10 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-8 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
           Something Stunning is Coming
         </h1>
-        <p className="text-base sm:text-lg md:text-2xl max-w-xl mx-auto mb-8 text-gray-400">
-          I am working on something amazing. Sign up to be the first to know!
+        <p className="text-base sm:text-lg md:text-xl max-w-xl mx-auto mb-8 text-gray-400">
+          I’m working on something amazing. Sign up to be the first to know!
         </p>
       </motion.div>
 
@@ -78,20 +60,19 @@ export default function ComingSoon() {
         className="w-full max-w-md flex flex-col sm:flex-row items-center gap-4"
       >
         <input
-          id="email"
           type="email"
           required
           placeholder="Enter your email"
-          className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+          className="w-full p-3 rounded-md bg-neutral-800 border border-neutral-600 text-white"
         />
         <Button type="submit" color="primary" variant="solid" className="flex items-center gap-2">
           <MailIcon className="w-5 h-5" /> Notify Me
         </Button>
       </motion.form>
 
-      {/* Footer message */}
+      {/* Footer */}
       <motion.div
-        className="mt-8 text-sm text-gray-500"
+        className="mt-10 text-sm text-gray-500"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.6 }}
