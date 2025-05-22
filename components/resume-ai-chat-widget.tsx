@@ -69,7 +69,7 @@ export function ResumeAIChatWidget() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
-    setQuestionCount((count) => count + 1);
+    setQuestionCount((count) => count++);
 
     try {
       const res = await fetch("/api/ai-chat", {
@@ -118,7 +118,7 @@ export function ResumeAIChatWidget() {
               </div>
 
               {cooldownActive ? (
-                <div className="p-4 flex flex-col gap-4 text-center text-sm text-neutral-600 dark:text-neutral-300">
+                <div className="p-4 flex flex-col gap-4 text-sm text-neutral-600 dark:text-neutral-300">
                   <p>
                     Looks like we both have questions — let’s connect directly
                     instead.
