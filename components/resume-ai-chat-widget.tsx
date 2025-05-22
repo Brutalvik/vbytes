@@ -104,6 +104,17 @@ export function ResumeAIChatWidget() {
     }
   };
 
+  const ChatToggleButton = (
+    <Button
+      onPress={() => setMinimized((prev) => !prev)}
+      className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center absolute bottom-0 right-0"
+      color={minimized ? "default" : "primary"}
+      variant={minimized ? "flat" : "solid"}
+    >
+      <Bot className="w-10 h-10" />
+    </Button>
+  );
+
   return (
     <div className="fixed bottom-4 right-4 z-50 w-[350px]">
       <div className="relative">
@@ -203,15 +214,13 @@ export function ResumeAIChatWidget() {
           )}
         </AnimatePresence>
 
-        <Tooltip content="AI Chat" showArrow={true} color="primary">
-          <Button
-            onPress={() => setMinimized((prev) => !prev)}
-            className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center absolute bottom-0 right-0"
-            variant="solid"
-          >
-            <Bot className="w-10 h-10" />
-          </Button>
-        </Tooltip>
+        {minimized ? (
+          <Tooltip content="AI Chat" showArrow={true} color="primary">
+            {ChatToggleButton}
+          </Tooltip>
+        ) : (
+          ChatToggleButton
+        )}
       </div>
     </div>
   );
