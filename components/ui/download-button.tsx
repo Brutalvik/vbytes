@@ -7,7 +7,6 @@ import { Download, Loader2, CheckCircle2 } from "lucide-react";
 import { downloadFileWithProgress } from "@/utils/downloadFileWithProgress"; // Adjust path accordingly
 
 export default function DownloadButton({
-  duration = 2000,
   url,
 }: {
   duration?: number;

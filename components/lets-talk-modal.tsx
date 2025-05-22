@@ -22,11 +22,17 @@ export function LetsTalkModal() {
   const [submittedEmail, setSubmittedEmail] = useState("");
   const [name, setName] = useState("");
   const [buffer, setBuffer] = useState<Buffer | null>(null);
+  const [bufferError, setBufferError] = useState(false);
 
   useEffect(() => {
     const loadResume = async () => {
-      const resume = await fetchResume();
-      setBuffer(resume);
+      try {
+        const resume = await fetchResume();
+        setBuffer(resume);
+      } catch (error) {
+        console.error("Failed to load resume:", error);
+        setBufferError(true); // set error state
+      }
     };
     loadResume();
   }, []);
@@ -93,7 +99,7 @@ export function LetsTalkModal() {
                 <EmailLoader />
               </div>
             ) : emailSent ? (
-              buffer ? (
+              buffer && !bufferError ? (
                 <EmailMessageWithAttachment
                   email={submittedEmail}
                   name={name}
@@ -103,7 +109,14 @@ export function LetsTalkModal() {
                   }}
                 />
               ) : (
-                <EmailSentMessage />
+                <EmailSentMessage
+                  email={submittedEmail}
+                  name={name}
+                  onModalClose={() => {
+                    setEmailSent(false);
+                    formik.resetForm();
+                  }}
+                />
               )
             ) : (
               <>

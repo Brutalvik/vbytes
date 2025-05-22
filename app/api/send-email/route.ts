@@ -15,7 +15,14 @@ export async function POST(req: Request) {
     const html = generateEmailHtml({ name: capitalizedName, email, message });
     // Generate HTML cover letter
     const coverLetterHtml = generateCoverLetterHtml(name);
-    const buffer = await fetchResume();
+    
+    let buffer: Buffer | null = null;
+    try {
+      buffer = await fetchResume();
+    } catch (resumeError) {
+      return null; // Handle error if needed
+    }
+
 
     const mailOptions = {
       from: `"${name}" <${email}>`,
