@@ -6,6 +6,7 @@ import { X, Bot } from "lucide-react";
 import { Button } from "@heroui/button";
 import { cn } from "@lib/utils";
 import { LetsTalkModal } from "@components/lets-talk-modal";
+import { TypingIndicator } from "@components/ui/typing-indicator";
 
 const STORAGE_KEY = "resumeChatHistory";
 const LIMIT_KEY = "resumeChatLimit";
@@ -15,6 +16,7 @@ const COOLDOWN_HOURS = 24;
 
 export function ResumeAIChatWidget() {
   const [minimized, setMinimized] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
@@ -69,7 +71,8 @@ export function ResumeAIChatWidget() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
-    setQuestionCount((count) => count++);
+    setQuestionCount((count) => count + 1);
+    setLoading(true);
 
     try {
       const res = await fetch("/api/ai-chat", {
@@ -95,6 +98,8 @@ export function ResumeAIChatWidget() {
         ...prev,
         { role: "assistant", content: "❌ Something went wrong." },
       ]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,6 +156,7 @@ export function ResumeAIChatWidget() {
                         {msg.content}
                       </div>
                     ))}
+                    {loading && <TypingIndicator />}
                   </div>
 
                   <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex flex-col gap-2">
