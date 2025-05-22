@@ -1,10 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalTrigger,
 } from "@components/ui/animated-modal";
 import styles from "@styles/lets-talk-button.module.css";
@@ -12,15 +11,27 @@ import { useFormik } from "formik";
 import { letsTalkSchema } from "@/validation/letsTalkSchema";
 import EmailLoader from "@components/ui/email-loader";
 import EmailForm from "@components/email-form";
-
-
-
+import EmailSentMessage from "@components/email-sent-message";
+import EmailMessageWithAttachment from "@components/email-sent-message-with-attachment";
+import { fetchResume } from "@/app/api/send-email/fetch-resume";
+import { startCase, toLower } from "lodash";
 
 export function LetsTalkModal() {
-  const [loading, setLoading] = React.useState(false);
-  const [emailSent, setEmailSent] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
+  const [name, setName] = useState("");
+  const [buffer, setBuffer] = useState<Buffer | null>(null);
 
-  const initialValues = React.useMemo(
+  useEffect(() => {
+    const loadResume = async () => {
+      const resume = await fetchResume();
+      setBuffer(resume);
+    };
+    loadResume();
+  }, []);
+
+  const initialValues = useMemo(
     () => ({
       name: "",
       email: "",
@@ -35,6 +46,9 @@ export function LetsTalkModal() {
     validationSchema: letsTalkSchema,
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
+      setSubmittedEmail(values.email);
+      setName(startCase(toLower(values.name)));
+      setBuffer(buffer);
 
       try {
         const response = await fetch("/api/send-email", {
@@ -42,14 +56,14 @@ export function LetsTalkModal() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values), // ✅ Use the values passed in
+          body: JSON.stringify(values),
         });
 
         const result = await response.json();
 
         if (result.success) {
           setEmailSent(true);
-          resetForm(); // ✅ use resetForm from Formik helpers
+          resetForm();
         } else {
           alert("Failed to send email. Please try again.");
         }
@@ -58,7 +72,6 @@ export function LetsTalkModal() {
         alert("Something went wrong.");
       } finally {
         setLoading(false);
-        setTimeout(() => setEmailSent(false), 4000);
       }
     },
   });
@@ -80,13 +93,18 @@ export function LetsTalkModal() {
                 <EmailLoader />
               </div>
             ) : emailSent ? (
-              <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
-                Email Sent!
-                <br />
-                <span className="mx-4 px-4 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200">
-                  Thank you for reaching out!
-                </span>
-              </h4>
+              buffer ? (
+                <EmailMessageWithAttachment
+                  email={submittedEmail}
+                  name={name}
+                  onModalClose={() => {
+                    setEmailSent(false);
+                    formik.resetForm();
+                  }}
+                />
+              ) : (
+                <EmailSentMessage />
+              )
             ) : (
               <>
                 <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">

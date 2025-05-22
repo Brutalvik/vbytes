@@ -4,13 +4,15 @@ import { transporter } from "@config/mail-config";
 import { generateEmailHtml } from "@lib/generateEmailHtml";
 import { generateCoverLetterHtml } from "@/lib/generateCoverLetterHtml";
 import { fetchResume } from "./fetch-resume";
+import { startCase, toLower } from "lodash";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { name, email, message } = body;
+    const capitalizedName = startCase(toLower(name));
 
-    const html = generateEmailHtml({ name, email, message });
+    const html = generateEmailHtml({ name: capitalizedName, email, message });
     // Generate HTML cover letter
     const coverLetterHtml = generateCoverLetterHtml(name);
     const buffer = await fetchResume();
@@ -18,14 +20,14 @@ export async function POST(req: Request) {
     const mailOptions = {
       from: `"${name}" <${email}>`,
       to: process.env.EMAIL_USER,
-      subject: `New Let's Talk Message from ${name}`,
+      subject: `New Let's Talk Message from ${capitalizedName}`,
       html,
     };
 
     const confirmationMailOptionsWithAttachment = {
       from: `"Vikram Kumar" <no-reply@v-bytes.cloud>`,
       to: email,
-      subject: `Thanks, ${name}! Here's my CV.`,
+      subject: `Thanks, ${capitalizedName}! Here's my CV.`,
       html: coverLetterHtml,
       replyTo: process.env.SELF_EMAIL,
       attachments: [
@@ -40,7 +42,7 @@ export async function POST(req: Request) {
     const confirmationMailOptions = {
       from: `"Vikram Kumar" <no-reply@v-bytes.cloud>`,
       to: email,
-      subject: `Thanks for reaching out, ${name}!`,
+      subject: `Thanks for reaching out, ${capitalizedName}!`,
       html,
       replyTo: process.env.SELF_EMAIL,
     };
