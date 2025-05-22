@@ -31,8 +31,8 @@ export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ item, className }) =
     const textArray = originalText.current.split("");
 
     const animate = () => {
-      if (frame < 15) {
-        if (frame % 3 === 0) {
+      if (frame < 10) {
+        if (frame % 2 === 0) {
           const scrambled = textArray.map(
             () =>
               randomLetters[Math.floor(Math.random() * randomLetters.length)]
