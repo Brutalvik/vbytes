@@ -7,12 +7,7 @@ import { Download, Loader2, CheckCircle2 } from "lucide-react";
 import { downloadFileWithProgress } from "@/utils/downloadFileWithProgress"; // Adjust path accordingly
 import { Tooltip } from "@heroui/react";
 
-export default function DownloadButton({
-  url,
-}: {
-  duration?: number;
-  url: string;
-}) {
+export default function DownloadButton({ url }: { duration?: number; url: string }) {
   const [progress, setProgress] = useState(0);
   const [state, setState] = useState<"idle" | "active" | "done">("idle");
 

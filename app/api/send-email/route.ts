@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     } catch (resumeError) {
       return NextResponse.json(
         { success: false, error: "Failed to fetch resume." },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -60,15 +60,12 @@ export async function POST(req: Request) {
 
     // ✅ 2. Send confirmation to user (masked sender)
     await transporter.sendMail(
-      buffer ? confirmationMailOptionsWithAttachment : confirmationMailOptions,
+      buffer ? confirmationMailOptionsWithAttachment : confirmationMailOptions
     );
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Email error:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to send email." },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Failed to send email." }, { status: 500 });
   }
 }

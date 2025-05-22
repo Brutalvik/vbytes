@@ -5,9 +5,7 @@ const MAX_QUESTIONS_PER_DAY = 3;
 const STORAGE_KEY = "vbytes-ai-chat";
 
 export function useVikramAI() {
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    [],
-  );
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
@@ -43,10 +41,7 @@ export function useVikramAI() {
     const data = await res.json();
 
     if (data.reply) {
-      const finalMessages = [
-        ...updated,
-        { role: "assistant", content: data.reply },
-      ];
+      const finalMessages = [...updated, { role: "assistant", content: data.reply }];
       const usage = (getUsage() || 0) + 1;
 
       setMessages(finalMessages);
@@ -57,7 +52,7 @@ export function useVikramAI() {
           messages: finalMessages,
           usage,
           timestamp: Date.now(),
-        }),
+        })
       );
     }
 

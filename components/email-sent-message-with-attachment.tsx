@@ -47,8 +47,7 @@ const EmailMessageWithAttachment: React.FC<EmailMessageWithAttachmentProps> = ({
         <span className="font-medium text-black dark:text-white">{email}</span>
       </p>
       <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-        This modal will auto-close in{" "}
-        <span className="font-semibold">{timer}</span> seconds.
+        This modal will auto-close in <span className="font-semibold">{timer}</span> seconds.
       </p>
     </div>
   );

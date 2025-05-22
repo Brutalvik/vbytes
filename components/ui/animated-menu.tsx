@@ -15,10 +15,7 @@ type AnimatedMenuProps = {
   className?: string;
 };
 
-export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({
-  item,
-  className,
-}) => {
+export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ item, className }) => {
   const spanRef = useRef<HTMLSpanElement>(null);
   const originalText = useRef(item);
   const [displayText, setDisplayText] = useState(item);
@@ -37,8 +34,7 @@ export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({
       if (frame < 10) {
         if (frame % 2 === 0) {
           const scrambled = textArray.map(
-            () =>
-              randomLetters[Math.floor(Math.random() * randomLetters.length)],
+            () => randomLetters[Math.floor(Math.random() * randomLetters.length)]
           );
           setDisplayText(scrambled.join(""));
         }
@@ -53,11 +49,7 @@ export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({
   };
 
   const handleMouseEnter = () => {
-    if (
-      currentActiveRef &&
-      currentActiveRef.current &&
-      currentActiveRef !== spanRef
-    ) {
+    if (currentActiveRef && currentActiveRef.current && currentActiveRef !== spanRef) {
       currentActiveRef.current.dispatchEvent(new Event("force-reset"));
     }
     currentActiveRef = spanRef;

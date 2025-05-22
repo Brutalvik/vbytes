@@ -51,10 +51,7 @@ const LanguageDropdown = () => {
       }}
     >
       {languages.map(({ key, flagUrl, language }) => (
-        <AutocompleteItem
-          key={key}
-          startContent={<Avatar src={flagUrl} className="w-4 h-4" />}
-        >
+        <AutocompleteItem key={key} startContent={<Avatar src={flagUrl} className="w-4 h-4" />}>
           {language}
         </AutocompleteItem>
       ))}

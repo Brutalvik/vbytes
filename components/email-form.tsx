@@ -23,9 +23,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
           />
           {formik.touched.name && formik.errors.name && (
-            <div className="text-red-500 text-sm mt-1">
-              {formik.errors.name}
-            </div>
+            <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
           )}
         </div>
 
@@ -45,9 +43,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
           />
           {formik.touched.email && formik.errors.email && (
-            <div className="text-red-500 text-sm mt-1">
-              {formik.errors.email}
-            </div>
+            <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
           )}
         </div>
 
@@ -68,9 +64,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
           />
           {formik.touched.message && formik.errors.message && (
-            <div className="text-red-500 text-sm mt-1">
-              {formik.errors.message}
-            </div>
+            <div className="text-red-500 text-sm mt-1">{formik.errors.message}</div>
           )}
         </div>
       </div>

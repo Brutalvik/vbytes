@@ -40,7 +40,6 @@ export const letsTalkModalSlice = createSlice({
   },
 });
 
-export const { openModal, closeModal, updateForm, resetForm } =
-  letsTalkModalSlice.actions;
+export const { openModal, closeModal, updateForm, resetForm } = letsTalkModalSlice.actions;
 
 export default letsTalkModalSlice.reducer;

@@ -19,9 +19,7 @@ export function ResumeAIChatWidget() {
   const [minimized, setMinimized] = useState(true);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    [],
-  );
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [questionCount, setQuestionCount] = useState(0);
   const [cooldownActive, setCooldownActive] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -84,21 +82,12 @@ export function ResumeAIChatWidget() {
 
       const data = await res.json();
       if (data.error) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: `❌ ${data.error}` },
-        ]);
+        setMessages((prev) => [...prev, { role: "assistant", content: `❌ ${data.error}` }]);
       } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.response },
-        ]);
+        setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
       }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "❌ Something went wrong." },
-      ]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "❌ Something went wrong." }]);
     } finally {
       setLoading(false);
     }
@@ -136,43 +125,34 @@ export function ResumeAIChatWidget() {
 
               {cooldownActive ? (
                 <div className="p-4 flex flex-col gap-4 text-sm text-neutral-600 dark:text-neutral-300">
-                  <p>
-                    Looks like we both have questions — let’s connect directly
-                    instead.
-                  </p>
+                  <p>Looks like we both have questions — let’s connect directly instead.</p>
                   <LetsTalkModal />
                 </div>
               ) : (
                 <>
                   {messages.length === 0 && (
                     <div className="text-sm text-neutral-500 italic p-4 pt-2">
-                      ⚠️ Responses may not be 100% accurate. This assistant is
-                      still learning. Limited to 5 questions per session.
+                      ⚠️ Responses may not be 100% accurate. This assistant is still learning.
+                      Limited to 5 questions per session.
                     </div>
                   )}
 
-                  <div
-                    className="h-[300px] px-4 py-2 space-y-2 overflow-y-auto"
-                    ref={scrollRef}
-                  >
+                  <div className="h-[300px] px-4 py-2 space-y-2 overflow-y-auto" ref={scrollRef}>
                     {messages.map((msg, idx) => (
                       <div
                         key={idx}
                         className={cn(
                           "flex flex-col gap-1",
-                          msg.role === "user" ? "items-end" : "items-start",
+                          msg.role === "user" ? "items-end" : "items-start"
                         )}
                       >
                         <div
-                          className={cn(
-                            "px-3 py-2 rounded-md text-sm max-w-[80%]",
-                            {
-                              "bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white":
-                                msg.role === "user",
-                              "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
-                                msg.role === "assistant",
-                            },
-                          )}
+                          className={cn("px-3 py-2 rounded-md text-sm max-w-[80%]", {
+                            "bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white":
+                              msg.role === "user",
+                            "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
+                              msg.role === "assistant",
+                          })}
                         >
                           <span className="font-semibold mr-2">
                             {msg.role === "user" ? "You" : "Assistant"}

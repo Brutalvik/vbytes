@@ -1,6 +1,6 @@
 export async function downloadFileWithProgress(
   url: string,
-  onProgress: (percent: number) => void,
+  onProgress: (percent: number) => void
 ): Promise<void> {
   const response = await fetch(url);
   if (!response.ok || !response.body) throw new Error("Failed to fetch file");

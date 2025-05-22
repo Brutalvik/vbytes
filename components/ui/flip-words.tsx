@@ -10,11 +10,7 @@ type FlipWordsProps = {
   className?: string;
 };
 
-export const FlipWords: React.FC<FlipWordsProps> = ({
-  words,
-  duration = 3000,
-  className,
-}) => {
+export const FlipWords: React.FC<FlipWordsProps> = ({ words, duration = 3000, className }) => {
   const [index, setIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -55,7 +51,7 @@ export const FlipWords: React.FC<FlipWordsProps> = ({
         }}
         className={cn(
           "z-9 inline-block relative text-left text-neutral-900 dark:text-neutral-100 text-3xl font-bold",
-          className,
+          className
         )}
       >
         {currentWord.split(" ").map((word: string, wordIdx: number) => (

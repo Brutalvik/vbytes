@@ -5,9 +5,7 @@ import systemPrompt from "@/lib/systemPrompt"; // Assuming this path is correct
 // Ensure API key is present
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-  console.error(
-    "GEMINI_API_KEY is not set. Please set it in your .env.local file.",
-  );
+  console.error("GEMINI_API_KEY is not set. Please set it in your .env.local file.");
   throw new Error("GEMINI_API_KEY is not set.");
 }
 
@@ -22,10 +20,7 @@ export async function POST(req: NextRequest) {
     const userMessage = messages?.[messages.length - 1]?.content?.trim();
 
     if (!userMessage) {
-      return NextResponse.json(
-        { error: "User message is missing or invalid." },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "User message is missing or invalid." }, { status: 400 });
     }
 
     const finalPrompt = `
@@ -73,7 +68,7 @@ ${userMessage}
       {
         error: errorMessage,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -88,17 +83,13 @@ export async function GET(req: NextRequest) {
       model: "gemini-1.5-flash",
     });
     const models = await modelsResponse
-      .generateContent(
-        "List all available models and their supported generation methods.",
-      )
+      .generateContent("List all available models and their supported generation methods.")
       .then((response: any) => response.text());
 
     console.log("Models response:", models);
 
     const availableModels = models
-      .filter((model: any) =>
-        model.supportedGenerationMethods?.includes("generateContent"),
-      )
+      .filter((model: any) => model.supportedGenerationMethods?.includes("generateContent"))
       .map((model: any) => ({
         name: model.name,
         displayName: model.displayName,
@@ -110,9 +101,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ availableModels });
   } catch (error: any) {
     console.error("Error listing Gemini models:", error);
-    return NextResponse.json(
-      { error: `Failed to list models: ${error.message}` },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: `Failed to list models: ${error.message}` }, { status: 500 });
   }
 }

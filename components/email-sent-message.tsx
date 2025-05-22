@@ -9,11 +9,7 @@ interface EmailSentMessageProps {
   onModalClose: () => void;
 }
 
-const EmailSentMessage: React.FC<EmailSentMessageProps> = ({
-  email,
-  name,
-  onModalClose,
-}) => {
+const EmailSentMessage: React.FC<EmailSentMessageProps> = ({ email, name, onModalClose }) => {
   const { setOpen } = useModal();
   const [timer, setTimer] = useState(5);
 
@@ -42,14 +38,13 @@ const EmailSentMessage: React.FC<EmailSentMessageProps> = ({
         📬 Message Received!
       </h4>
       <p className="text-base md:text-lg text-neutral-500 dark:text-neutral-300 max-w-md">
-        I wasn't able to attach my CV right now, but I’ve received your message
-        and will follow up via email at:
+        I wasn't able to attach my CV right now, but I’ve received your message and will follow up
+        via email at:
         <br />
         <span className="font-medium text-black dark:text-white">{email}</span>
       </p>
       <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-        This modal will auto-close in{" "}
-        <span className="font-semibold">{timer}</span> seconds.
+        This modal will auto-close in <span className="font-semibold">{timer}</span> seconds.
       </p>
     </div>
   );

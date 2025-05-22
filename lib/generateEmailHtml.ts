@@ -1,10 +1,6 @@
 import { EmailFormValues } from "@/types";
 
-export function generateEmailHtml({
-  name,
-  email,
-  message,
-}: EmailFormValues): string {
+export function generateEmailHtml({ name, email, message }: EmailFormValues): string {
   return `
   <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f7; padding: 40px; color: #333;">
     <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">

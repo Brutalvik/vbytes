@@ -40,7 +40,7 @@ export const Navbar = () => {
                 href={item.href}
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium text-base",
+                  "data-[active=true]:text-primary data-[active=true]:font-medium text-base"
                 )}
               >
                 <AnimatedMenu item={item.label} className="text-base" />
@@ -51,10 +51,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       {/* Right Content (Desktop) */}
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
+      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
         <NavbarItem className="hidden lg:flex">
           <LanguageDropdown />
         </NavbarItem>
@@ -71,7 +68,7 @@ export const Navbar = () => {
         className={clsx(
           "fixed top-0 right-0 z-10 h-screen w-full",
           "backdrop-blur-xl bg-white/30 dark:bg-black/30",
-          "p-6 overflow-hidden",
+          "p-6 overflow-hidden"
         )}
       >
         <div className="flex flex-col items-end gap-6 mt-16">
@@ -89,7 +86,7 @@ export const Navbar = () => {
                       ? "text-primary"
                       : index === siteConfig.navMenuItems.length - 1
                         ? "text-danger"
-                        : "text-foreground",
+                        : "text-foreground"
                   )}
                 >
                   <AnimatedMenu item={item.label} className="text-lg" />
