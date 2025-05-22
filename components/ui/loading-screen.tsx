@@ -1,10 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
-import { CDN } from "@/lib/config";
 import Spline from "@splinetool/react-spline";
-
+import { CDN } from "@/lib/config";
 
 export default function LoadingScreen() {
   return (
@@ -13,9 +11,11 @@ export default function LoadingScreen() {
       animate={{ opacity: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
-      className="fixed inset-0 z-50 bg-black flex items-center justify-center text-white text-xl"
+      className="fixed inset-0 z-50 bg-black flex items-center justify-center"
     >
-      <Spline scene={CDN.glassLoaderUrl as string} />
+      <div className="w-50 h-50 scale-90 sm:scale-100">
+        <Spline scene={CDN.glassLoaderUrl as string} />
+      </div>
     </motion.div>
   );
 }
