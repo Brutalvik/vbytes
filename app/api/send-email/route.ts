@@ -1,4 +1,3 @@
-// /src/app/api/send-email/route.ts
 import { NextResponse } from "next/server";
 import { transporter } from "@config/mail-config";
 import { generateEmailHtml } from "@lib/generateEmailHtml";
@@ -15,14 +14,16 @@ export async function POST(req: Request) {
     const html = generateEmailHtml({ name: capitalizedName, email, message });
     // Generate HTML cover letter
     const coverLetterHtml = generateCoverLetterHtml(name);
-    
+
     let buffer: Buffer | null = null;
     try {
       buffer = await fetchResume();
     } catch (resumeError) {
-      return null; // Handle error if needed
+      return NextResponse.json(
+        { success: false, error: "Failed to fetch resume." },
+        { status: 500 }
+      );
     }
-
 
     const mailOptions = {
       from: `"${name}" <${email}>`,

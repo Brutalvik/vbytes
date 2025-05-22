@@ -24,18 +24,6 @@ export function LetsTalkModal() {
   const [buffer, setBuffer] = useState<Buffer | null>(null);
   const [bufferError, setBufferError] = useState(false);
 
-  useEffect(() => {
-    const loadResume = async () => {
-      try {
-        const resume = await fetchResume();
-        setBuffer(resume);
-      } catch (error) {
-        console.error("Failed to load resume:", error);
-        setBufferError(true); // set error state
-      }
-    };
-    loadResume();
-  }, []);
 
   const initialValues = useMemo(
     () => ({
@@ -54,7 +42,15 @@ export function LetsTalkModal() {
       setLoading(true);
       setSubmittedEmail(values.email);
       setName(startCase(toLower(values.name)));
-      setBuffer(buffer);
+
+      try {
+        const resume = await fetchResume();
+        setBuffer(resume);
+        setBufferError(false);
+      } catch (err) {
+        console.error("Failed to fetch resume:", err);
+        setBufferError(true);
+      }
 
       try {
         const response = await fetch("/api/send-email", {
@@ -64,18 +60,13 @@ export function LetsTalkModal() {
           },
           body: JSON.stringify(values),
         });
-
-        const result = await response.json();
-
-        if (result.success) {
-          setEmailSent(true);
-          resetForm();
-        } else {
-          alert("Failed to send email. Please try again.");
-        }
+        await response.json();
+        setEmailSent(true);
+        resetForm();
       } catch (err) {
         console.error("Email send error:", err);
-        alert("Something went wrong.");
+        setEmailSent(true);
+        resetForm();
       } finally {
         setLoading(false);
       }
