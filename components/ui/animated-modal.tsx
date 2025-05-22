@@ -11,7 +11,6 @@ import React, {
 } from "react";
 import { useOutsideClick } from "@hooks/useOutsideClick";
 
-
 interface ModalContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -58,7 +57,7 @@ export const ModalTrigger = ({
     <button
       className={cn(
         "px-4 py-2 rounded-md text-black dark:text-white text-center relative overflow-hidden",
-        className
+        className,
       )}
       onClick={handleClick}
     >
@@ -109,7 +108,7 @@ export const ModalBody = ({
             ref={modalRef}
             className={cn(
               "min-h-[50%] max-h-[90%] md:max-w-[40%] bg-white/30 dark:bg-neutral-900/30 border border-white/20 dark:border-neutral-700/40 backdrop-blur-xl shadow-xl md:rounded-2xl relative z-50 flex flex-col flex-1 overflow-hidden",
-              className
+              className,
             )}
             initial={{ opacity: 0, scale: 0.5, rotateX: 40, y: 40 }}
             animate={{ opacity: 1, scale: 1, rotateX: 0, y: 0 }}

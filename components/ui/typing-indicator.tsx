@@ -16,7 +16,7 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
     <div
       className={cn(
         "px-3 py-2 rounded-md text-sm bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200 flex items-center gap-2",
-        className
+        className,
       )}
     >
       <span>{message}</span>

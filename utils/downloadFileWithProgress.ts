@@ -1,6 +1,6 @@
 export async function downloadFileWithProgress(
   url: string,
-  onProgress: (percent: number) => void
+  onProgress: (percent: number) => void,
 ): Promise<void> {
   const response = await fetch(url);
   if (!response.ok || !response.body) throw new Error("Failed to fetch file");
@@ -71,7 +71,7 @@ export async function downloadFileWithProgress(
   if (simulatedProgressTimer) clearInterval(simulatedProgressTimer);
   reportProgress(100);
 
-  const blob = new Blob(chunks.map(chunk => new Uint8Array(chunk)));
+  const blob = new Blob(chunks.map((chunk) => new Uint8Array(chunk)));
   const downloadUrl = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = downloadUrl;

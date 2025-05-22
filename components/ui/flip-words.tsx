@@ -55,7 +55,7 @@ export const FlipWords: React.FC<FlipWordsProps> = ({
         }}
         className={cn(
           "z-9 inline-block relative text-left text-neutral-900 dark:text-neutral-100 text-3xl font-bold",
-          className
+          className,
         )}
       >
         {currentWord.split(" ").map((word: string, wordIdx: number) => (

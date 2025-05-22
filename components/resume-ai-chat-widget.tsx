@@ -20,7 +20,7 @@ export function ResumeAIChatWidget() {
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    []
+    [],
   );
   const [questionCount, setQuestionCount] = useState(0);
   const [cooldownActive, setCooldownActive] = useState(false);
@@ -160,7 +160,7 @@ export function ResumeAIChatWidget() {
                         key={idx}
                         className={cn(
                           "flex flex-col gap-1",
-                          msg.role === "user" ? "items-end" : "items-start"
+                          msg.role === "user" ? "items-end" : "items-start",
                         )}
                       >
                         <div
@@ -171,7 +171,7 @@ export function ResumeAIChatWidget() {
                                 msg.role === "user",
                               "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
                                 msg.role === "assistant",
-                            }
+                            },
                           )}
                         >
                           <span className="font-semibold mr-2">

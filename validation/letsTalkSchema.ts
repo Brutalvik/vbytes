@@ -8,7 +8,6 @@ export const letsTalkSchema = Yup.object().shape({
   message: Yup.string().required("Message is required"),
 });
 
-  
 export type LetsTalkFormValues = {
   name: string;
   email: string;

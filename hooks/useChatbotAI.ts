@@ -6,7 +6,7 @@ const STORAGE_KEY = "vbytes-ai-chat";
 
 export function useVikramAI() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    []
+    [],
   );
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -57,7 +57,7 @@ export function useVikramAI() {
           messages: finalMessages,
           usage,
           timestamp: Date.now(),
-        })
+        }),
       );
     }
 

@@ -3,7 +3,7 @@
 }
 
 .button::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -50%;
   background: linear-gradient(120deg, #3b82f6, #724dca, #d25564, #3b82f6);

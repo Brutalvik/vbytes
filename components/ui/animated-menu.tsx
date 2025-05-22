@@ -15,7 +15,10 @@ type AnimatedMenuProps = {
   className?: string;
 };
 
-export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ item, className }) => {
+export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({
+  item,
+  className,
+}) => {
   const spanRef = useRef<HTMLSpanElement>(null);
   const originalText = useRef(item);
   const [displayText, setDisplayText] = useState(item);
@@ -35,7 +38,7 @@ export const AnimatedMenu: React.FC<AnimatedMenuProps> = ({ item, className }) =
         if (frame % 2 === 0) {
           const scrambled = textArray.map(
             () =>
-              randomLetters[Math.floor(Math.random() * randomLetters.length)]
+              randomLetters[Math.floor(Math.random() * randomLetters.length)],
           );
           setDisplayText(scrambled.join(""));
         }

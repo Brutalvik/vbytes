@@ -1,4 +1,4 @@
-import { EmailFormValues } from "@/types"
+import { EmailFormValues } from "@/types";
 
 export function generateEmailHtml({
   name,

@@ -52,4 +52,4 @@ export function generateCoverLetterHtml(name: string): string {
     </div>
   </div>
   `;
-} 
+}

@@ -29,7 +29,7 @@ export const fetchLanguages = createAsyncThunk(
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const languageSlice = createSlice({

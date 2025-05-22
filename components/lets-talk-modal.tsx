@@ -24,14 +24,13 @@ export function LetsTalkModal() {
   const [buffer, setBuffer] = useState<Buffer | null>(null);
   const [bufferError, setBufferError] = useState(false);
 
-
   const initialValues = useMemo(
     () => ({
       name: "",
       email: "",
       message: "",
     }),
-    []
+    [],
   );
 
   const formik = useFormik({
