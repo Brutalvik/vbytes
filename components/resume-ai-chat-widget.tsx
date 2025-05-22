@@ -10,7 +10,7 @@ import { LetsTalkModal } from "@components/lets-talk-modal";
 const STORAGE_KEY = "resumeChatHistory";
 const LIMIT_KEY = "resumeChatLimit";
 const LIMIT_TIMESTAMP_KEY = "resumeChatTimestamp";
-const MAX_QUESTIONS = 30;
+const MAX_QUESTIONS = 5;
 const COOLDOWN_HOURS = 24;
 
 export function ResumeAIChatWidget() {
@@ -23,7 +23,6 @@ export function ResumeAIChatWidget() {
   const [cooldownActive, setCooldownActive] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Load history on mount
   useEffect(() => {
     const savedMessages = localStorage.getItem(STORAGE_KEY);
     const savedCount = localStorage.getItem(LIMIT_KEY);
@@ -31,27 +30,31 @@ export function ResumeAIChatWidget() {
 
     if (savedMessages) setMessages(JSON.parse(savedMessages));
     if (savedCount) setQuestionCount(parseInt(savedCount));
+
     if (savedTimestamp) {
       const elapsed = Date.now() - parseInt(savedTimestamp);
-      if (elapsed < COOLDOWN_HOURS * 3600 * 1000) {
+      if (elapsed >= COOLDOWN_HOURS * 3600 * 1000) {
+        localStorage.removeItem(LIMIT_KEY);
+        localStorage.removeItem(LIMIT_TIMESTAMP_KEY);
+        setQuestionCount(0);
+        setCooldownActive(false);
+      } else {
         setCooldownActive(true);
       }
     }
   }, []);
 
-  // Save messages to localStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
   }, [messages]);
 
-  // Track usage and activate cooldown
   useEffect(() => {
     localStorage.setItem(LIMIT_KEY, questionCount.toString());
     if (questionCount >= MAX_QUESTIONS && !cooldownActive) {
       localStorage.setItem(LIMIT_TIMESTAMP_KEY, Date.now().toString());
       setCooldownActive(true);
     }
-  }, [questionCount, cooldownActive]);
+  }, [questionCount]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -66,6 +69,7 @@ export function ResumeAIChatWidget() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
+    setQuestionCount((count) => count + 1);
 
     try {
       const res = await fetch("/api/ai-chat", {
@@ -75,8 +79,6 @@ export function ResumeAIChatWidget() {
       });
 
       const data = await res.json();
-      console.log("Response from AI:", data);
-
       if (data.error) {
         setMessages((prev) => [
           ...prev,
@@ -88,7 +90,7 @@ export function ResumeAIChatWidget() {
           { role: "assistant", content: data.response },
         ]);
       }
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "❌ Something went wrong." },
@@ -115,43 +117,43 @@ export function ResumeAIChatWidget() {
                 </button>
               </div>
 
-              {messages.length === 0 && (
-                <div className="text-sm text-neutral-500 italic">
-                  ⚠️ Responses may not be 100% accurate. This assistant is still
-                  learning.
+              {cooldownActive ? (
+                <div className="p-4 flex flex-col gap-4 text-center text-sm text-neutral-600 dark:text-neutral-300">
+                  <p>
+                    Looks like we both have questions — let’s connect directly
+                    instead.
+                  </p>
+                  <LetsTalkModal />
                 </div>
-              )}
-
-              <div
-                className="h-[300px] px-4 py-2 space-y-2 overflow-y-auto"
-                ref={scrollRef}
-              >
-                {messages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={cn("px-3 py-2 rounded-md text-sm", {
-                      "bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white":
-                        msg.role === "user",
-                      "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
-                        msg.role === "assistant",
-                    })}
-                  >
-                    {msg.content}
-                  </div>
-                ))}
-              </div>
-
-              <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex flex-col gap-2">
-                {cooldownActive ? (
-                  <div className="text-sm text-neutral-500">
-                    You’ve reached your daily limit of 3 questions. Let’s keep
-                    the conversation going!
-                    <div className="mt-2">
-                      <LetsTalkModal />
+              ) : (
+                <>
+                  {messages.length === 0 && (
+                    <div className="text-sm text-neutral-500 italic p-4 pt-2">
+                      ⚠️ Responses may not be 100% accurate. This assistant is
+                      still learning. Limited to 5 questions per session.
                     </div>
+                  )}
+
+                  <div
+                    className="h-[300px] px-4 py-2 space-y-2 overflow-y-auto"
+                    ref={scrollRef}
+                  >
+                    {messages.map((msg, idx) => (
+                      <div
+                        key={idx}
+                        className={cn("px-3 py-2 rounded-md text-sm", {
+                          "bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white":
+                            msg.role === "user",
+                          "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
+                            msg.role === "assistant",
+                        })}
+                      >
+                        {msg.content}
+                      </div>
+                    ))}
                   </div>
-                ) : (
-                  <>
+
+                  <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex flex-col gap-2">
                     <textarea
                       className="w-full p-2 border border-neutral-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Ask something about my experience..."
@@ -162,9 +164,9 @@ export function ResumeAIChatWidget() {
                     <Button onPress={handleSend} disabled={!input.trim()}>
                       Send
                     </Button>
-                  </>
-                )}
-              </div>
+                  </div>
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
