@@ -9,7 +9,7 @@ import DownloadButton from "@/components/ui/download-button";
 import { CDN } from "@/lib/config";
 import { LetsTalkModal } from "@/components/lets-talk-modal";
 import { ResumeAIChatWidget } from "@/components/resume-ai-chat-widget";
-import { Tooltip } from "@heroui/react";
+
 
 // Lazy load heavy 3D component (Robot) with SSR disabled
 const Robot = dynamic(() => import("@components/ui/robot"), {
@@ -83,7 +83,7 @@ export default function Home() {
                 <p className="text-lg md:text-xl text-white/80 drop-shadow">
                   Build with precision. Launch with confidence.
                 </p>
-                <div className="flex items-center gap-10 h-10">
+                <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-4 h-auto sm:h-10">
                   <LetsTalkModal />
                   <DownloadButton url={CDN.pdfUrl as string} />
                 </div>

@@ -68,7 +68,7 @@ export function LetsTalkModal() {
   });
 
   return (
-    <div className="py-40 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <Modal>
         <ModalTrigger
           className={`bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105 ${styles.button}`}
