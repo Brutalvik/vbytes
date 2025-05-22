@@ -9,6 +9,7 @@ import DownloadButton from "@/components/ui/download-button";
 import { CDN } from "@/lib/config";
 import { LetsTalkModal } from "@/components/lets-talk-modal";
 import { ResumeAIChatWidget } from "@/components/resume-ai-chat-widget";
+import { Tooltip } from "@heroui/react";
 
 // Lazy load heavy 3D component (Robot) with SSR disabled
 const Robot = dynamic(() => import("@components/ui/robot"), {
@@ -90,6 +91,7 @@ export default function Home() {
             </div>
           </motion.section>
           {/* chat widget */}
+
           <ResumeAIChatWidget />
         </>
       )}

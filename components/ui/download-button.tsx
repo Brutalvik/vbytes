@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@heroui/button";
 import { Download, Loader2, CheckCircle2 } from "lucide-react";
 import { downloadFileWithProgress } from "@/utils/downloadFileWithProgress"; // Adjust path accordingly
+import { Tooltip } from "@heroui/react";
 
 export default function DownloadButton({
   url,
@@ -32,110 +33,122 @@ export default function DownloadButton({
   };
 
   return (
-    <Button
-      onPress={handleClick}
-      disabled={state === "active"}
-      style={{
-        width: state === "active" ? "auto" : "180px",
-        transition: "width 0.5s ease-in-out",
-      }}
+    <Tooltip
+      showArrow={true}
+      color="foreground"
+      content={
+        <div className="px-1 py-2">
+          <div className="text-small font-bold">Download my CV</div>
+          <div className="text-tiny">Powered by AWS</div>
+        </div>
+      }
+      placement="right"
     >
-      {/* Icon wrapper - 30% with slight left offset */}
-      <div className="flex items-center justify-center w-[30%] translate-x-[-5px]">
-        <div className="relative w-7 h-7">
+      <Button
+        onPress={handleClick}
+        disabled={state === "active"}
+        style={{
+          width: state === "active" ? "auto" : "180px",
+          transition: "width 0.5s ease-in-out",
+        }}
+      >
+        {/* Icon wrapper - 30% with slight left offset */}
+        <div className="flex items-center justify-center w-[30%] translate-x-[-5px]">
+          <div className="relative w-7 h-7">
+            <AnimatePresence mode="wait">
+              {state === "idle" && (
+                <motion.div
+                  key="download-icon"
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <Download className="w-7 h-7" />
+                </motion.div>
+              )}
+              {state === "active" && (
+                <motion.div
+                  key="loader-icon"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <Loader2 className="w-7 h-7 animate-spin" />
+                </motion.div>
+              )}
+              {state === "done" && (
+                <motion.div
+                  key="check-icon"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <CheckCircle2 className="w-7 h-7 text-white" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Text wrapper - 70% */}
+        <div className="relative w-[80%] h-full flex items-center justify-center">
           <AnimatePresence mode="wait">
             {state === "idle" && (
-              <motion.div
-                key="download-icon"
-                initial={{ opacity: 0, rotate: -90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: 90 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center"
+              <motion.span
+                key="label-idle"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{
+                  duration: 0.1,
+                  ease: "easeOut",
+                  exit: { duration: 0.0, ease: "easeIn" },
+                }}
+                className="absolute"
               >
-                <Download className="w-7 h-7" />
-              </motion.div>
+                Download CV
+              </motion.span>
             )}
             {state === "active" && (
-              <motion.div
-                key="loader-icon"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 flex items-center justify-center"
+              <motion.span
+                key="label-progress"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{
+                  duration: 0.1,
+                  ease: "easeOut",
+                  exit: { duration: 0.0, ease: "easeIn" },
+                }}
+                className="absolute"
               >
-                <Loader2 className="w-7 h-7 animate-spin" />
-              </motion.div>
+                {progress} %
+              </motion.span>
             )}
             {state === "done" && (
-              <motion.div
-                key="check-icon"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                className="absolute inset-0 flex items-center justify-center"
+              <motion.span
+                key="label-done"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{
+                  duration: 0.1,
+                  ease: "easeOut",
+                  exit: { duration: 0.0, ease: "easeIn" },
+                }}
+                className="absolute"
               >
-                <CheckCircle2 className="w-7 h-7 text-white" />
-              </motion.div>
+                Download Again
+              </motion.span>
             )}
           </AnimatePresence>
         </div>
-      </div>
-
-      {/* Text wrapper - 70% */}
-      <div className="relative w-[80%] h-full flex items-center justify-center">
-        <AnimatePresence mode="wait">
-          {state === "idle" && (
-            <motion.span
-              key="label-idle"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{
-                duration: 0.1,
-                ease: "easeOut",
-                exit: { duration: 0.0, ease: "easeIn" },
-              }}
-              className="absolute"
-            >
-              Download CV
-            </motion.span>
-          )}
-          {state === "active" && (
-            <motion.span
-              key="label-progress"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{
-                duration: 0.1,
-                ease: "easeOut",
-                exit: { duration: 0.0, ease: "easeIn" },
-              }}
-              className="absolute"
-            >
-              {progress} %
-            </motion.span>
-          )}
-          {state === "done" && (
-            <motion.span
-              key="label-done"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{
-                duration: 0.1,
-                ease: "easeOut",
-                exit: { duration: 0.0, ease: "easeIn" },
-              }}
-              className="absolute"
-            >
-              Download Again
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </div>
-    </Button>
+      </Button>
+    </Tooltip>
   );
 }

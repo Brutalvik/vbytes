@@ -7,6 +7,7 @@ import { Button } from "@heroui/button";
 import { cn } from "@lib/utils";
 import { LetsTalkModal } from "@components/lets-talk-modal";
 import { TypingIndicator } from "@components/ui/typing-indicator";
+import { Tooltip } from "@heroui/react";
 
 const STORAGE_KEY = "resumeChatHistory";
 const LIMIT_KEY = "resumeChatLimit";
@@ -202,13 +203,15 @@ export function ResumeAIChatWidget() {
           )}
         </AnimatePresence>
 
-        <Button
-          onPress={() => setMinimized((prev) => !prev)}
-          className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center absolute bottom-0 right-0"
-          variant="solid"
-        >
-          <Bot className="w-5 h-5" />
-        </Button>
+        <Tooltip content="AI Chat" showArrow={true} color="primary">
+          <Button
+            onPress={() => setMinimized((prev) => !prev)}
+            className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center absolute bottom-0 right-0"
+            variant="solid"
+          >
+            <Bot className="w-5 h-5" />
+          </Button>
+        </Tooltip>
       </div>
     </div>
   );
