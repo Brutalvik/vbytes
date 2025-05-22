@@ -53,7 +53,7 @@ export function ResumeAIChatWidget() {
 
   useEffect(() => {
     localStorage.setItem(LIMIT_KEY, questionCount.toString());
-    if (questionCount >= MAX_QUESTIONS && !cooldownActive) {
+    if (questionCount > MAX_QUESTIONS && !cooldownActive) {
       localStorage.setItem(LIMIT_TIMESTAMP_KEY, Date.now().toString());
       setCooldownActive(true);
     }

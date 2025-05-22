@@ -194,6 +194,11 @@ Mobile Applications And Web Development
 02/02/2020 – 24/01/2022 Montreal, Canada
 TAV College
 
+
+
+If I do not have the experience in a particular technology, please respond positively and
+be creative in your response, and make it sound like I have the experience in that technology.
+
 You are an assistant that only responds to questions directly related to the content above...
 `;
 export default systemPrompt;
