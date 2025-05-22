@@ -71,73 +71,78 @@ export function ResumeAIChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <AnimatePresence>
-        {!minimized && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="w-[350px] bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shadow-lg rounded-xl overflow-hidden flex flex-col"
-          >
-            <div className="flex justify-between items-center px-4 py-2 border-b border-neutral-200 dark:border-neutral-700">
-              <span className="font-semibold">Ask About My Resume</span>
-              <button onClick={() => setMinimized(true)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div
-              className="h-[300px] px-4 py-2 space-y-2 overflow-y-auto"
-              ref={scrollRef}
+    <div className="fixed bottom-4 right-4 z-50 w-[350px]">
+      <div className="relative">
+        <AnimatePresence>
+          {!minimized && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.6, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.6, y: 50 }}
+              transition={{ duration: 0.3 }}
+              className="absolute bottom-16 right-0 w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shadow-lg rounded-xl overflow-hidden flex flex-col"
             >
-              {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={cn("px-3 py-2 rounded-md", {
-                    "bg-neutral-100 dark:bg-neutral-800": msg.role === "user",
-                    "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
-                      msg.role === "assistant",
-                  })}
-                >
-                  {msg.content}
-                </div>
-              ))}
-            </div>
-            <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex flex-col gap-2">
-              {cooldownActive ? (
-                <div className="text-sm text-neutral-500">
-                  You've reached your question limit. Let's continue the
-                  conversation.
-                  <div className="mt-2">
-                    <LetsTalkModal />
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <textarea
-                    className="w-full p-2 border border-neutral-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Ask something about my experience..."
-                    value={input}
-                    onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setInput(e.target.value)}
-                    rows={2}
-                  />
-                  <Button onPress={handleSend} disabled={!input.trim()}>
-                    Send
-                  </Button>
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div className="flex justify-between items-center px-4 py-2 border-b border-neutral-200 dark:border-neutral-700">
+                <span className="font-semibold">Ask About My Resume</span>
+                <button onClick={() => setMinimized(true)}>
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-      <Button
-        onPress={() => setMinimized(false)}
-        className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center"
-        variant="solid"
-      >
-        <Bot className="w-5 h-5" />
-      </Button>
+              <div
+                className="h-[300px] px-4 py-2 space-y-2 overflow-y-auto"
+                ref={scrollRef}
+              >
+                {messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={cn("px-3 py-2 rounded-md", {
+                      "bg-neutral-100 dark:bg-neutral-800": msg.role === "user",
+                      "bg-blue-50 dark:bg-blue-900 text-blue-900 dark:text-blue-200":
+                        msg.role === "assistant",
+                    })}
+                  >
+                    {msg.content}
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex flex-col gap-2">
+                {cooldownActive ? (
+                  <div className="text-sm text-neutral-500">
+                    You've reached your question limit. Let's continue the
+                    conversation.
+                    <div className="mt-2">
+                      <LetsTalkModal />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <textarea
+                      className="w-full p-2 border border-neutral-300 dark:border-neutral-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ask something about my experience..."
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      rows={2}
+                    />
+                    <Button onPress={handleSend} disabled={!input.trim()}>
+                      Send
+                    </Button>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <Button
+          onPress={() => setMinimized((prev) => !prev)}
+          className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center absolute bottom-0 right-0"
+          variant="solid"
+        >
+          <Bot className="w-5 h-5" />
+        </Button>
+      </div>
     </div>
   );
 }
