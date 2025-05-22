@@ -209,7 +209,7 @@ export function ResumeAIChatWidget() {
             className="rounded-full shadow-lg w-14 h-14 flex items-center justify-center absolute bottom-0 right-0"
             variant="solid"
           >
-            <Bot className="w-5 h-5" />
+            <Bot className="w-10 h-10" />
           </Button>
         </Tooltip>
       </div>
