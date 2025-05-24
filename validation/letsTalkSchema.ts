@@ -6,9 +6,9 @@ const phoneRegExp =
 
 export const letsTalkSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
-  phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
+  countryCode: Yup.string().required("Required"),
+  phone: Yup.string().required().matches(phoneRegExp, "Phone number is not valid"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-
   message: Yup.string().required("Message is required"),
 });
 

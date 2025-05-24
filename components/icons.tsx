@@ -51,7 +51,7 @@ export const GithubIcon: React.FC<IconSvgProps> = ({ size = 24, width, height, .
 
 export const MoonFilledIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => (
   <svg
-    aria-hidden="true"
+    // aria-hidden="true"
     focusable="false"
     height={size || height}
     role="presentation"
@@ -68,7 +68,7 @@ export const MoonFilledIcon = ({ size = 24, width, height, ...props }: IconSvgPr
 
 export const SunFilledIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => (
   <svg
-    aria-hidden="true"
+    // aria-hidden="true"
     focusable="false"
     height={size || height}
     role="presentation"
@@ -85,7 +85,7 @@ export const SunFilledIcon = ({ size = 24, width, height, ...props }: IconSvgPro
 
 export const HeartFilledIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => (
   <svg
-    aria-hidden="true"
+    // aria-hidden="true"
     focusable="false"
     height={size || height}
     role="presentation"

@@ -10,6 +10,7 @@ import EmailSentMessage from "@components/email-sent-message";
 import EmailMessageWithAttachment from "@components/email-sent-message-with-attachment";
 import { fetchResume } from "@/app/api/send-email/fetch-resume";
 import { startCase, toLower } from "lodash";
+import { EmailFormValues } from "@/types";
 
 export function LetsTalkModal() {
   const [loading, setLoading] = useState(false);
@@ -19,10 +20,11 @@ export function LetsTalkModal() {
   const [buffer, setBuffer] = useState<Buffer | null>(null);
   const [bufferError, setBufferError] = useState(false);
 
-  const initialValues = useMemo(
+  const initialValues: EmailFormValues = useMemo(
     () => ({
       name: "",
       dialCode: "",
+      countryCode: "",
       phone: "",
       email: "",
       message: "",

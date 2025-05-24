@@ -4,145 +4,160 @@ import { EmailFormValues } from "@/types";
 import { FormikProps } from "formik/dist/types";
 import { ModalFooter } from "@components/ui/animated-modal";
 import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Textarea } from "@heroui/input";
 import {
   selectCountryCodes,
   selectCountryCodesLoading,
-  selectCountryCodesError,
+  selecteDetectedGeoLocation,
 } from "@/store/slices/selectors";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchCountryCodes } from "@/store/slices/countryCodesSlice";
-import { Autocomplete, AutocompleteItem, form } from "@heroui/react";
+import { detectUserGeolocation, fetchCountryCodes } from "@/store/slices/countryCodesSlice";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { Key } from "@react-types/shared";
 
 const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   const dispatch = useAppDispatch();
   const countryCodes = useAppSelector(selectCountryCodes);
   const countryCodesLoading = useAppSelector(selectCountryCodesLoading);
-  const countryCodesError = useAppSelector(selectCountryCodesError);
+  const detectedUserGeoLocation = useAppSelector(selecteDetectedGeoLocation);
 
   useEffect(() => {
     dispatch(fetchCountryCodes());
+    dispatch(detectUserGeolocation());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (detectedUserGeoLocation && !formik.values.countryCode) {
+      const detectedCountry = countryCodes.find(
+        (country: { dial_code: any }) => country.dial_code === detectedUserGeoLocation.dial_code
+      );
+      if (detectedCountry) {
+        formik.setFieldValue("countryCode", detectedCountry.code);
+        formik.setFieldValue("dialCode", detectedCountry.dial_code);
+      }
+    }
+  }, [detectedUserGeoLocation, countryCodes, formik.setFieldValue]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="space-y-2 max-w-md mx-auto">
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Name
-          </label>
-          <input
+          <Input
+            label="Name"
             id="name"
             type="text"
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            isInvalid={!!(formik.touched.name && formik.errors.name)}
+            errorMessage={formik.touched.name && formik.errors.name}
+            variant="bordered"
           />
-          {formik.touched.name && formik.errors.name && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
-          >
-            Phone
-          </label>
-
-          {/* Container for side-by-side on desktop, stacked on mobile */}
           <div className="flex flex-col sm:flex-row sm:space-x-4">
             <Autocomplete<{ dial_code: string; flag: string; code: string; name: string }>
-              allowsCustomValue
+              aria-hidden="false"
+              id="countryCode"
+              label="Country Code"
+              isInvalid={!!(formik.touched.countryCode && formik.errors.countryCode)}
+              errorMessage={formik.touched.countryCode && formik.errors.countryCode}
               className="w-full sm:w-1/2 mb-4 sm:mb-0"
               defaultItems={countryCodes}
               variant="bordered"
               aria-label="Country Code"
               isLoading={countryCodesLoading}
+              selectedKey={formik.values.countryCode}
               value={formik.values.dialCode}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              isClearable={false}
+              onKeyDown={(e) => {
+                if (e.key === "Tab") {
+                  const selectedCountry = countryCodes.find(
+                    (country: { code: Key | null }) => country.code === formik.values.countryCode
+                  );
+                  if (selectedCountry) {
+                    formik.setFieldValue("countryCode", selectedCountry.code);
+                    formik.setFieldValue("dialCode", selectedCountry.dial_code);
+                  } else {
+                    formik.setFieldValue("countryCode", "");
+                    formik.setFieldValue("dialCode", "");
+                  }
+                }
+              }}
+              onSelectionChange={(key) => {
+                const selectedCountry = countryCodes.find(
+                  (country: { code: Key | null }) => country.code === key
+                );
+                if (selectedCountry) {
+                  formik.setFieldValue("countryCode", selectedCountry.code);
+                  formik.setFieldValue("dialCode", selectedCountry.dial_code);
+                } else {
+                  formik.setFieldValue("countryCode", "");
+                  formik.setFieldValue("dialCode", "");
+                }
+              }}
+              onBlur={() => formik.setFieldTouched("countryCode", true)}
               placeholder="Code"
             >
               {(item) => (
-                <AutocompleteItem
-                  key={uuidv4()} // Unique key for each item
-                  textValue={item.dial_code}
-                >
-                  {/* Custom content inside AutocompleteItem */}
+                <AutocompleteItem key={item.code} textValue={item.dial_code}>
                   <div className="flex items-center gap-2">
-                    {" "}
                     <span role="img" aria-label="flag">
                       {item.flag}
                     </span>
-                    {/* Flag emoji */}
-                    <span>{item.dial_code}</span> {/* Country code */}
+                    <span>{item.dial_code}</span>
                   </div>
                 </AutocompleteItem>
               )}
             </Autocomplete>
 
-            <input
+            <Input
+              label="Phone"
               id="phone"
-              type="tel" // Use type="tel" for phone numbers
+              type="tel"
               value={formik.values.phone}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="w-full p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
-              placeholder="e.g., 123 456 7890"
+              isInvalid={!!(formik.touched.phone && formik.errors.phone)}
+              errorMessage={formik.touched.phone && formik.errors.phone}
+              variant="bordered"
+              placeholder="e.g. 123-456-7890"
             />
           </div>
-
-          {formik.touched.phone && formik.errors.phone && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.phone}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Email
-          </label>
-          <input
+          <Input
+            label="Email"
             id="email"
             type="email"
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            isInvalid={!!(formik.touched.email && formik.errors.email)}
+            errorMessage={formik.touched.email && formik.errors.email}
+            variant="bordered"
           />
-          {formik.touched.email && formik.errors.email && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Message
-          </label>
-          <textarea
+          <Textarea
+            label="Message"
             id="message"
             rows={4}
             value={formik.values.message}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             placeholder="Type your message here..."
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            isInvalid={!!(formik.touched.message && formik.errors.message)}
+            errorMessage={formik.touched.message && formik.errors.message}
+            variant="bordered"
+            className="resize-none"
+            maxLength={500}
           />
-          {formik.touched.message && formik.errors.message && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.message}</div>
-          )}
         </div>
       </div>
 
