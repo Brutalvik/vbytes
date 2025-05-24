@@ -68,7 +68,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               value={formik.values.dialCode}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              placeholder="Select country code"
+              placeholder="Code"
             >
               {(item) => (
                 <AutocompleteItem
