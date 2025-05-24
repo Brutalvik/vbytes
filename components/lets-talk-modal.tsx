@@ -23,7 +23,6 @@ export function LetsTalkModal() {
     () => ({
       name: "",
       dialCode: "",
-      countryCode: "",
       phone: "",
       email: "",
       message: "",

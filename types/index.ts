@@ -17,7 +17,6 @@ export type Language = {
 export interface EmailFormValues {
   name: string;
   dialCode: string;
-  countryCode: string;
   phone: string;
   email: string;
   message: string;

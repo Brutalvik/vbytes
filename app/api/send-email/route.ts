@@ -12,7 +12,13 @@ export async function POST(req: Request) {
     const { name, email, message, phone } = body;
     const capitalizedName = startCase(toLower(name));
 
-    const html = generateEmailHtml({ name: capitalizedName, email, message, phone });
+    const html = generateEmailHtml({
+      name: capitalizedName,
+      email,
+      message,
+      phone,
+      dialCode: body.dialCode || "",
+    });
     // Generate HTML cover letter
     const coverLetterHtml = generateCoverLetterHtml(name);
 

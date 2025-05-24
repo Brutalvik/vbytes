@@ -1,6 +1,12 @@
 import { EmailFormValues } from "@/types";
 
-export function generateEmailHtml({ name, phone, email, message }: EmailFormValues): string {
+export function generateEmailHtml({
+  name,
+  phone,
+  email,
+  message,
+  dialCode,
+}: EmailFormValues): string {
   return `
   <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f7; padding: 40px; color: #333;">
     <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
@@ -13,7 +19,7 @@ export function generateEmailHtml({ name, phone, email, message }: EmailFormValu
         <p style="margin: 0; font-size: 1rem; color: #666;">You have received a new message from:</p>
         <p style="margin: 4px 0 0; font-weight: bold; font-size: 1.2rem;">${name}</p>
         <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Email: <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
-        <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Phone: <a href="tel:${phone}" style="color: #6366f1;"><strong>${phone}</strong></a></p>
+        <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Phone: <a href="tel:${dialCode + phone}" style="color: #6366f1;"><strong>${dialCode} - ${phone}</strong></a></p>
         <h3 style="margin-bottom: 12px; color: #0f172a;">Message from ${name}</h3>
         <div style="
           background: #f9fafb;
