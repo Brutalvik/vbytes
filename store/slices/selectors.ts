@@ -14,3 +14,9 @@ export const selectLanguages = (state: RootState & { language: { data: any[] } }
 
 export const selectLoading = (state: RootState & { language: { loading: boolean } }) =>
   state.language.loading;
+
+export const selectCountryCodes = (state: any) => state.countryCodes.data;
+
+export const selectCountryCodesLoading = (state: any) => state.countryCodes.loading;
+
+export const selectCountryCodesError = (state: any) => state.countryCodes.error;

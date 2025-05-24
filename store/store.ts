@@ -2,9 +2,12 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // uses localStorage
 import languageReducer from "@store/slices/languageSlice";
+import countryCodesReducer from "@store/slices/countryCodesSlice";
+import { count } from "console";
 
 const rootReducer = combineReducers({
   language: languageReducer,
+  countryCodes: countryCodesReducer,
   // Add more slices here
 });
 
