@@ -29,6 +29,26 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
 
         <div>
           <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+          >
+            Phone
+          </label>
+          <input
+            id="phone"
+            type="phone"
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+          />
+          {formik.touched.phone && formik.errors.phone && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.phone}</div>
+          )}
+        </div>
+
+        <div>
+          <label
             htmlFor="email"
             className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
           >

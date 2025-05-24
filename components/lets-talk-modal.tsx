@@ -22,6 +22,7 @@ export function LetsTalkModal() {
   const initialValues = useMemo(
     () => ({
       name: "",
+      phone: "",
       email: "",
       message: "",
     }),
