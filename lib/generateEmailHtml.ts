@@ -14,7 +14,7 @@ export function generateEmailHtml({ name, phone, email, message }: EmailFormValu
         <p style="margin: 4px 0 0; font-weight: bold; font-size: 1.2rem;">${name}</p>
         <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Email: <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
         <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Phone: <a href="tel:${phone}" style="color: #6366f1;"><strong>${phone}</strong></a></p>
-        <h3 style="margin-bottom: 12px; color: #0f172a;">Message from Ashley</h3>
+        <h3 style="margin-bottom: 12px; color: #0f172a;">Message from ${name}</h3>
         <div style="
           background: #f9fafb;
           padding: 16px 20px;
@@ -28,7 +28,7 @@ export function generateEmailHtml({ name, phone, email, message }: EmailFormValu
         </div>
 
         <p style="margin-top: 40px; font-size: 0.9rem; color: #666;">Best regards,</p>
-        <p style="margin: 4px 0 0; font-weight: bold; font-size: 1rem;">Vikram Kumar</p>
+        <p style="margin: 4px 0 0; font-weight: bold; font-size: 1rem;">${name}</p>
       </div>
 
       <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 0.85rem; color: #888;">

@@ -4,6 +4,7 @@ import { generateEmailHtml } from "@lib/generateEmailHtml";
 import { generateCoverLetterHtml } from "@/lib/generateCoverLetterHtml";
 import { fetchResume } from "./fetch-resume";
 import { startCase, toLower } from "lodash";
+import { CDN } from "@/lib/config";
 
 export async function POST(req: Request) {
   try {
@@ -27,8 +28,8 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: `"${name}" <${email}>`,
-      to: process.env.EMAIL_USER,
-      subject: `V-Bytes Lets Talk Message from ${capitalizedName}`,
+      to: CDN.selfEmail,
+      subject: `⭐ Lets Talk Message from ${capitalizedName} (V-Bytes)`,
       html,
     };
 
@@ -37,7 +38,8 @@ export async function POST(req: Request) {
       to: email,
       subject: `Thanks, ${capitalizedName}! Here's my CV.`,
       html: coverLetterHtml,
-      replyTo: process.env.SELF_EMAIL,
+      replyTo: CDN.selfEmail,
+      // Attach the resume as a PDF
       attachments: [
         {
           filename: "Vikram_Kumar_CV.pdf",
@@ -52,7 +54,7 @@ export async function POST(req: Request) {
       to: email,
       subject: `Thanks for reaching out, ${capitalizedName}!`,
       html,
-      replyTo: process.env.SELF_EMAIL,
+      replyTo: CDN.selfEmail,
     };
 
     // ✅ 1. Send to yourself

@@ -5,4 +5,9 @@ export const CDN = {
   robotUrl: process.env.NEXT_PUBLIC_ROBOT_URL,
   glassLoaderUrl: process.env.NEXT_PUBLIC_GLASS_LOADER_URL,
   pdfUrl: process.env.NEXT_PUBLIC_PDF_DOWNLOAD_URL,
+  countryCodesUrl: process.env.NEXT_PUBLIC_COUNTRY_CODES_API_URL,
+  geniniApiKey: process.env.GEMINI_API_KEY,
+  selfEmail: process.env.EMAIL_USER,
+  emailService: process.env.EMAIL_SERVICE,
+  emailPassword: process.env.EMAIL_PASSWORD,
 };

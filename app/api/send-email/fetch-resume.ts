@@ -1,6 +1,8 @@
+import { CDN } from "@/lib/config";
+
 // Fetch CV PDF
 export const fetchResume = async () => {
-  const response = await fetch(process.env.NEXT_PUBLIC_PDF_DOWNLOAD_URL as string);
+  const response = await fetch(CDN.pdfUrl as string);
   if (!response.ok) {
     throw new Error("Failed to fetch resume");
   }

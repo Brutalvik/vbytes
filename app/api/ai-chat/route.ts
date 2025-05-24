@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import systemPrompt from "@/lib/systemPrompt"; // Assuming this path is correct
+import { CDN } from "@/lib/config";
 
 // Ensure API key is present
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey = CDN.geniniApiKey as string; // Ensure this is set in your .env.local file
 if (!apiKey) {
   console.error("GEMINI_API_KEY is not set. Please set it in your .env.local file.");
   throw new Error("GEMINI_API_KEY is not set.");
