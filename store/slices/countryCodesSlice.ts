@@ -13,6 +13,7 @@ const initialState: LanguageState = {
   loading: false,
   error: null,
 };
+const GEO_LOCATION_API_URL = CDN.geoLocationUrl;
 
 // Update this to your actual API endpoint
 const API_URL: string = CDN.countryCodesUrl as string;

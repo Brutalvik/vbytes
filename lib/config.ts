@@ -10,4 +10,5 @@ export const CDN = {
   selfEmail: process.env.EMAIL_USER,
   emailService: process.env.EMAIL_SERVICE,
   emailPassword: process.env.EMAIL_PASSWORD,
+  geoLocationUrl: process.env.NEXT_PUBLIC_GELOCATION_API_URL,
 };
