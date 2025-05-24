@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState, useMemo } from "react";
 import { Modal, ModalBody, ModalContent, ModalTrigger } from "@components/ui/animated-modal";
 import styles from "@styles/lets-talk-button.module.css";

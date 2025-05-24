@@ -22,5 +22,7 @@ export const selectCountryCodesLoading = (state: any) => state.countryCodes.load
 export const selectCountryCodesError = (state: any) => state.countryCodes.error;
 
 export const selecteDetectedGeoLocation = (state: any) => state.countryCodes.detectedCountry;
+
 export const selectDetectingGeoLocation = (state: any) => state.countryCodes.detecting;
+
 export const selectGeolocationError = (state: any) => state.countryCodes.detectError;
