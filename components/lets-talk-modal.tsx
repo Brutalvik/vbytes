@@ -22,6 +22,8 @@ export function LetsTalkModal() {
   const initialValues = useMemo(
     () => ({
       name: "",
+      dialCode: "",
+      countryCode: "",
       phone: "",
       email: "",
       message: "",
@@ -72,7 +74,7 @@ export function LetsTalkModal() {
     <div className="flex items-center justify-center">
       <Modal>
         <ModalTrigger
-          className={`bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105 ${styles.button}`}
+          className={`bg-black dark:bg-white dark:text-black text-white rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105 ${styles.button}`}
         >
           <div className={styles.waveOverlay}></div>
           <span className={styles.text}>Let's Talk</span>

@@ -19,7 +19,7 @@ const API_URL: string = CDN.countryCodesUrl as string;
 
 // Async thunk to fetch the country codes
 export const fetchCountryCodes = createAsyncThunk(
-  "languages/fetchCountryCodes",
+  "country/fetchCountryCodes",
   async (_, thunkAPI) => {
     try {
       const response = await fetch(API_URL);
