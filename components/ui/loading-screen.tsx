@@ -13,9 +13,7 @@ export default function LoadingScreen() {
       transition={{ duration: 1 }}
       className="fixed inset-0 z-50 bg-black flex items-center justify-center"
     >
-      <div className="w-75 h-75 scale-90 sm:scale-100">
-        <Spline scene={CDN.glassLoaderUrl as string} />
-      </div>
+      <Spline scene={CDN.glassLoaderUrl as string} />
     </motion.div>
   );
 }

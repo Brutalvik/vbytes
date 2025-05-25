@@ -6,78 +6,40 @@ import { ModalFooter } from "@components/ui/animated-modal";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Textarea } from "@heroui/input";
-import {
-  selectCountryCodes,
-  selectCountryCodesLoading,
-  selecteDetectedGeoLocation,
-} from "@/store/slices/selectors";
+import { selectCountryCodes, selectCountryCodesLoading } from "@/store/slices/selectors";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  CountryCodeItem,
-  detectUserGeolocation,
-  fetchCountryCodes,
-} from "@/store/slices/countryCodesSlice";
+import { fetchCountryCodes } from "@/store/slices/countryCodesSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
-import { useEffect, useState } from "react";
-import { Key } from "@react-types/shared";
+import { Key, useEffect } from "react";
+
+interface CountryCodeItem {
+  dial_code: string;
+  flag: string;
+  code: string;
+  name: string;
+}
 
 const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   const dispatch = useAppDispatch();
-  const countryCodes = useAppSelector(selectCountryCodes);
+  const countryCodes: CountryCodeItem[] = useAppSelector(selectCountryCodes);
   const countryCodesLoading = useAppSelector(selectCountryCodesLoading);
-  const detectedUserGeoLocation = useAppSelector(selecteDetectedGeoLocation);
 
   useEffect(() => {
     dispatch(fetchCountryCodes());
-    dispatch(detectUserGeolocation());
   }, [dispatch]);
 
   useEffect(() => {
-    if (
-      detectedUserGeoLocation &&
-      !countryCodesLoading &&
-      countryCodes.length > 0 &&
-      !formik.values.countryCode
-    ) {
-      console.log("Auto-populating: All Redux data available and loaded.");
-      console.log("detectedUserGeoLocation:", detectedUserGeoLocation);
-      console.log("countryCodes (from Redux, now populated):", countryCodes);
-
-      const detectedCountry = countryCodes.find(
-        (country: { dial_code: any }) => country.dial_code === detectedUserGeoLocation.dial_code
+    if (!countryCodesLoading && countryCodes.length > 0 && !formik.values.countryCode) {
+      const canada = countryCodes.find(
+        (country) => country.code === "CA" && country.dial_code === "+1"
       );
 
-      if (detectedCountry) {
-        console.log("Match found! Setting countryCode and dialCode:", detectedCountry);
-        formik.setFieldValue("countryCode", detectedCountry.code);
-        formik.setFieldValue("dialCode", detectedCountry.dial_code);
-      } else {
-        console.warn(
-          "No matching country found for detected dial_code:",
-          detectedUserGeoLocation.dial_code,
-          "in loaded countryCodes."
-        );
+      if (canada) {
+        formik.setFieldValue("countryCode", canada.code);
+        formik.setFieldValue("dialCode", canada.dial_code);
       }
-    } else {
-      console.log(
-        "Auto-population skipped (waiting for Redux state):",
-        "detectedUserGeoLocation:",
-        !!detectedUserGeoLocation,
-        "countryCodes loading:",
-        countryCodesLoading,
-        "countryCodes loaded:",
-        countryCodes.length > 0,
-        "formik.values.countryCode empty:",
-        !formik.values.countryCode
-      );
     }
-  }, [
-    detectedUserGeoLocation,
-    countryCodes,
-    countryCodesLoading,
-    formik.setFieldValue,
-    formik.values.countryCode,
-  ]);
+  }, [countryCodes, countryCodesLoading, formik.setFieldValue, formik.values.countryCode]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -98,8 +60,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
 
         <div>
           <div className="flex flex-col sm:flex-row sm:space-x-4">
-            <Autocomplete<{ dial_code: string; flag: string; code: string; name: string }>
-              // Removed aria-hidden="false" as it's not needed and can conflict with library's ARIA
+            <Autocomplete<CountryCodeItem>
               id="countryCode"
               label="Country Code"
               isInvalid={!!(formik.touched.countryCode && formik.errors.countryCode)}
@@ -110,15 +71,10 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               aria-label="Country Code"
               isLoading={countryCodesLoading}
               selectedKey={formik.values.countryCode}
-              value={formik.values.dialCode} // Display the dialCode in the input
               isClearable={false}
-              // Added a key prop for Autocomplete to ensure re-render when values change
-              // This is a common pattern for controlled components from external libraries
-              key={formik.values.countryCode || "initial"} // Use a stable key that changes when countryCode changes
+              key={formik.values.countryCode || "initial"}
               onKeyDown={(e) => {
-                // This onKeyDown logic is for handling tab behavior if not automatically handled by Autocomplete
-                // It ensures the formik values are correctly set even on tab, but Autocomplete should handle this itself
-                if (e.key === "Tab" && !formik.values.countryCode) {
+                if (e.key === "Tab") {
                   const selectedCountry = countryCodes.find(
                     (country: { code: Key | null }) => country.code === formik.values.countryCode
                   );
@@ -129,29 +85,25 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
                 }
               }}
               onSelectionChange={(key) => {
-                const selectedCountry = countryCodes.find(
-                  (country: { code: Key | null }) => country.code === key
-                );
+                const selectedCountry = countryCodes.find((country) => country.code === key);
                 if (selectedCountry) {
                   formik.setFieldValue("countryCode", selectedCountry.code);
                   formik.setFieldValue("dialCode", selectedCountry.dial_code);
                 } else {
-                  // If selection is cleared (e.g., by backspace), clear both fields
                   formik.setFieldValue("countryCode", "");
                   formik.setFieldValue("dialCode", "");
                 }
               }}
               onBlur={() => {
-                // Ensure formik.values.dialCode is correct on blur if the Autocomplete value is left unselected
                 if (!formik.values.countryCode && formik.values.dialCode) {
-                  formik.setFieldValue("dialCode", ""); // Clear dialCode if countryCode is empty
+                  formik.setFieldValue("dialCode", "");
                 }
                 formik.setFieldTouched("countryCode", true);
               }}
               placeholder="Code"
             >
               {(item) => (
-                <AutocompleteItem key={item.code} textValue={item.dial_code}>
+                <AutocompleteItem key={item.code} textValue={`${item.flag} ${item.dial_code}`}>
                   <div className="flex items-center gap-2">
                     <span role="img" aria-label="flag">
                       {item.flag}
