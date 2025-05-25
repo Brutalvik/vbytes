@@ -23,13 +23,12 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   const countryCodesLoading = useAppSelector(selectCountryCodesLoading);
   const detectedUserGeoLocation = useAppSelector(selecteDetectedGeoLocation);
 
-  // useEffect(() => {
-  //   dispatch(fetchCountryCodes());
-  //   dispatch(detectUserGeolocation());
-  // }, [dispatch]);
-
   useEffect(() => {
     dispatch(fetchCountryCodes());
+    dispatch(detectUserGeolocation());
+  }, [dispatch]);
+
+  useEffect(() => {
     if (detectedUserGeoLocation) {
       console.log("detectedUserGeoLocation in EmailForm:", detectedUserGeoLocation);
       if (!formik.values.countryCode) {
