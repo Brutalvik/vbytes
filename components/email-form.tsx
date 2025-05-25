@@ -12,9 +12,13 @@ import {
   selecteDetectedGeoLocation,
 } from "@/store/slices/selectors";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { detectUserGeolocation, fetchCountryCodes } from "@/store/slices/countryCodesSlice";
+import {
+  CountryCodeItem,
+  detectUserGeolocation,
+  fetchCountryCodes,
+} from "@/store/slices/countryCodesSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Key } from "@react-types/shared";
 
 const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
@@ -31,12 +35,13 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   useEffect(() => {
     if (
       detectedUserGeoLocation &&
+      !countryCodesLoading &&
       countryCodes.length > 0 &&
-      !formik.values.countryCode // Only try to set if it's currently empty
+      !formik.values.countryCode
     ) {
-      console.log("Auto-populating: All data available.");
+      console.log("Auto-populating: All Redux data available and loaded.");
       console.log("detectedUserGeoLocation:", detectedUserGeoLocation);
-      console.log("countryCodes (now populated):", countryCodes); // Should see data here
+      console.log("countryCodes (from Redux, now populated):", countryCodes);
 
       const detectedCountry = countryCodes.find(
         (country: { dial_code: any }) => country.dial_code === detectedUserGeoLocation.dial_code
@@ -55,16 +60,24 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
       }
     } else {
       console.log(
-        "Auto-population skipped:",
+        "Auto-population skipped (waiting for Redux state):",
         "detectedUserGeoLocation:",
         !!detectedUserGeoLocation,
+        "countryCodes loading:",
+        countryCodesLoading,
         "countryCodes loaded:",
         countryCodes.length > 0,
         "formik.values.countryCode empty:",
         !formik.values.countryCode
       );
     }
-  }, [detectedUserGeoLocation, countryCodes, formik.setFieldValue, formik.values.countryCode]); // Dependencies
+  }, [
+    detectedUserGeoLocation,
+    countryCodes,
+    countryCodesLoading,
+    formik.setFieldValue,
+    formik.values.countryCode,
+  ]);
 
   return (
     <form onSubmit={formik.handleSubmit}>
