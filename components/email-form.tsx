@@ -60,6 +60,12 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
 
         <div>
           <div className="flex flex-col sm:flex-row sm:space-x-4">
+            <span className="text-xl py-4">
+              {(() => {
+                const selected = countryCodes.find((c) => c.code === formik.values.countryCode);
+                return selected ? `${selected.flag}` : "";
+              })()}
+            </span>
             <Autocomplete<CountryCodeItem>
               id="countryCode"
               label="Country Code"
@@ -73,6 +79,13 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               selectedKey={formik.values.countryCode}
               isClearable={false}
               key={formik.values.countryCode || "initial"}
+              onInputChange={(e) => {
+                console.log(e);
+                const filteredCountryCodes = countryCodes.filter((country) => {
+                  return String(country.dial_code).includes(String(e));
+                });
+                console.log("filteredCountryCodes : ", filteredCountryCodes);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Tab") {
                   const selectedCountry = countryCodes.find(
@@ -103,7 +116,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               placeholder="Code"
             >
               {(item) => (
-                <AutocompleteItem key={item.code} textValue={`${item.flag} ${item.dial_code}`}>
+                <AutocompleteItem key={item.code} textValue={item.dial_code}>
                   <div className="flex items-center gap-2">
                     <span role="img" aria-label="flag">
                       {item.flag}
