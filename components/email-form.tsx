@@ -23,10 +23,39 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   const countryCodesLoading = useAppSelector(selectCountryCodesLoading);
   const detectedUserGeoLocation = useAppSelector(selecteDetectedGeoLocation);
 
+  // useEffect(() => {
+  //   dispatch(fetchCountryCodes());
+  //   dispatch(detectUserGeolocation());
+  // }, [dispatch]);
+
   useEffect(() => {
     dispatch(fetchCountryCodes());
-    dispatch(detectUserGeolocation());
-  }, [dispatch]);
+    if (detectedUserGeoLocation) {
+      console.log("detectedUserGeoLocation in EmailForm:", detectedUserGeoLocation);
+      if (!formik.values.countryCode) {
+        const detectedCountry = countryCodes.find(
+          (country: { dial_code: any }) => country.dial_code === detectedUserGeoLocation.dial_code
+        );
+        if (detectedCountry) {
+          console.log("Setting countryCode and dialCode via geolocation:", detectedCountry);
+          formik.setFieldValue("countryCode", detectedCountry.code);
+          formik.setFieldValue("dialCode", detectedCountry.dial_code);
+        } else {
+          console.warn(
+            "Detected country not found in countryCodes:",
+            detectedUserGeoLocation.dial_code
+          );
+        }
+      } else {
+        console.log(
+          "countryCode already set by user or initial render:",
+          formik.values.countryCode
+        );
+      }
+    } else {
+      console.log("detectedUserGeoLocation is null or undefined.");
+    }
+  }, [detectedUserGeoLocation, countryCodes, formik.setFieldValue, formik.values.countryCode]);
 
   useEffect(() => {
     if (detectedUserGeoLocation && !formik.values.countryCode) {
