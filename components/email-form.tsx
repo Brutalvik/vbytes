@@ -33,6 +33,12 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
     if (detectedUserGeoLocation) {
       console.log("detectedUserGeoLocation in EmailForm:", detectedUserGeoLocation);
       if (!formik.values.countryCode) {
+        console.log("countryCode not set, setting it now.");
+        console.log("countryCodes:", countryCodes);
+        console.log("formik.values.countryCode:", formik.values.countryCode);
+        console.log("formik.values.dialCode:", formik.values.dialCode);
+        console.log("detectedUserGeoLocation.dial_code:", detectedUserGeoLocation.dial_code);
+
         const detectedCountry = countryCodes.find(
           (country: { dial_code: any }) => country.dial_code === detectedUserGeoLocation.dial_code
         );
