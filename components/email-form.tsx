@@ -26,7 +26,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   useEffect(() => {
     dispatch(fetchCountryCodes());
     dispatch(detectUserGeolocation());
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     if (detectedUserGeoLocation) {
