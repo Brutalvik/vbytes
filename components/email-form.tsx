@@ -31,6 +31,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   useEffect(() => {
     if (detectedUserGeoLocation) {
       console.log("detectedUserGeoLocation in EmailForm:", detectedUserGeoLocation);
+      console.log("contry codes 1st attempt : ", countryCodes);
       if (!formik.values.countryCode) {
         console.log("countryCode not set, setting it now.");
         console.log("countryCodes:", countryCodes);
