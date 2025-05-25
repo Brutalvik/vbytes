@@ -77,17 +77,12 @@ ${userMessage}
 // --- GET Request Handler (for listing models) ---
 export async function GET(req: NextRequest) {
   try {
-    console.log("Attempting to list Gemini models...");
-
-    // Use the correct way to list models from the SDK
     const modelsResponse = await genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
     });
     const models = await modelsResponse
       .generateContent("List all available models and their supported generation methods.")
       .then((response: any) => response.text());
-
-    console.log("Models response:", models);
 
     const availableModels = models
       .filter((model: any) => model.supportedGenerationMethods?.includes("generateContent"))
@@ -97,8 +92,6 @@ export async function GET(req: NextRequest) {
         description: model.description,
         supportedGenerationMethods: model.supportedGenerationMethods,
       }));
-
-    console.log("Successfully listed models:", availableModels);
     return NextResponse.json({ availableModels });
   } catch (error: any) {
     console.error("Error listing Gemini models:", error);

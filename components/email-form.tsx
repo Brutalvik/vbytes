@@ -67,6 +67,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               })()}
             </span>
             <Autocomplete<CountryCodeItem>
+              aria-labelledby="Country Code"
               id="countryCode"
               label="Country Code"
               isInvalid={!!(formik.touched.countryCode && formik.errors.countryCode)}
@@ -80,11 +81,9 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               isClearable={false}
               key={formik.values.countryCode || "initial"}
               onInputChange={(e) => {
-                console.log(e);
-                const filteredCountryCodes = countryCodes.filter((country) => {
+                countryCodes.filter((country) => {
                   return String(country.dial_code).includes(String(e));
                 });
-                console.log("filteredCountryCodes : ", filteredCountryCodes);
               }}
               onKeyDown={(e) => {
                 if (e.key === "Tab") {

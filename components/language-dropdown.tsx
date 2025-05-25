@@ -28,7 +28,6 @@ const LanguageDropdown = () => {
   const handleChange = (key: string | null) => {
     setSelectedKey(key);
     const selectedLanguage = languages.find((lang) => lang.key === key);
-    console.log("Selected language:", selectedLanguage);
     return selectedLanguage;
   };
 
@@ -37,7 +36,7 @@ const LanguageDropdown = () => {
       aria-labelledby="Language"
       className="max-w-xs"
       size="sm"
-      selectedKey={selectedKey || undefined}
+      selectedKey={selectedKey || ""}
       onValueChange={handleChange}
       listboxProps={{
         itemClasses: {
