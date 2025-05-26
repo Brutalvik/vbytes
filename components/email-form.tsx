@@ -41,13 +41,6 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
     }
   }, [countryCodes, countryCodesLoading, formik.setFieldValue, formik.values.countryCode]);
 
-  if (countryCodesLoading) {
-    return <div>Loading...</div>; // You can replace this with a spinner or loading component
-  }
-  if (countryCodes.length === 0) {
-    return <div>No country codes available.</div>;
-  }
-
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="space-y-2 max-w">
@@ -95,7 +88,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
               }}
               onKeyDown={(e) => {
                 if (e.key === "Tab") {
-                  const selectedCountry = countryCodes.find(
+                  const selectedCountry = countryCodes?.find(
                     (country: { code: Key | null }) => country.code === formik.values.countryCode
                   );
                   if (selectedCountry) {
@@ -105,7 +98,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
                 }
               }}
               onSelectionChange={(key) => {
-                const selectedCountry = countryCodes.find((country) => country.code === key);
+                const selectedCountry = countryCodes?.find((country) => country.code === key);
                 if (selectedCountry) {
                   formik.setFieldValue("countryCode", selectedCountry.code);
                   formik.setFieldValue("dialCode", selectedCountry.dial_code);
