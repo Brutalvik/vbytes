@@ -41,6 +41,13 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
     }
   }, [countryCodes, countryCodesLoading, formik.setFieldValue, formik.values.countryCode]);
 
+  if (countryCodesLoading) {
+    return <div>Loading...</div>; // You can replace this with a spinner or loading component
+  }
+  if (countryCodes.length === 0) {
+    return <div>No country codes available.</div>;
+  }
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="space-y-2 max-w">
