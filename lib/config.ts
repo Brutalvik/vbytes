@@ -11,5 +11,5 @@ export const CDN = {
   emailService: process.env.EMAIL_SERVICE,
   emailPassword: process.env.EMAIL_PASSWORD,
   geoLocationUrl: process.env.NEXT_PUBLIC_GELOCATION_API_URL,
-  ipApiUrl: process.env.NEXT_PUBLIC_IP_API,
+  googleRecaptchaKey: process.env.NEXT_PUBLIC_GOOGLE_CATPCHA_SITE_KEY,
 };
