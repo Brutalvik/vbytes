@@ -73,7 +73,7 @@ export function LetsTalkModal() {
   });
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center md:w-1/2">
       <Modal>
         <ModalTrigger
           className={`bg-black dark:bg-white dark:text-black text-white rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105 ${styles.button}`}

@@ -43,7 +43,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="space-y-2 max-w-md mx-auto">
+      <div className="space-y-2 max-w">
         <div>
           <Input
             label="Name"
@@ -55,24 +55,25 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             isInvalid={!!(formik.touched.name && formik.errors.name)}
             errorMessage={formik.touched.name && formik.errors.name}
             variant="bordered"
+            className="mb-0"
           />
         </div>
-
-        <div>
-          <div className="flex flex-col sm:flex-row sm:space-x-4">
+        <div className="flex flex-col sm:flex-row sm:space-x-4">
+          <div className="flex items-center w-full sm:w-1/2 gap-4">
             <span className="text-xl py-4">
+              {/* Added mr-2 for spacing */}
               {(() => {
                 const selected = countryCodes.find((c) => c.code === formik.values.countryCode);
                 return selected ? `${selected.flag}` : "";
               })()}
             </span>
             <Autocomplete<CountryCodeItem>
-              aria-labelledby="Country Code"
+              aria-labelledby="Country"
               id="countryCode"
-              label="Country Code"
+              label="Country"
               isInvalid={!!(formik.touched.countryCode && formik.errors.countryCode)}
               errorMessage={formik.touched.countryCode && formik.errors.countryCode}
-              className="w-full sm:w-1/2 mb-4 sm:mb-0"
+              className="w-full mt-1"
               defaultItems={countryCodes}
               variant="bordered"
               aria-label="Country Code"
@@ -125,20 +126,22 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
                 </AutocompleteItem>
               )}
             </Autocomplete>
-
-            <Input
-              label="Phone"
-              id="phone"
-              type="tel"
-              value={formik.values.phone}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              isInvalid={!!(formik.touched.phone && formik.errors.phone)}
-              errorMessage={formik.touched.phone && formik.errors.phone}
-              variant="bordered"
-              placeholder="e.g. 123-456-7890"
-            />
           </div>
+
+          {/* Phone Input - now responsive */}
+          <Input
+            label="Phone"
+            id="phone"
+            type="tel"
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            isInvalid={!!(formik.touched.phone && formik.errors.phone)}
+            errorMessage={formik.touched.phone && formik.errors.phone}
+            variant="bordered"
+            placeholder="e.g. 123-456-7890"
+            className="w-full mt-1"
+          />
         </div>
 
         <div>
