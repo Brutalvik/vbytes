@@ -9,7 +9,8 @@ import EmailForm from "@components/email-form";
 import EmailSentMessage from "@components/email-sent-message";
 import EmailMessageWithAttachment from "@components/email-sent-message-with-attachment";
 import { fetchResume } from "@/app/api/send-email/fetch-resume";
-import { startCase, toLower } from "lodash";
+import { isEmpty, startCase, toLower } from "lodash";
+import { form } from "@heroui/theme";
 
 export function LetsTalkModal() {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ export function LetsTalkModal() {
       phone: "",
       email: "",
       message: "",
+      token: "",
     }),
     []
   );
@@ -37,6 +39,13 @@ export function LetsTalkModal() {
       setLoading(true);
       setSubmittedEmail(values.email);
       setName(startCase(toLower(values.name)));
+
+      // If there are validation errors, stop the submission
+      if (!isEmpty(formik.errors)) {
+        console.log("Validation errors:", formik.errors);
+        setLoading(false);
+        return;
+      }
 
       try {
         const resume = await fetchResume();
@@ -112,7 +121,7 @@ export function LetsTalkModal() {
                     Talk
                   </span>
                 </h4>
-                <EmailForm formik={formik} />
+                <EmailForm formik={formik as any} />
               </>
             )}
           </ModalContent>

@@ -4,11 +4,21 @@ import { ModalFooter } from "@components/ui/animated-modal";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Textarea } from "@heroui/input";
+import Recaptcha from "@/components/ui/recaptcha";
 
 const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
+  const getRecaptcha = (token: string) => {
+    if (token) {
+      formik.setFieldValue("token", token);
+    } else {
+      // Reset the token field if recaptcha is not completed
+      formik.setFieldValue("token", "");
+    }
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="space-y-4 max-w-sm mx-auto mb-10">
+      <div className="space-y-4 max-w-sm mx-auto">
         <div>
           <Input
             label="Name"
@@ -21,7 +31,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 rounded-md"
+            className="w-full rounded-md"
           />
         </div>
 
@@ -37,7 +47,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             value={formik.values.phone}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 rounded-md"
+            className="w-full rounded-md"
           />
         </div>
 
@@ -53,7 +63,7 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             placeholder="Enter your valid email"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 rounded-md"
+            className="w-full rounded-md"
           />
         </div>
 
@@ -69,13 +79,21 @@ const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
             label="Message"
             variant="bordered"
             placeholder="Type your message here..."
-            className="w-full mt-1 rounded-md"
+            className="w-full rounded-md"
           />
         </div>
       </div>
 
+      <div className="mt-4">
+        <Recaptcha onChange={(token) => getRecaptcha(token as string)} />
+        {formik.touched.token && formik.errors.token && (
+          <div className="text-red-500 text-sm mt-1 text-center">{formik.errors.token}</div>
+        )}
+      </div>
+
       <ModalFooter className="gap-4">
         <Button
+          variant="solid"
           type="submit"
           className="bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105"
         >

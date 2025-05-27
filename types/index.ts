@@ -19,6 +19,7 @@ export interface EmailFormValues {
   phone: string;
   email: string;
   message: string;
+  token?: string;
 }
 
 export interface EmailFormProps {
@@ -30,4 +31,10 @@ export interface EmailFormProps {
     touched: { [key: string]: boolean };
     errors: { [key: string]: string };
   };
+}
+
+export interface RecaptchaProps {
+  onChange?: (response: string | null) => void;
+  requestId?: string | null;
+  theme?: any;
 }
