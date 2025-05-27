@@ -2,90 +2,75 @@ import { EmailFormValues } from "@/types";
 import { FormikProps } from "formik/dist/types";
 import { ModalFooter } from "@components/ui/animated-modal";
 import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Textarea } from "@heroui/input";
 
 const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="space-y-4 max-w-sm mx-auto mb-10">
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Name
-          </label>
-          <input
-            id="name"
+          <Input
+            label="Name"
             type="text"
+            variant="bordered"
+            id="name"
+            isInvalid={formik.touched.name && Boolean(formik.errors.name)}
+            errorMessage={formik.touched.name ? formik.errors.name : ""}
+            placeholder="Enter your name"
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full mt-1 rounded-md"
           />
-          {formik.touched.name && formik.errors.name && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Phone
-          </label>
-          <input
+          <Input
             id="phone"
             type="phone"
+            variant="bordered"
+            placeholder="e.g. +1 234 567 8900"
+            isInvalid={formik.touched.phone && Boolean(formik.errors.phone)}
+            errorMessage={formik.touched.phone ? formik.errors.phone : ""}
+            label="Phone"
             value={formik.values.phone}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full mt-1 rounded-md"
           />
-          {formik.touched.phone && formik.errors.phone && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.phone}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Email
-          </label>
-          <input
+          <Input
             id="email"
             type="email"
+            variant="bordered"
             value={formik.values.email}
+            isInvalid={formik.touched.email && Boolean(formik.errors.email)}
+            errorMessage={formik.touched.email ? formik.errors.email : ""}
+            label="Email"
+            placeholder="Enter your valid email"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full mt-1 rounded-md"
           />
-          {formik.touched.email && formik.errors.email && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Message
-          </label>
-          <textarea
+          <Textarea
             id="message"
             rows={4}
             value={formik.values.message}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            isInvalid={formik.touched.message && Boolean(formik.errors.message)}
+            errorMessage={formik.touched.message ? formik.errors.message : ""}
+            label="Message"
+            variant="bordered"
             placeholder="Type your message here..."
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full mt-1 rounded-md"
           />
-          {formik.touched.message && formik.errors.message && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.message}</div>
-          )}
         </div>
       </div>
 
