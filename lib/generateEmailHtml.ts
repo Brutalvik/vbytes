@@ -32,6 +32,8 @@ export function generateEmailHtml({ name, phone, email, message }: EmailFormValu
 
       <div style="background-color: #f9fafb; padding: 16px; text-align: center; font-size: 0.85rem; color: #888;">
         This is an automated email confirmation. If you didn't submit this, feel free to ignore.
+        <br/>
+          <a href="https://v-bytes.vercel.cloud" style="color: #6366f1; text-decoration: none;">v-bytes</a>
       </div>
     </div>
   </div>
