@@ -16,9 +16,11 @@ export type Language = {
 
 export interface EmailFormValues {
   name: string;
+  phone: string;
   email: string;
   message: string;
 }
+
 export interface EmailFormProps {
   formik: {
     values: EmailFormValues;
