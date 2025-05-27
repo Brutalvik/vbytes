@@ -20,7 +20,7 @@ export default function DownloadButton({ url }: { duration?: number; url: string
       await downloadFileWithProgress(url, (percent) => {
         setProgress(percent);
       });
-      setTimeout(() => setState("done"), 300); // small delay to show 100%
+      setTimeout(() => setState("done"), 300);
     } catch (err) {
       console.error("Download failed", err);
       setState("idle");
