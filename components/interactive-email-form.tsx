@@ -144,7 +144,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
               errorMessage={
                 formik.touched.message && formik.errors.message ? formik.errors.message : ""
               }
-              placeholder="Type your message here..."
+              placeholder="Type your message here... (Shift+Enter for a new line)"
               variant="bordered"
               aria-invalid={!!(formik.touched.message && formik.errors.message)}
               aria-describedby="message-error"
@@ -192,7 +192,22 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
   };
 
   return (
-    <div className="space-y-6 max-w-sm mx-auto mb-10">
+    <div
+      className="space-y-6 max-w-sm mx-auto mb-10"
+      onKeyDown={(e) => {
+        if (
+          e.key === "Enter" &&
+          !e.shiftKey &&
+          formStep > 0 &&
+          formStep < steps.length - 1 &&
+          (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) &&
+          isStepValid()
+        ) {
+          e.preventDefault();
+          nextStep();
+        }
+      }}
+    >
       <AnimatePresence mode="wait">{renderStepContent()}</AnimatePresence>
 
       <ModalFooter className="justify-center">
