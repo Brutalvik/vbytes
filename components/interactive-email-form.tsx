@@ -31,11 +31,11 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
 
     if (!formik.errors[currentField] && formik.values[currentField]) {
       const feedbackMap: Record<string, string> = {
-        name: `Nice to meet you, ${value}!`,
-        phone: `Got your number 📞`,
-        email: `Perfect. I’ll be in touch at ${value}`,
-        message: `Thanks for sharing your thoughts 💬`,
-        token: `Thanks for confirming you're human 🤖`,
+        name: `Nice to meet you, ${value}! 👋`,
+        phone: `Thanks! Got your number 📱`,
+        email: `Perfect — I'll follow up at ${value} ✉️`,
+        message: `Appreciate you sharing that 💬`,
+        token: `reCAPTCHA complete — you're all set! ✅`,
       };
 
       setMicroFeedback(feedbackMap[currentField]);
@@ -85,37 +85,55 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
           >
             <h2 className="text-xl font-semibold">Let's start a conversation 🤝</h2>
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              This is an interactive form. We'll take it one step at a time.
+              I’ll guide you through step by step — ready when you are.
             </p>
           </motion.div>
         );
 
       case "name":
-      case "phone":
-      case "email": {
-        const id = steps[formStep] as keyof EmailFormValues;
-        const errorId = `${id}-error`;
         return (
           <FormField
-            key={id}
-            id={id}
-            type={id === "email" ? "email" : "text"}
-            label={
-              id === "name"
-                ? "Hey there 👋 What should I call you?"
-                : id === "phone"
-                  ? "And if I need to reach you, what's your number?"
-                  : "Where can I send a reply? Your email works great."
-            }
-            value={formik.values[id]}
-            errorMessage={formik.errors[id] || ""}
-            isInvalid={!!(formik.touched[id] && formik.errors[id])}
+            id="name"
+            type="text"
+            label="Let's get started — what's your full name? 👤"
+            value={formik.values.name}
+            errorMessage={formik.errors.name || ""}
+            isInvalid={!!(formik.touched.name && formik.errors.name)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            errorId={errorId}
+            errorId="name-error"
           />
         );
-      }
+
+      case "phone":
+        return (
+          <FormField
+            id="phone"
+            type="text"
+            label="What's the best number to reach you at? 📞"
+            value={formik.values.phone}
+            errorMessage={formik.errors.phone || ""}
+            isInvalid={!!(formik.touched.phone && formik.errors.phone)}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            errorId="phone-error"
+          />
+        );
+
+      case "email":
+        return (
+          <FormField
+            id="email"
+            type="email"
+            label="Where can we follow up via email? 📧"
+            value={formik.values.email}
+            errorMessage={formik.errors.email || ""}
+            isInvalid={!!(formik.touched.email && formik.errors.email)}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            errorId="email-error"
+          />
+        );
 
       case "message":
         return (
@@ -130,7 +148,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
               htmlFor="message"
               className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
-              What would you like to tell me? I’m listening 📝
+              What would you like to discuss? Feel free to share. 📝
             </label>
             <Textarea
               id="message"
@@ -168,7 +186,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             className="space-y-3"
           >
             <p className="text-center text-sm text-neutral-600 dark:text-neutral-300">
-              Just one more thing... can you confirm you're human? 🤖
+              Almost done — just confirm you're not a robot 🤖
             </p>
             <div className="mx-auto flex justify-center items-center">
               <div
@@ -210,16 +228,18 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
     >
       <AnimatePresence mode="wait">{renderStepContent()}</AnimatePresence>
 
-      <ModalFooter className="justify-center">
-        <Button
-          type={formStep === steps.length - 1 ? "submit" : "button"}
-          onPress={formStep === steps.length - 1 ? undefined : nextStep}
-          className="bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105"
-          isDisabled={!isStepValid()}
-        >
-          {formStep === 0 ? "Start" : formStep === steps.length - 1 ? "Send" : "Continue"}
-        </Button>
-      </ModalFooter>
+      {!microFeedback && (
+        <ModalFooter className="justify-center">
+          <Button
+            type={formStep === steps.length - 1 ? "submit" : "button"}
+            onPress={formStep === steps.length - 1 ? undefined : nextStep}
+            className="bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105"
+            isDisabled={!isStepValid()}
+          >
+            {formStep === 0 ? "Start" : formStep === steps.length - 1 ? "Send" : "Continue"}
+          </Button>
+        </ModalFooter>
+      )}
     </div>
   );
 };
