@@ -19,7 +19,7 @@ export interface EmailFormValues {
   phone: string;
   email: string;
   message: string;
-  token: string;
+  token?: string;
 }
 
 export interface EmailFormProps {
