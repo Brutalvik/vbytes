@@ -10,6 +10,7 @@ import EmailSentMessage from "@components/email-sent-message";
 import EmailMessageWithAttachment from "@components/email-sent-message-with-attachment";
 import { fetchResume } from "@/app/api/send-email/fetch-resume";
 import { startCase, toLower } from "lodash";
+import InteractiveEmailForm from "@/components/interactive-email-form";
 
 export function LetsTalkModal() {
   const [loading, setLoading] = useState(false);
@@ -111,7 +112,8 @@ export function LetsTalkModal() {
                     Talk
                   </span>
                 </h4>
-                <EmailForm formik={formik} />
+                {/* <EmailForm formik={formik} /> */}
+                <InteractiveEmailForm formik={formik} />
               </>
             )}
           </ModalContent>
