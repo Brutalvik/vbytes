@@ -11,6 +11,7 @@ import EmailMessageWithAttachment from "@components/email-sent-message-with-atta
 import { fetchResume } from "@/app/api/send-email/fetch-resume";
 import { isEmpty, startCase, toLower } from "lodash";
 import InteractiveEmailForm from "@/components/interactive-email-form";
+import { EmailFormValues } from "@/types";
 
 export function LetsTalkModal() {
   const [loading, setLoading] = useState(false);
