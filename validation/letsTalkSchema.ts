@@ -8,10 +8,3 @@ export const letsTalkSchema = Yup.object().shape({
   message: Yup.string().required("Message is required"),
   token: Yup.string().required("Recaptcha token is required"),
 });
-
-export type LetsTalkFormValues = {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-};

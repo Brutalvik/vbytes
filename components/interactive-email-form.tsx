@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FormikProps } from "formik";
 import { EmailFormValues } from "@/types";
 import { Button } from "@heroui/button";
@@ -8,12 +8,15 @@ import { ModalFooter } from "@components/ui/animated-modal";
 import { AnimatePresence, motion } from "framer-motion";
 import Recaptcha from "@/components/ui/recaptcha";
 import { Input, Textarea } from "@heroui/input";
+import { useAppDispatch } from "@/store/hooks";
+import { verifyRecaptcha } from "@/store/thunks/verifyRecaptcha";
 
 const steps = ["intro", "name", "phone", "email", "message", "recaptcha"];
 
 const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
+  const dispatch = useAppDispatch();
   const [formStep, setFormStep] = useState(0);
-  const [microFeedback, setMicroFeedback] = useState<string | null>(null);
+  const startButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const fields: (keyof EmailFormValues)[] = ["name", "phone", "email", "message", "token"];
   const currentField = fields[formStep - 1];
@@ -22,56 +25,40 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
     formStep === 0 || (!formik.errors[currentField] && formik.values[currentField]);
 
   const nextStep = () => {
-    const value = formik.values[currentField];
-
     if (formStep === 0) {
       setFormStep(1);
       return;
     }
-
     if (!formik.errors[currentField] && formik.values[currentField]) {
-      const feedbackMap: Record<string, string> = {
-        name: `Nice to meet you, ${value}! 👋`,
-        phone: `Thanks! Got your number 📱`,
-        email: `Perfect — I'll follow up at ${value} ✉️`,
-        message: `Appreciate you sharing that 💬`,
-        token: `reCAPTCHA complete — you're all set! ✅`,
-      };
-
-      setMicroFeedback(feedbackMap[currentField]);
-
-      setTimeout(() => {
-        setMicroFeedback(null);
-        setFormStep((prev) => prev + 1);
-      }, 1500);
+      setFormStep((prev) => prev + 1);
     } else {
       formik.setFieldTouched(currentField, true, true);
     }
   };
 
-  const getRecaptcha = (token: string) => {
-    formik.setFieldValue("token", token || "");
+  const getRecaptcha = async (token: string) => {
+    formik.setFieldValue("token", token || "", true);
     formik.setFieldTouched("token", true, true);
+    const result = await dispatch(verifyRecaptcha({ token }));
+    if (verifyRecaptcha.fulfilled.match(result) && result.payload.success) {
+      formik.validateForm();
+    } else {
+      console.warn("reCAPTCHA validation failed", result.payload);
+    }
   };
 
-  const renderStepContent = () => {
-    if (microFeedback) {
-      return (
-        <motion.div
-          key="microFeedback"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.4 }}
-          className="text-center text-green-500 text-base font-semibold"
-          role="status"
-          aria-live="polite"
-        >
-          {microFeedback}
-        </motion.div>
-      );
-    }
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (formStep === 0 && e.key === "Enter") {
+        e.preventDefault();
+        startButtonRef.current?.click();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [formStep]);
 
+  const renderStepContent = () => {
     switch (steps[formStep]) {
       case "intro":
         return (
@@ -95,13 +82,14 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
           <FormField
             id="name"
             type="text"
-            label="Let's get started — what's your full name? 👤"
+            label="What's your full name? 👤"
             value={formik.values.name}
             errorMessage={formik.errors.name || ""}
             isInvalid={!!(formik.touched.name && formik.errors.name)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             errorId="name-error"
+            autoFocus
           />
         );
 
@@ -110,13 +98,14 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
           <FormField
             id="phone"
             type="text"
-            label="What's the best number to reach you at? 📞"
+            label="Your contact number? 📞"
             value={formik.values.phone}
             errorMessage={formik.errors.phone || ""}
             isInvalid={!!(formik.touched.phone && formik.errors.phone)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             errorId="phone-error"
+            autoFocus
           />
         );
 
@@ -125,13 +114,14 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
           <FormField
             id="email"
             type="email"
-            label="Where can we follow up via email? 📧"
+            label="Your email address? 📧"
             value={formik.values.email}
             errorMessage={formik.errors.email || ""}
             isInvalid={!!(formik.touched.email && formik.errors.email)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             errorId="email-error"
+            autoFocus
           />
         );
 
@@ -148,7 +138,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
               htmlFor="message"
               className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
             >
-              What would you like to discuss? Feel free to share. 📝
+              What would you like to share? 📝
             </label>
             <Textarea
               id="message"
@@ -159,19 +149,13 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               isInvalid={!!(formik.touched.message && formik.errors.message)}
-              errorMessage={
-                formik.touched.message && formik.errors.message ? formik.errors.message : ""
-              }
-              placeholder="Type your message here... (Shift+Enter for a new line)"
+              errorMessage={formik.errors.message || ""}
+              placeholder="Type here... (Shift+Enter for a new line)"
               variant="bordered"
               aria-invalid={!!(formik.touched.message && formik.errors.message)}
               aria-describedby="message-error"
+              autoFocus
             />
-            {formik.touched.message && formik.errors.message && (
-              <p id="message-error" className="text-red-500 text-sm mt-1" role="alert">
-                {formik.errors.message}
-              </p>
-            )}
           </motion.div>
         );
 
@@ -227,19 +211,17 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
       }}
     >
       <AnimatePresence mode="wait">{renderStepContent()}</AnimatePresence>
-
-      {!microFeedback && (
-        <ModalFooter className="justify-center">
-          <Button
-            type={formStep === steps.length - 1 ? "submit" : "button"}
-            onPress={formStep === steps.length - 1 ? undefined : nextStep}
-            className="bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105"
-            isDisabled={!isStepValid()}
-          >
-            {formStep === 0 ? "Start" : formStep === steps.length - 1 ? "Send" : "Continue"}
-          </Button>
-        </ModalFooter>
-      )}
+      <ModalFooter className="justify-center">
+        <Button
+          ref={startButtonRef}
+          type={formStep === steps.length - 1 ? "submit" : "button"}
+          onPress={formStep === steps.length - 1 ? undefined : nextStep}
+          className="bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105"
+          isDisabled={!isStepValid()}
+        >
+          {formStep === 0 ? "Start" : formStep === steps.length - 1 ? "Send" : "Continue"}
+        </Button>
+      </ModalFooter>
     </div>
   );
 };
@@ -254,6 +236,7 @@ const FormField = ({
   onChange,
   onBlur,
   errorId,
+  autoFocus = false,
 }: {
   label: string;
   id: string;
@@ -264,6 +247,7 @@ const FormField = ({
   onChange: (e: React.ChangeEvent<any>) => void;
   onBlur: (e: React.FocusEvent<any>) => void;
   errorId: string;
+  autoFocus?: boolean;
 }) => (
   <motion.div
     key={id}
@@ -290,6 +274,7 @@ const FormField = ({
       variant="bordered"
       aria-invalid={isInvalid}
       aria-describedby={isInvalid ? errorId : undefined}
+      autoFocus={autoFocus}
     />
     {isInvalid && (
       <p id={errorId} className="text-red-500 text-sm mt-1" role="alert">
