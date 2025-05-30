@@ -9,7 +9,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Recaptcha from "@/components/ui/recaptcha";
 import { Input, Textarea } from "@heroui/input";
 
-// Conversational form steps
 const steps = ["intro", "name", "phone", "email", "message", "recaptcha"];
 
 const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
@@ -65,6 +64,8 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.4 }}
           className="text-center text-green-500 text-base font-semibold"
+          role="status"
+          aria-live="polite"
         >
           {microFeedback}
         </motion.div>
@@ -93,6 +94,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
       case "phone":
       case "email": {
         const id = steps[formStep] as keyof EmailFormValues;
+        const errorId = `${id}-error`;
         return (
           <FormField
             key={id}
@@ -110,6 +112,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             isInvalid={!!(formik.touched[id] && formik.errors[id])}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            errorId={errorId}
           />
         );
       }
@@ -131,6 +134,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             </label>
             <Textarea
               id="message"
+              name="message"
               rows={4}
               minRows={4}
               value={formik.values.message}
@@ -142,7 +146,14 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
               }
               placeholder="Type your message here..."
               variant="bordered"
+              aria-invalid={!!(formik.touched.message && formik.errors.message)}
+              aria-describedby="message-error"
             />
+            {formik.touched.message && formik.errors.message && (
+              <p id="message-error" className="text-red-500 text-sm mt-1" role="alert">
+                {formik.errors.message}
+              </p>
+            )}
           </motion.div>
         );
 
@@ -160,12 +171,17 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
               Just one more thing... can you confirm you're human? 🤖
             </p>
             <div className="mx-auto flex justify-center items-center">
-              <div className="rounded-lg p-3 border border-neutral-300 dark:border-neutral-600 shadow-lg bg-white dark:bg-neutral-800">
+              <div
+                className="rounded-lg p-3 border border-neutral-300 dark:border-neutral-600 shadow-lg bg-white dark:bg-neutral-800"
+                aria-label="reCAPTCHA security check"
+              >
                 <Recaptcha onChange={(token) => getRecaptcha(token as string)} />
               </div>
             </div>
             {formik.touched.token && formik.errors.token && (
-              <div className="text-red-500 text-sm mt-1 text-center">{formik.errors.token}</div>
+              <p id="token-error" className="text-red-500 text-sm mt-1 text-center" role="alert">
+                {formik.errors.token}
+              </p>
             )}
           </motion.div>
         );
@@ -202,6 +218,7 @@ const FormField = ({
   errorMessage,
   onChange,
   onBlur,
+  errorId,
 }: {
   label: string;
   id: string;
@@ -211,6 +228,7 @@ const FormField = ({
   errorMessage: string;
   onChange: (e: React.ChangeEvent<any>) => void;
   onBlur: (e: React.FocusEvent<any>) => void;
+  errorId: string;
 }) => (
   <motion.div
     key={id}
@@ -227,6 +245,7 @@ const FormField = ({
     </label>
     <Input
       id={id}
+      name={id}
       type={type}
       value={value}
       onChange={onChange}
@@ -234,7 +253,14 @@ const FormField = ({
       isInvalid={isInvalid}
       errorMessage={isInvalid ? errorMessage : ""}
       variant="bordered"
+      aria-invalid={isInvalid}
+      aria-describedby={isInvalid ? errorId : undefined}
     />
+    {isInvalid && (
+      <p id={errorId} className="text-red-500 text-sm mt-1" role="alert">
+        {errorMessage}
+      </p>
+    )}
   </motion.div>
 );
 
