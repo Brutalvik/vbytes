@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Spline from "@splinetool/react-spline";
 import { CDN } from "@/lib/config";
+import { motion } from "framer-motion";
 
 export default function LoadingScreen() {
   return (

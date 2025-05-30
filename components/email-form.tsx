@@ -2,75 +2,98 @@ import { EmailFormValues } from "@/types";
 import { FormikProps } from "formik/dist/types";
 import { ModalFooter } from "@components/ui/animated-modal";
 import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { Textarea } from "@heroui/input";
+import Recaptcha from "@/components/ui/recaptcha";
 
 const EmailForm = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
+  const getRecaptcha = (token: string) => {
+    if (token) {
+      formik.setFieldValue("token", token);
+    } else {
+      // Reset the token field if recaptcha is not completed
+      formik.setFieldValue("token", "");
+    }
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
-      <div className="space-y-4 max-w-sm mx-auto mb-10">
+      <div className="space-y-4 max-w-sm mx-auto">
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Name
-          </label>
-          <input
-            id="name"
+          <Input
+            label="Name"
             type="text"
+            variant="bordered"
+            id="name"
+            isInvalid={formik.touched.name && Boolean(formik.errors.name)}
+            errorMessage={formik.touched.name ? formik.errors.name : ""}
+            placeholder="Enter your name"
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full rounded-md"
           />
-          {formik.touched.name && formik.errors.name && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={formik.values.email}
+          <Input
+            id="phone"
+            type="phone"
+            variant="bordered"
+            placeholder="e.g. +1 234 567 8900"
+            isInvalid={formik.touched.phone && Boolean(formik.errors.phone)}
+            errorMessage={formik.touched.phone ? formik.errors.phone : ""}
+            label="Phone"
+            value={formik.values.phone}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full rounded-md"
           />
-          {formik.touched.email && formik.errors.email && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
-          )}
         </div>
 
         <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
-          >
-            Message
-          </label>
-          <textarea
+          <Input
+            id="email"
+            type="email"
+            variant="bordered"
+            value={formik.values.email}
+            isInvalid={formik.touched.email && Boolean(formik.errors.email)}
+            errorMessage={formik.touched.email ? formik.errors.email : ""}
+            label="Email"
+            placeholder="Enter your valid email"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className="w-full rounded-md"
+          />
+        </div>
+
+        <div>
+          <Textarea
             id="message"
             rows={4}
             value={formik.values.message}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            isInvalid={formik.touched.message && Boolean(formik.errors.message)}
+            errorMessage={formik.touched.message ? formik.errors.message : ""}
+            label="Message"
+            variant="bordered"
             placeholder="Type your message here..."
-            className="w-full mt-1 p-2 border rounded-md dark:bg-neutral-800 dark:border-neutral-600 dark:text-white"
+            className="w-full rounded-md"
           />
-          {formik.touched.message && formik.errors.message && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.message}</div>
-          )}
         </div>
+      </div>
+
+      <div className="mt-4">
+        <Recaptcha onChange={(token) => getRecaptcha(token as string)} />
+        {formik.touched.token && formik.errors.token && (
+          <div className="text-red-500 text-sm mt-1 text-center">{formik.errors.token}</div>
+        )}
       </div>
 
       <ModalFooter className="gap-4">
         <Button
+          variant="solid"
           type="submit"
           className="bg-black dark:bg-white dark:text-black text-white px-6 py-2 rounded-md font-semibold transition-all duration-300 ease-in-out hover:scale-105"
         >

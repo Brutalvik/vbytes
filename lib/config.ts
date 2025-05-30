@@ -5,4 +5,5 @@ export const CDN = {
   robotUrl: process.env.NEXT_PUBLIC_ROBOT_URL,
   glassLoaderUrl: process.env.NEXT_PUBLIC_GLASS_LOADER_URL,
   pdfUrl: process.env.NEXT_PUBLIC_PDF_DOWNLOAD_URL,
+  googleRecaptchaSiteKey: process.env.NEXT_PUBLIC_GOOGLE_CATPCHA_SITE_KEY,
 };

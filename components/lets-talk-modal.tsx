@@ -9,7 +9,7 @@ import EmailForm from "@components/email-form";
 import EmailSentMessage from "@components/email-sent-message";
 import EmailMessageWithAttachment from "@components/email-sent-message-with-attachment";
 import { fetchResume } from "@/app/api/send-email/fetch-resume";
-import { startCase, toLower } from "lodash";
+import { isEmpty, startCase, toLower } from "lodash";
 import InteractiveEmailForm from "@/components/interactive-email-form";
 
 export function LetsTalkModal() {
@@ -23,8 +23,10 @@ export function LetsTalkModal() {
   const initialValues = useMemo(
     () => ({
       name: "",
+      phone: "",
       email: "",
       message: "",
+      token: "",
     }),
     []
   );
@@ -37,6 +39,13 @@ export function LetsTalkModal() {
       setLoading(true);
       setSubmittedEmail(values.email);
       setName(startCase(toLower(values.name)));
+
+      // If there are validation errors, stop the submission
+      if (!isEmpty(formik.errors)) {
+        console.log("Validation errors:", formik.errors);
+        setLoading(false);
+        return;
+      }
 
       try {
         const resume = await fetchResume();
