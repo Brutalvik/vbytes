@@ -473,10 +473,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     }
   };
 
-  interface HandleDeleteTaskParams {
-    taskId: string;
-  }
-
   const handleDeleteTask = (taskId: string): void => {
     if (!currentUser || !dbInstance) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
@@ -1053,7 +1049,7 @@ const TasksView: React.FC<TasksViewProps> = ({
                   </button>
                   <button
                     onClick={() => onDeleteTask(task.id)}
-                    className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 cursor-pointer"
                   >
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
@@ -1073,7 +1069,7 @@ const TasksView: React.FC<TasksViewProps> = ({
       </div>
 
       {/* Floating draggable + Button */}
-      <div ref={containerRef} className="absolute inset-0 z-10">
+      <div ref={containerRef} className="absolute inset-0 z-10 pointer-events-none">
         <motion.button
           drag
           dragConstraints={containerRef}
