@@ -70,7 +70,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             transition={{ duration: 0.5 }}
             className="text-center space-y-4"
           >
-            <h2 className="text-xl font-semibold">Let's start a conversation 🤝</h2>
+            <h2 className="text-xl font-semibold">Let's exchange details 🤝</h2>
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               I’ll guide you through step by step — ready when you are.
             </p>
@@ -276,11 +276,6 @@ const FormField = ({
       aria-describedby={isInvalid ? errorId : undefined}
       autoFocus={autoFocus}
     />
-    {isInvalid && (
-      <p id={errorId} className="text-red-500 text-sm mt-1" role="alert">
-        {errorMessage}
-      </p>
-    )}
   </motion.div>
 );
 
