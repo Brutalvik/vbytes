@@ -477,6 +477,15 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     });
   };
 
+  useEffect(() => {
+    if (
+      !currentUser &&
+      (currentView === "tasks" || currentView === "calendar" || currentView === "settings")
+    ) {
+      setCurrentView("login");
+    }
+  }, [currentUser, currentView]);
+
   // --- Render Logic ---
   const renderContent = () => {
     if (isLoading && !isAuthCheckComplete) {
@@ -502,18 +511,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
           themeClasses={themeClasses}
           isLoading={isLoading}
         />
-      );
-    }
-
-    if (
-      !currentUser &&
-      (currentView === "tasks" || currentView === "calendar" || currentView === "settings")
-    ) {
-      return (
-        <div className="flex justify-center items-center h-full">
-          <div className="spinner"></div>
-          <p className={`${themeClasses.text} ml-2`}>Redirecting...</p>
-        </div>
       );
     }
 
