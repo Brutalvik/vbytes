@@ -994,7 +994,7 @@ const TasksView: React.FC<TasksViewProps> = ({
         <div
           key={task.id}
           id={`task-${task.id}`}
-          className={`task-item flex items-center justify-between p-3 rounded-lg shadow ${themeClasses.card} ${'completed' in task && task.completed ? "completed opacity-60" : ""} ${!currentUser ? "opacity-70" : ""}`}
+          className={`task-item flex items-center justify-between p-3 rounded-lg shadow ${themeClasses.card} ${"completed" in task && task.completed ? "completed opacity-60" : ""} ${!currentUser ? "opacity-70" : ""}`}
         >
           <div className="flex items-center flex-grow min-w-0">
             {" "}
@@ -1008,7 +1008,7 @@ const TasksView: React.FC<TasksViewProps> = ({
               />
             )}
             <span
-              className={`task-title ${themeClasses.text} ${'completed' in task && task.completed ? "line-through" : ""} truncate`}
+              className={`task-title ${themeClasses.text} ${"completed" in task && task.completed ? "line-through" : ""} truncate`}
             >
               {task.title} {!currentUser && "(Unsaved)"}
             </span>
@@ -1047,7 +1047,7 @@ const TasksView: React.FC<TasksViewProps> = ({
         </p>
       )}
       <div
-        className={`fixed bottom-12 left-0 right-0 p-3 ${themeClasses.bg} border-t ${themeClasses.border} z-20`}
+        className={`absolute bottom-0 left-0 right-0 p-3 ${themeClasses.bg} border-t ${themeClasses.border} z-10`}
       >
         {" "}
         {/* Adjusted for nav bar */}
