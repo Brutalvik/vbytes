@@ -35,6 +35,7 @@ import Modal from "./Modal";
 import CalendarView from "./CalendarView";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faCalendarDays, faGear, faListCheck } from "@fortawesome/free-solid-svg-icons";
 
 // --- Main App Component ---
 
@@ -691,19 +692,19 @@ const AppNavigation: React.FC<AppNavigationProps> = ({
       onClick={() => setCurrentView("tasks")}
       className={`nav-btn p-2 rounded-md ${currentView === "tasks" ? themeClasses.btnPrimary : themeClasses.text} hover:opacity-80 w-1/3 text-center`}
     >
-      <i className="fas fa-list-check fa-fw"></i> <span className="text-xs block">Tasks</span>
+      <FontAwesomeIcon icon={faListCheck} size="xl" title="Tasks" />
     </button>
     <button
       onClick={() => setCurrentView("calendar")}
       className={`nav-btn p-2 rounded-md ${currentView === "calendar" ? themeClasses.btnPrimary : themeClasses.text} hover:opacity-80 w-1/3 text-center`}
     >
-      <i className="fas fa-calendar-alt fa-fw"></i> <span className="text-xs block">Calendar</span>
+      <FontAwesomeIcon icon={faCalendarDays} size="xl" title="Calendar" />
     </button>
     <button
       onClick={() => setCurrentView("settings")}
       className={`nav-btn p-2 rounded-md ${currentView === "settings" ? themeClasses.btnPrimary : themeClasses.text} hover:opacity-80 w-1/3 text-center`}
     >
-      <i className="fas fa-cog fa-fw"></i> <span className="text-xs block">Settings</span>
+      <FontAwesomeIcon icon={faGear} size="xl" title="Settings" />
     </button>
   </nav>
 );
