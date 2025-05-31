@@ -49,8 +49,6 @@ const TasksView: React.FC<TasksViewProps> = ({
       showToast("Title cannot be empty.", "error");
       return;
     }
-    console.log("Current user ", currentUser, editTaskId)
-    console.log("DB ISNTANCE ", dbInstance);
     if (!currentUser || !dbInstance || !editTaskId) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
     const taskRef = doc(dbInstance, tasksPath, editTaskId);

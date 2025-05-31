@@ -6,11 +6,14 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  // signInWithPopup, GoogleAuthProvider, FacebookAuthProvider,
+  signInWithPopup,
+  GoogleAuthProvider,
+  // FacebookAuthProvider,
   signOut,
   onAuthStateChanged,
-  signInAnonymously,
   signInWithCustomToken,
+  signInWithRedirect,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -24,12 +27,14 @@ import {
   updateDoc,
   setLogLevel, // For debugging Firestore
 } from "firebase/firestore";
-import { HandleEditTaskParams, TaskMasterProAppProps } from "./types";
+import { HandleToggleTaskCompleteParams, TaskMasterProAppProps } from "./types";
 import TasksView from "./TasksView";
 import Toast from "./Toast";
 import SettingsView from "./SettingsView";
 import Modal from "./Modal";
 import CalendarView from "./CalendarView";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 // --- Main App Component ---
 
@@ -371,12 +376,25 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
   };
 
   const handleGoogleLogin = async () => {
-    // const provider = new GoogleAuthProvider();
-    // await signInWithPopup(authInstance, provider);
-    showToast("Google Login (Simulated). Implement with signInWithPopup.", "info");
+    if (!authInstance) {
+      showToast("Auth service not ready.", "error");
+      return;
+    }
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(authInstance, provider);
+      showToast("Google Login Successful.", "success");
+    } catch (error) {
+      console.error("Redirect login failed:", error);
+      showToast("Google login failed.", "error");
+    }
   };
 
   const handleFacebookLogin = async () => {
+    if (!authInstance) {
+      showToast("Auth service not ready.", "error");
+      return;
+    }
     // const provider = new FacebookAuthProvider();
     // await signInWithPopup(authInstance, provider);
     showToast("Facebook Login (Simulated). Implement with signInWithPopup.", "info");
@@ -417,12 +435,10 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     await addTaskToFirestore(title, dueDate, currentUser, dbInstance);
   };
 
-  interface HandleToggleTaskCompleteParams {
-    taskId: string;
-    isCompleted: boolean;
-  }
-
-  const handleToggleTaskComplete = async (taskId: string, isCompleted: boolean): Promise<void> => {
+  const handleToggleTaskComplete = async ({
+    taskId,
+    isCompleted,
+  }: HandleToggleTaskCompleteParams): Promise<void> => {
     if (!currentUser || !dbInstance) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
     if (!tasksPath) return;
@@ -519,7 +535,9 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
                 temporaryTasks={temporaryTasks}
                 currentUser={currentUser}
                 onAddTask={handleAddTask}
-                onToggleComplete={handleToggleTaskComplete}
+                onToggleComplete={(taskId: string, completed: boolean) =>
+                  handleToggleTaskComplete({ taskId, isCompleted: completed })
+                }
                 onDeleteTask={handleDeleteTask}
                 themeClasses={themeClasses}
                 dbInstance={dbInstance}
@@ -798,16 +816,16 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
         <button
           onClick={onGoogleLogin}
           disabled={isLoading}
-          className={`p-3 w-12 h-12 rounded-full ${themeClasses.btnSecondary} hover:opacity-90 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`w-12 h-12 rounded-full ${themeClasses.btnSecondary} hover:opacity-90 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <i className={`fab fa-google ${themeClasses.text}`}></i>
+          <FontAwesomeIcon icon={faGoogle} size="2xl" />
         </button>
         <button
           onClick={onFacebookLogin}
           disabled={isLoading}
-          className={`p-3 w-12 h-12 rounded-full ${themeClasses.btnSecondary} hover:opacity-90 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`w-12 h-12 rounded-full ${themeClasses.btnSecondary} hover:opacity-90 ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <i className={`fab fa-facebook-f ${themeClasses.text}`}></i>
+          <FontAwesomeIcon icon={faFacebook} size="2xl" />
         </button>
       </div>
 

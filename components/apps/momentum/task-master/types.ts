@@ -91,15 +91,17 @@ export interface ModalProps {
   };
   themeClasses: any;
   isLoading: boolean;
-  setModal: React.Dispatch<React.SetStateAction<{
-    isOpen: boolean;
-    title: string;
-    message: string;
-    onConfirm: (() => void) | null;
-    onCancel: (() => void) | null;
-    confirmText: string;
-    cancelText: string;
-  }>>;
+  setModal: React.Dispatch<
+    React.SetStateAction<{
+      isOpen: boolean;
+      title: string;
+      message: string;
+      onConfirm: (() => void) | null;
+      onCancel: (() => void) | null;
+      confirmText: string;
+      cancelText: string;
+    }>
+  >;
 }
 
 export interface CalendarViewProps {
@@ -117,3 +119,9 @@ export interface CalendarViewProps {
     card: string;
   };
 }
+
+export interface HandleToggleTaskCompleteParams {
+  taskId: string;
+  isCompleted: boolean;
+}
+
