@@ -8,10 +8,10 @@ import { startCase, toLower } from "lodash";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, phone, email, message } = body;
+    const { name, countryCode, phone, email, message } = body;
     const capitalizedName = startCase(toLower(name));
 
-    const html = generateEmailHtml({ name: capitalizedName, phone, email, message });
+    const html = generateEmailHtml({ name: capitalizedName, countryCode, phone, email, message });
     // Generate HTML cover letter
     const coverLetterHtml = generateCoverLetterHtml(name);
 
