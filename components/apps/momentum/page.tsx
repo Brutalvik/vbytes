@@ -2,6 +2,7 @@
 import React from 'react'
 import Content from "@components/apps/momentum/content/content"
 import Iphone from "@components/apps/momentum/iphone/iphone"
+import "@lib/fontsAwesome";
 
 export interface MomentumPageProps {
   clientFirebaseConfig: any;

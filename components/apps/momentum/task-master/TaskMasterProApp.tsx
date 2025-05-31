@@ -26,6 +26,8 @@ import {
   setLogLevel, // For debugging Firestore
 } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
+import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // --- Main App Component ---
 interface TaskMasterProAppProps {
@@ -1044,15 +1046,15 @@ const TasksView: React.FC<TasksViewProps> = ({
                 <>
                   <button
                     onClick={() => onEditTask(task.id, task.title, task.dueDate)}
-                    className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                    className="ml-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                   >
-                    <i className="fas fa-edit"></i>
+                    <FontAwesomeIcon icon={faPenToSquare} />
                   </button>
                   <button
                     onClick={() => onDeleteTask(task.id)}
                     className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                   >
-                    <i className="fas fa-trash"></i>
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </>
               )}
