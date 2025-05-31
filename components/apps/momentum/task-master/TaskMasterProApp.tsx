@@ -19,22 +19,19 @@ import {
   doc,
   deleteDoc,
   query,
-  where,
   onSnapshot,
   serverTimestamp,
   updateDoc,
   setLogLevel, // For debugging Firestore
 } from "firebase/firestore";
-import { motion, AnimatePresence } from "framer-motion";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { HandleEditTaskParams, TaskMasterProAppProps } from "./types";
+import TasksView from "./TasksView";
+import Toast from "./Toast";
+import SettingsView from "./SettingsView";
+import Modal from "./Modal";
+import CalendarView from "./CalendarView";
 
 // --- Main App Component ---
-interface TaskMasterProAppProps {
-  firebaseConfig: object;
-  appId: string;
-  initialAuthToken?: string;
-}
 
 const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
   firebaseConfig,
@@ -85,7 +82,11 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     confirmText: "OK",
     cancelText: "Cancel",
   });
-  const [toast, setToast] = useState({ isVisible: false, message: "", type: "success" });
+  const [toast, setToast] = useState<{
+    isVisible: boolean;
+    message: string;
+    type: "success" | "error" | "info";
+  }>({ isVisible: false, message: "", type: "success" });
   const [isAuthCheckComplete, setIsAuthCheckComplete] = useState(false);
 
   // --- Custom Theme Classes ---
@@ -213,7 +214,8 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     (userId: string) => {
       if (!appId || !userId) {
         console.error("appId or userId missing for task path");
-        return null;
+        // Return an empty string to satisfy the type, but still log the error
+        return "";
       }
       return `artifacts/${appId}/users/${userId}/tasks`;
     },
@@ -273,7 +275,11 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
   };
 
   // --- Toast Notification ---
-  const showToast = (message: string, type = "success", duration = 3000) => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" | "info" = "success",
+    duration = 3000
+  ) => {
     setToast({ isVisible: true, message, type });
     setTimeout(() => {
       setToast({ isVisible: false, message: "", type: "success" });
@@ -430,53 +436,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     }
   };
 
-  interface HandleEditTaskParams {
-    taskId: string;
-    currentTitle: string;
-    currentDueDate: string | null;
-  }
-
-  const handleEditTask = async (
-    taskId: string,
-    currentTitle: string,
-    currentDueDate: string | null
-  ): Promise<void> => {
-    if (!currentUser || !dbInstance) return;
-    const tasksPath = getUserTasksCollectionPath(currentUser.uid);
-    if (!tasksPath) return;
-
-    // Using a modal for editing would be better than prompt in React
-    const newTitle = prompt("Edit task title:", currentTitle);
-    if (newTitle === null) return; // User cancelled
-
-    const newDueDateRaw = prompt(
-      "Edit due date (YYYY-MM-DD, leave blank for none):",
-      currentDueDate ? currentDueDate.split("T")[0] : ""
-    );
-    if (newDueDateRaw === null) return; // User cancelled
-
-    if (newTitle.trim() === "") {
-      showToast("Title cannot be empty.", "error");
-      return;
-    }
-
-    const taskRef = doc(dbInstance, tasksPath, taskId);
-    try {
-      await updateDoc(taskRef, {
-        title: newTitle.trim(),
-        dueDate: newDueDateRaw ? newDueDateRaw : null,
-      });
-      showToast("Task updated!", "success");
-    } catch (error) {
-      console.error("Error updating task:", error);
-      showToast("Failed to update task.", "error");
-    }
-  };
-
-  interface HandleDeleteTaskParams {
-    taskId: string;
-  }
-
   const handleDeleteTask = (taskId: string): void => {
     if (!currentUser || !dbInstance) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
@@ -500,87 +459,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
       confirmText: "Delete",
       cancelText: "Cancel",
     });
-  };
-
-  // --- Modal Component ---
-  const Modal = () => {
-    if (!modal.isOpen) return null;
-    return (
-      <div className="modal-overlay">
-        <div
-          className={`modal-content ${themeClasses.card} ${themeClasses.text} p-6 rounded-xl shadow-2xl w-11/12 max-w-sm max-h-[90%] overflow-y-auto`}
-        >
-          <h3 className="text-xl font-semibold mb-4">{modal.title}</h3>
-          <p className="mb-6 text-sm">{modal.message}</p>
-          {isLoading && modal.title.toLowerCase().includes("loading") && (
-            <div className="spinner mx-auto my-4"></div>
-          )}
-          <div className="flex justify-end space-x-3">
-            {modal.onCancel && (
-              <button
-                onClick={() => {
-                  if (modal.onCancel) {
-                    modal.onCancel();
-                  }
-                  setModal({
-                    isOpen: false,
-                    title: "",
-                    message: "",
-                    onConfirm: null,
-                    onCancel: null,
-                    confirmText: "OK",
-                    cancelText: "Cancel",
-                  });
-                }}
-                className={`px-4 py-2 rounded-lg ${themeClasses.btnSecondary} font-medium`}
-              >
-                {modal.cancelText || "Cancel"}
-              </button>
-            )}
-            {modal.onConfirm && (
-              <button
-                onClick={() => {
-                  if (modal.onConfirm) {
-                    modal.onConfirm();
-                  }
-                  setModal({
-                    isOpen: false,
-                    title: "",
-                    message: "",
-                    onConfirm: null,
-                    onCancel: null,
-                    confirmText: "OK",
-                    cancelText: "Cancel",
-                  });
-                }}
-                className={`px-4 py-2 rounded-lg ${themeClasses.btnPrimary} font-medium`}
-              >
-                {modal.confirmText || "OK"}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // --- Toast Component ---
-  const Toast = () => {
-    if (!toast.isVisible) return null;
-
-    let bgColor = "bg-green-500"; // default = success
-    if (toast.type === "error") bgColor = "bg-red-500";
-    if (toast.type === "info") bgColor = "bg-blue-500";
-
-    return (
-      <div
-        className={`absolute bottom-20 left-4 right-4 z-50 p-3 rounded-lg text-white ${bgColor} shadow-lg transition-opacity duration-300 ${
-          toast.isVisible ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {toast.message}
-      </div>
-    );
   };
 
   // --- Render Logic ---
@@ -615,8 +493,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
       !currentUser &&
       (currentView === "tasks" || currentView === "calendar" || currentView === "settings")
     ) {
-      // This case should ideally be handled by onAuthStateChanged redirecting to login.
-      // If somehow reached, show loading or redirect.
       return (
         <div className="flex justify-center items-center h-full">
           <div className="spinner"></div>
@@ -644,9 +520,11 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
                 currentUser={currentUser}
                 onAddTask={handleAddTask}
                 onToggleComplete={handleToggleTaskComplete}
-                onEditTask={handleEditTask}
                 onDeleteTask={handleDeleteTask}
                 themeClasses={themeClasses}
+                dbInstance={dbInstance}
+                getUserTasksCollectionPath={getUserTasksCollectionPath}
+                showToast={showToast}
               />
             )}
             {currentView === "calendar" && (
@@ -664,7 +542,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
                 toggleTheme={toggleTheme}
                 themeClasses={themeClasses}
                 currentUser={currentUser}
-                appId={appId}
               />
             )}
           </div>
@@ -710,8 +587,8 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
   return (
     <div className={`flex flex-col h-full ${themeClasses.bg} ${themeClasses.text} relative`}>
       {renderContent()}
-      <Modal />
-      <Toast />
+      <Modal modal={modal} themeClasses={themeClasses} isLoading={isLoading} setModal={setModal} />;
+      <Toast toast={toast} />
     </div>
   );
 };
@@ -732,7 +609,7 @@ interface AppHeaderProps {
   currentTheme: string;
   toggleTheme: () => void;
   currentUser: import("firebase/auth").User | null;
-  showToast: (message: string, type?: string) => void;
+  showToast: (message: string, type?: "success" | "error" | "info", duration?: number) => void;
 }
 
 const AppHeader: React.FC<AppHeaderProps> = ({
@@ -945,370 +822,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
   );
 };
 
-interface Task {
-  id: string;
-  title: string;
-  dueDate: string | null;
-  completed?: boolean;
-  createdAt?: any;
-  [key: string]: any;
-}
 
-interface TempTask {
-  id: string;
-  title: string;
-  dueDate: string | null;
-}
-
-interface TasksViewProps {
-  tasks: Task[];
-  temporaryTasks: TempTask[];
-  currentUser: import("firebase/auth").User | null;
-  onAddTask: (title: string, dueDate: string | null) => void;
-  onToggleComplete: (taskId: string, isCompleted: boolean) => void;
-  onEditTask: (taskId: string, currentTitle: string, currentDueDate: string | null) => void;
-  onDeleteTask: (taskId: string) => void;
-  themeClasses: {
-    bg: string;
-    text: string;
-    inputText: string;
-    input: string;
-    btnPrimary: string;
-    btnSecondary: string;
-    border: string;
-    card: string;
-  };
-}
-
-const TasksView: React.FC<TasksViewProps> = ({
-  tasks,
-  temporaryTasks,
-  currentUser,
-  onAddTask,
-  onToggleComplete,
-  onEditTask,
-  onDeleteTask,
-  themeClasses,
-}) => {
-  const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskDueDate, setNewTaskDueDate] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const allTasksToDisplay = currentUser ? tasks : temporaryTasks;
-
-  const handleAdd = () => {
-    if (!newTaskTitle.trim()) return;
-    onAddTask(newTaskTitle.trim(), newTaskDueDate);
-    setNewTaskTitle("");
-    setNewTaskDueDate("");
-    setIsExpanded(false); // Close the bubble after adding
-  };
-
-  return (
-    <div className="w-full h-full flex flex-col relative">
-      {/* Scrollable task list */}
-      <div className="flex-1 overflow-y-auto hide-scroll pr-1 space-y-3 pb-36">
-        {allTasksToDisplay.map((task) => (
-          <div
-            key={task.id}
-            id={`task-${task.id}`}
-            className={`task-item flex items-center justify-between p-3 rounded-lg shadow ${themeClasses.card} ${
-              "completed" in task && task.completed ? "completed opacity-60" : ""
-            } ${!currentUser ? "opacity-70" : ""}`}
-          >
-            <div className="flex items-center flex-grow min-w-0">
-              {currentUser && (
-                <input
-                  type="checkbox"
-                  checked={!!(task as Task).completed}
-                  onChange={(e) => onToggleComplete(task.id, e.target.checked)}
-                  className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-3 flex-shrink-0"
-                />
-              )}
-              <span
-                className={`task-title ${themeClasses.text} ${
-                  "completed" in task && task.completed ? "line-through" : ""
-                } truncate`}
-              >
-                {task.title} {!currentUser && "(Unsaved)"}
-              </span>
-            </div>
-            <div className="flex items-center space-x-2 flex-shrink-0 ml-2">
-              {task.dueDate && (
-                <span className={`text-xs ${themeClasses.text} opacity-70`}>
-                  {new Date(task.dueDate + "T00:00:00").toLocaleDateString("en-CA", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </span>
-              )}
-              {currentUser && (
-                <>
-                  <button
-                    onClick={() => onEditTask(task.id, task.title, task.dueDate)}
-                    className="ml-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                  </button>
-                  <button
-                    onClick={() => onDeleteTask(task.id)}
-                    className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {allTasksToDisplay.length === 0 && (
-          <p className={`${themeClasses.text} text-center opacity-70`}>
-            {currentUser
-              ? "No tasks yet. Add one below!"
-              : "Add a task. Login or register to save."}
-          </p>
-        )}
-      </div>
-
-      {/* Floating draggable + Button */}
-      <motion.button
-        drag
-        dragConstraints={{ top: 0, bottom: 600, left: 0, right: 300 }}
-        dragElastic={0.3}
-        onClick={() => setIsExpanded((prev) => !prev)}
-        className="absolute bottom-20 right-4 z-20 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-3xl"
-      >
-        {isExpanded ? "–" : "+"}
-      </motion.button>
-
-      {/* Add Task Bubble */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className={`absolute bottom-36 right-4 left-4 sm:left-auto sm:right-4 sm:w-[calc(100%-2rem)] p-4 rounded-2xl ${themeClasses.bg} border border-gray-600 shadow-2xl z-10`}
-          >
-            <div className="flex flex-col gap-3">
-              <input
-                type="text"
-                value={newTaskTitle}
-                onChange={(e) => setNewTaskTitle(e.target.value)}
-                placeholder="New task..."
-                className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-              <input
-                type="date"
-                value={newTaskDueDate}
-                onChange={(e) => setNewTaskDueDate(e.target.value)}
-                className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-              <button
-                onClick={handleAdd}
-                className="h-10 w-full rounded-md border border-gray-600 bg-blue-600 text-white font-semibold hover:bg-blue-700"
-              >
-                <i className="fas fa-plus mr-1"></i> Add Task
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
-interface CalendarViewProps {
-  tasks: Task[];
-  selectedDate: Date;
-  setSelectedDate: (date: Date) => void;
-  themeClasses: {
-    bg: string;
-    text: string;
-    inputText: string;
-    input: string;
-    btnPrimary: string;
-    btnSecondary: string;
-    border: string;
-    card: string;
-  };
-}
-
-const CalendarView: React.FC<CalendarViewProps> = ({
-  tasks,
-  selectedDate,
-  setSelectedDate,
-  themeClasses,
-}) => {
-  const today = useMemo(() => new Date(), []);
-  const year = selectedDate.getFullYear();
-  const month = selectedDate.getMonth();
-
-  const firstDayOfMonth = useMemo(() => new Date(year, month, 1), [year, month]);
-  const lastDayOfMonth = useMemo(() => new Date(year, month + 1, 0), [year, month]);
-  const daysInMonth = lastDayOfMonth.getDate();
-  const startDayOfWeek = firstDayOfMonth.getDay(); // 0 (Sun) - 6 (Sat)
-
-  const tasksByDate = useMemo(() => {
-    const map = new Map();
-    tasks.forEach((task: Task) => {
-      if (task.dueDate) {
-        const dateStr = task.dueDate.split("T")[0]; // YYYY-MM-DD
-        if (!map.has(dateStr)) map.set(dateStr, []);
-        map.get(dateStr).push(task);
-      }
-    });
-    return map;
-  }, [tasks]);
-
-  const calendarDays = [];
-  for (let i = 0; i < startDayOfWeek; i++) {
-    calendarDays.push(<div key={`empty-prev-${i}`} className="calendar-day other-month"></div>);
-  }
-  for (let day = 1; day <= daysInMonth; day++) {
-    const currentDate = new Date(year, month, day);
-    const dateString = currentDate.toISOString().split("T")[0];
-    const tasksOnThisDay = tasksByDate.get(dateString) || [];
-    const isSelected = selectedDate.toDateString() === currentDate.toDateString();
-    const isToday = today.toDateString() === currentDate.toDateString();
-
-    let dayClasses = `calendar-day ${themeClasses.border} border text-sm`;
-    if (tasksOnThisDay.length > 0)
-      dayClasses += ` has-task font-bold ${themeClasses.bg === "app-bg-light" ? "bg-blue-200" : "bg-blue-700"}`;
-    if (isSelected) dayClasses += ` selected ${themeClasses.btnPrimary}`;
-    if (isToday && !isSelected)
-      dayClasses += ` ${themeClasses.bg === "app-bg-light" ? "bg-blue-100" : "bg-blue-900"}`;
-
-    calendarDays.push(
-      <div key={day} className={dayClasses} onClick={() => setSelectedDate(currentDate)}>
-        {day}
-      </div>
-    );
-  }
-  // Fill remaining cells for grid structure if month doesn't end on Saturday
-  const totalCells = startDayOfWeek + daysInMonth;
-  const remainingCells = (7 - (totalCells % 7)) % 7;
-  for (let i = 0; i < remainingCells; i++) {
-    calendarDays.push(<div key={`empty-next-${i}`} className="calendar-day other-month"></div>);
-  }
-
-  const selectedDateString = selectedDate.toISOString().split("T")[0];
-  const tasksForSelectedDate = tasksByDate.get(selectedDateString) || [];
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <button
-          onClick={() => setSelectedDate(new Date(year, month - 1, selectedDate.getDate()))}
-          className={`p-2 rounded-md ${themeClasses.btnSecondary}`}
-        >
-          <i className="fas fa-chevron-left"></i>
-        </button>
-        <h3 className={`text-lg font-semibold ${themeClasses.text}`}>
-          {selectedDate.toLocaleString("default", { month: "long" })} {year}
-        </h3>
-        <button
-          onClick={() => setSelectedDate(new Date(year, month + 1, selectedDate.getDate()))}
-          className={`p-2 rounded-md ${themeClasses.btnSecondary}`}
-        >
-          <i className="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      <div className={`calendar ${themeClasses.text}`}>
-        {["S", "M", "T", "W", "T", "F", "S"].map((d) => (
-          <div
-            key={d}
-            className={`font-semibold text-center text-xs ${themeClasses.text} opacity-70`}
-          >
-            {d}
-          </div>
-        ))}
-        {calendarDays}
-      </div>
-      <div className="mt-6">
-        <h4 className={`font-semibold ${themeClasses.text} mb-2`}>
-          Tasks for{" "}
-          {selectedDate.toLocaleDateString("en-CA", {
-            weekday: "short",
-            month: "long",
-            day: "numeric",
-          })}
-          :
-        </h4>
-        {tasksForSelectedDate.length > 0 ? (
-          tasksForSelectedDate.map((task: Task) => (
-            <div
-              key={task.id}
-              className={`p-2 rounded ${themeClasses.card} ${themeClasses.border} border mb-2 text-sm ${task.completed ? "opacity-60 line-through" : ""}`}
-            >
-              {task.title}
-            </div>
-          ))
-        ) : (
-          <p className={`${themeClasses.text} opacity-70 text-sm`}>No tasks for this day.</p>
-        )}
-      </div>
-    </div>
-  );
-};
-
-interface SettingsViewProps {
-  onLogout: () => void;
-  currentTheme: string;
-  toggleTheme: () => void;
-  themeClasses: {
-    bg: string;
-    text: string;
-    inputText: string;
-    input: string;
-    btnPrimary: string;
-    btnSecondary: string;
-    border: string;
-    card: string;
-  };
-  currentUser: import("firebase/auth").User;
-  appId: string;
-}
-
-const SettingsView: React.FC<SettingsViewProps> = ({
-  onLogout,
-  currentTheme,
-  toggleTheme,
-  themeClasses,
-  currentUser,
-  appId,
-}) => (
-  <div className="space-y-6">
-    <div>
-      <h3 className={`text-lg font-semibold ${themeClasses.text} mb-2`}>Appearance</h3>
-      <button
-        onClick={toggleTheme}
-        className={`w-full p-3 rounded-lg ${themeClasses.btnSecondary} flex justify-between items-center`}
-      >
-        <span>Theme: {currentTheme === "light" ? "Light" : "Dark"}</span>
-        <i className={`fas ${currentTheme === "light" ? "fa-moon" : "fa-sun"}`}></i>
-      </button>
-    </div>
-    <div>
-      <h3 className={`text-lg font-semibold ${themeClasses.text} mb-2`}>Account</h3>
-      <p className={`${themeClasses.text} text-sm mb-1 break-all`}>
-        Logged in as: {currentUser.email || `UID: ${currentUser.uid}`}
-      </p>
-      <button
-        onClick={onLogout}
-        className="w-full p-3 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors"
-      >
-        Logout
-      </button>
-    </div>
-    <div>
-      <h3 className={`text-lg font-semibold ${themeClasses.text} mb-2`}>About</h3>
-      <p className={`${themeClasses.text} text-sm`}>TaskMaster Pro v1.0.0 (React)</p>
-      <p className={`${themeClasses.text} text-sm`}>Developed by: Vikram Kumar</p>
-    </div>
-  </div>
-);
 
 export default TaskMasterProApp;
