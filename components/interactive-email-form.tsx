@@ -37,15 +37,20 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
   };
 
   const getRecaptcha = async (token: string) => {
-    formik.setFieldValue("token", token || "", true);
-    formik.setFieldTouched("token", true, true);
+    formik.setFieldValue("token", token || "", false);
+
     const result = await dispatch(verifyRecaptcha({ token }));
+
     if (verifyRecaptcha.fulfilled.match(result) && result.payload.success) {
-      formik.validateForm();
+      formik.setFieldTouched("token", true, false);
+      await formik.validateField("token");
+      await formik.validateForm();
+      formik.setStatus({ captchaValidated: true });
     } else {
-      console.warn("reCAPTCHA validation failed", result.payload);
+      formik.setFieldTouched("token", true, true);
     }
   };
+  
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
