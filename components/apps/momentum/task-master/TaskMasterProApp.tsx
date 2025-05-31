@@ -1,12 +1,12 @@
 "use client"
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  // signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, 
+  // signInWithPopup, GoogleAuthProvider, FacebookAuthProvider,
   signOut,
   onAuthStateChanged,
   signInAnonymously,
@@ -990,6 +990,7 @@ const TasksView: React.FC<TasksViewProps> = ({
   onDeleteTask,
   themeClasses,
 }) => {
+  const containerRef = useRef(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -1072,15 +1073,18 @@ const TasksView: React.FC<TasksViewProps> = ({
       </div>
 
       {/* Floating draggable + Button */}
-      <motion.button
-        drag
-        dragConstraints={{ top: 0, bottom: 600, left: 0, right: 300 }}
-        dragElastic={0.3}
-        onClick={() => setIsExpanded((prev) => !prev)}
-        className="absolute bottom-20 right-4 z-20 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-3xl"
-      >
-        {isExpanded ? "–" : "+"}
-      </motion.button>
+      <div ref={containerRef} className="absolute inset-0 z-10">
+        <motion.button
+          drag
+          dragConstraints={containerRef}
+          dragElastic={0}
+          dragMomentum={false}
+          className="absolute bottom-20 right-4 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-3xl z-20"
+          onClick={() => setIsExpanded((prev) => !prev)}
+        >
+          {isExpanded ? "–" : "+"}
+        </motion.button>
+      </div>
 
       {/* Add Task Bubble */}
       <AnimatePresence>
