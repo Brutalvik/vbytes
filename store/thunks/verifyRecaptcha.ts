@@ -16,9 +16,7 @@ export const verifyRecaptcha = createAsyncThunk<RecaptchaResponse, VerifyArgs>(
   "recaptcha/verify",
   async ({ token }, thunkAPI) => {
     try {
-        console.log("reached query")
       const res = await axios.post("/api/verify-recaptcha", { token });
-
 
       const data: RecaptchaResponse = res.data;
 
@@ -28,7 +26,6 @@ export const verifyRecaptcha = createAsyncThunk<RecaptchaResponse, VerifyArgs>(
 
       return data;
     } catch (err: any) {
-        console.log("ERROR FROM THUNK: ", err?.response?.data || err.message);
       return thunkAPI.rejectWithValue(err?.message || "Unknown error during verification.");
     }
   }

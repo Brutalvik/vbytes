@@ -43,7 +43,6 @@ export function LetsTalkModal() {
 
       // If there are validation errors, stop the submission
       if (!isEmpty(formik.errors)) {
-        console.log("Validation errors:", formik.errors);
         setLoading(false);
         return;
       }
