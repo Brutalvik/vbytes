@@ -27,13 +27,13 @@
 .app-card-dark { background-color: #1f2937; /* gray-800 */ }
 
 .modal-overlay {
-    position: fixed; 
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0,0,0,0.6);
+    position: absolute; /* Not fixed! */
+    inset: 0; /* top: 0; right: 0; bottom: 0; left: 0 */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
     display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 5000; 
+    align-items: center;
 }
 .modal-content {
     /* Styles are applied via themeClasses in the component */
@@ -124,7 +124,6 @@
 .app-card-light { background-color: #ffffff; }
 .app-card-dark { background-color: #1f2937; }
 
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 .modal-content { padding: 20px; border-radius: 12px; min-width: 280px; max-width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
 .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #09f; animation: spin 1s ease infinite; }

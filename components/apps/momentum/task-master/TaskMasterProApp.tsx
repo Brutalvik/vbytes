@@ -239,12 +239,12 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
           querySnapshot.forEach((doc) => {
             fetchedTasks.push({ id: doc.id, ...doc.data() });
           });
-          fetchedTasks.sort((a, b) => {
-            if (a.completed !== b.completed) return a.completed ? 1 : -1;
-            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
-            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
-            return dateB - dateA;
-          });
+          // fetchedTasks.sort((a, b) => {
+          //   if (a.completed !== b.completed) return a.completed ? 1 : -1;
+          //   const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+          //   const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+          //   return dateB - dateA;
+          // });
           setTasks(fetchedTasks);
           setIsLoading(false);
         },
@@ -508,7 +508,7 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
     return (
       <div className="modal-overlay">
         <div
-          className={`modal-content ${themeClasses.card} ${themeClasses.text} p-6 rounded-xl shadow-2xl w-11/12 max-w-sm`}
+          className={`modal-content ${themeClasses.card} ${themeClasses.text} p-6 rounded-xl shadow-2xl w-11/12 max-w-sm max-h-[90%] overflow-y-auto`}
         >
           <h3 className="text-xl font-semibold mb-4">{modal.title}</h3>
           <p className="mb-6 text-sm">{modal.message}</p>
