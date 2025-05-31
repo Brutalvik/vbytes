@@ -1,8 +1,10 @@
+import { v4 as uuidv4 } from "uuid";
+
 export async function downloadFileWithProgress(
   url: string,
   onProgress: (percent: number) => void
 ): Promise<void> {
-  const response = await fetch(url);
+  const response = await fetch(url + `&nonce=${uuidv4()}`);
   if (!response.ok || !response.body) throw new Error("Failed to fetch file");
 
   const contentLengthHeader = response.headers.get("content-length");
