@@ -23,6 +23,7 @@ export function LetsTalkModal() {
   const initialValues = useMemo(
     () => ({
       name: "",
+      countryCode: "CA",
       phone: "",
       email: "",
       message: "",

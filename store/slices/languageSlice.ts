@@ -1,6 +1,6 @@
 // store/languageSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { CDN } from "@/lib/config";
+import { fetchLanguages } from "@store/thunks/fetchLanguages";
 
 interface LanguageState {
   data: any[]; // Replace with more specific types if needed
@@ -13,21 +13,6 @@ const initialState: LanguageState = {
   loading: false,
   error: null,
 };
-
-// Update this to your actual API endpoint
-const API_URL: string = CDN.languagesUrl as string;
-
-// Async thunk to fetch the languages
-export const fetchLanguages = createAsyncThunk("languages/fetchLanguages", async (_, thunkAPI) => {
-  try {
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Failed to fetch languages");
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    return thunkAPI.rejectWithValue(error.message);
-  }
-});
 
 const languageSlice = createSlice({
   name: "languages",

@@ -8,18 +8,38 @@ import { ModalFooter } from "@components/ui/animated-modal";
 import { AnimatePresence, motion } from "framer-motion";
 import Recaptcha from "@/components/ui/recaptcha";
 import { Input, Textarea } from "@heroui/input";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { verifyRecaptcha } from "@/store/thunks/verifyRecaptcha";
+import { fetchCountryCodes } from "@/store/thunks/fetchCountryCodes";
+import { selectCountryCodes } from "@/store/slices/selectors";
+import { Autocomplete, AutocompleteItem, Image } from "@heroui/react";
 
 const steps = ["intro", "name", "phone", "email", "message", "recaptcha"];
 
 const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValues> }) => {
+  const phoneInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+  const countryCodes = useAppSelector(selectCountryCodes);
+  const defaultCountryCode = "CA";
+
   const [formStep, setFormStep] = useState(0);
   const startButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const fields: (keyof EmailFormValues)[] = ["name", "phone", "email", "message", "token"];
   const currentField = fields[formStep - 1];
+
+  useEffect(() => {
+    dispatch(fetchCountryCodes());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!formik.values.countryCode && countryCodes.length > 0) {
+      const canada = countryCodes.find((c: any) => c.code === defaultCountryCode);
+      if (canada) {
+        formik.setFieldValue("countryCode", canada.code);
+      }
+    }
+  }, [countryCodes]);
 
   const isStepValid = () =>
     formStep === 0 || (!formik.errors[currentField] && formik.values[currentField]);
@@ -50,7 +70,6 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
       formik.setFieldTouched("token", true, true);
     }
   };
-  
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -62,6 +81,8 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [formStep]);
+
+  const selected = countryCodes.find((c) => c.code === formik.values.countryCode);
 
   const renderStepContent = () => {
     switch (steps[formStep]) {
@@ -98,22 +119,87 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             placeholder="e.g. John Smith"
           />
         );
-
       case "phone":
         return (
-          <FormField
-            id="phone"
-            type="text"
-            label="Your contact number? 📞"
-            value={formik.values.phone}
-            errorMessage={formik.errors.phone || ""}
-            isInvalid={!!(formik.touched.phone && formik.errors.phone)}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            errorId="phone-error"
-            autoFocus
-            placeholder="e.g. +1-555-555-5555"
-          />
+          <motion.div
+            key="phone"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ duration: 0.5 }}
+          >
+            <label className="block text-xl font-medium text-neutral-700 dark:text-neutral-300 mb-4">
+              Your contact number? 📞
+            </label>
+            <div className="flex items-start gap-2">
+              <div className="w-[10%] flex items-center justify-center text-xl mt-2">
+                <Image
+                  alt="flag"
+                  className="w-6 h-6"
+                  src={`https://flagcdn.com/${selected?.code.toLowerCase()}.svg`}
+                />
+              </div>
+
+              <div className="w-[35%]">
+                <Autocomplete
+                  id="countryCode"
+                  inputProps={{
+                    className: "min-h-8 text-sm",
+                  }}
+                  listboxProps={{
+                    itemClasses: {
+                      base: "text-sm py-1.5 px-2",
+                    },
+                  }}
+                  defaultItems={countryCodes}
+                  selectedKey={formik.values.countryCode}
+                  onChange={(e) => {
+                    console.log(e);
+                  }}
+                  onSelectionChange={(key) => {
+                    formik.setFieldValue("countryCode", key);
+                  }}
+                  variant="bordered"
+                  aria-label="Select Country Code"
+                  allowsCustomValue={false}
+                  className="w-full text-sm"
+                  isClearable={false}
+                >
+                  {(country) => (
+                    <AutocompleteItem key={country.code} textValue={country.dial_code}>
+                      <div className="flex items-center gap-2">
+                        <span>{country.dial_code}</span>
+                      </div>
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              </div>
+
+              <div className="w-[70%]">
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="text"
+                  ref={phoneInputRef}
+                  value={formik.values.phone}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    const formatted = digits
+                      .replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
+                      .slice(0, 12);
+                    formik.setFieldValue("phone", formatted);
+                  }}
+                  onBlur={formik.handleBlur}
+                  isInvalid={!!(formik.touched.phone && formik.errors.phone)}
+                  errorMessage={formik.errors.phone || ""}
+                  variant="bordered"
+                  placeholder="e.g. 555-555-5555"
+                  aria-invalid={!!(formik.touched.phone && formik.errors.phone)}
+                  aria-describedby="phone-error"
+                />
+              </div>
+            </div>
+          </motion.div>
         );
 
       case "email":

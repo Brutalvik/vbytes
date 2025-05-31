@@ -8,4 +8,5 @@ export const CDN = {
   googleRecaptchaSiteKey: process.env.NEXT_PUBLIC_GOOGLE_CATPCHA_SITE_KEY,
   googleRecaptchaVerifyURL: process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_VERIFY,
   googleRecaptchaSecretKey: process.env.NEXT_PUBLIC_GOOGLE_CAPTCHA_SECRET_KEY,
+  countryCodesUrl: process.env.NEXT_PUBLIC_COUNTRY_CODES_URL,
 };

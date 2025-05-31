@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLanguages } from "@/store/slices/languageSlice";
+import { fetchLanguages } from "@/store/thunks/fetchLanguages";
 import { selectLanguages, selectLoading } from "@/store/slices/selectors";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Avatar } from "@heroui/avatar";

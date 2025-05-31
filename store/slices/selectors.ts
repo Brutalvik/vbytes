@@ -1,4 +1,5 @@
 import { RootState } from "@store/store";
+import { CountryCodesState } from "@store/slices/countryCodesSlice";
 
 //selectors for language slice
 export const selectSelectedLanguage = (
@@ -14,3 +15,7 @@ export const selectLanguages = (state: RootState & { language: { data: any[] } }
 
 export const selectLoading = (state: RootState & { language: { loading: boolean } }) =>
   state.language.loading;
+
+export const selectCountryCodes = (state: RootState) => state.countryCodes.data;
+
+export const selectCountryCodesLoading = (state: RootState) => state.countryCodes.loading;
