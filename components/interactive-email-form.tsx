@@ -90,6 +90,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             onBlur={formik.handleBlur}
             errorId="name-error"
             autoFocus
+            placeholder="e.g. John Smith"
           />
         );
 
@@ -106,6 +107,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             onBlur={formik.handleBlur}
             errorId="phone-error"
             autoFocus
+            placeholder="e.g. +1-555-555-5555"
           />
         );
 
@@ -122,6 +124,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             onBlur={formik.handleBlur}
             errorId="email-error"
             autoFocus
+            placeholder="e.g. something@example.com"
           />
         );
 
@@ -237,6 +240,7 @@ const FormField = ({
   onBlur,
   errorId,
   autoFocus = false,
+  placeholder,
 }: {
   label: string;
   id: string;
@@ -248,6 +252,7 @@ const FormField = ({
   onBlur: (e: React.FocusEvent<any>) => void;
   errorId: string;
   autoFocus?: boolean;
+  placeholder?: string;
 }) => (
   <motion.div
     key={id}
@@ -275,6 +280,7 @@ const FormField = ({
       aria-invalid={isInvalid}
       aria-describedby={isInvalid ? errorId : undefined}
       autoFocus={autoFocus}
+      placeholder={placeholder}
     />
   </motion.div>
 );
