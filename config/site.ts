@@ -1,5 +1,3 @@
-export type SiteConfig = typeof siteConfig;
-
 export const siteConfig = {
   name: "V-Bytes",
   description: "Experience the future of web development with V-Bytes.",
@@ -9,20 +7,25 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "PROFILE",
-      href: "/coming-soon",
+      label: "APPS",
+      href: "/apps",
+      submenu: [
+        { label: "MOMENTUM", href: "/projects/momentum" },
+        { label: "VELOCITY", href: "/projects/velocity" },
+        { label: "ORBIT", href: "/projects/orbit" },
+      ],
     },
     {
       label: "TIMELINE",
-      href: "/coming-soon",
+      href: "/timeline",
     },
     {
       label: "SKILLS",
-      href: "/coming-soon",
+      href: "/skills",
     },
     {
       label: "ABOUT",
-      href: "/coming-soon",
+      href: "/about",
     },
   ],
   navMenuItems: [
@@ -31,20 +34,25 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "PROFILE",
-      href: "/coming-soon",
+      label: "APPS",
+      href: "/apps",
+      submenu: [
+        { label: "MOMENTUM", href: "/projects/momentum" },
+        { label: "VELOCITY", href: "/projects/velocity" },
+        { label: "ORBIT", href: "/projects/orbit" },
+      ],
     },
     {
       label: "TIMELINE",
-      href: "/coming-soon",
+      href: "/timeline",
     },
     {
       label: "SKILLS",
-      href: "/coming-soon",
+      href: "/skills",
     },
     {
       label: "ABOUT",
-      href: "/coming-soon",
+      href: "/about",
     },
   ],
   links: {
