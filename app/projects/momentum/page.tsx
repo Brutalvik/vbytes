@@ -1,9 +1,14 @@
 "use client";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import Iphone from "@components/apps/momentum/iphone/iphone";
-import Content from "@components/apps/momentum/content/content";
 import { firebaseConfig as importedFirebaseConfig, dynamicAppId } from "@lib/firebase";
+import dynamic from "next/dynamic";
+import Loader from "@/components/ui/ui-loader/loader";
+
+const MomentumPage = dynamic(() => import("@components/apps/momentum/page"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 
 export default function Momentum() {
   // State to hold config to ensure it's client-side when passed to component
@@ -24,14 +29,7 @@ export default function Momentum() {
       <Head>
         <title>Momentum | Task Master</title>
       </Head>
-      <div className="w-full flex flex-col lg:flex-row items-center lg:items-start gap-12">
-        <div className="w-full lg:w-1/2">
-          <Content />
-        </div>
-        <div className="w-full lg:w-1/2">
-          <Iphone clientFirebaseConfig={clientFirebaseConfig} clientAppId={clientAppId} />
-        </div>
-      </div>
+      <MomentumPage clientFirebaseConfig={clientFirebaseConfig} clientAppId={clientAppId} />
     </>
   );
 }

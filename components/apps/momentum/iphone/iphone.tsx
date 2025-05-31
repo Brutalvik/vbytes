@@ -2,14 +2,10 @@
 
 import React from 'react'
 import "./iphone.css"
-import TaskMasterProApp from '@components/apps/momentum/TaskMasterProApp';
+import TaskMasterProApp from "@/components/apps/momentum/task-master/TaskMasterProApp";
+import { MomentumPageProps } from "@components/apps/momentum/page";
 
-interface IphoneProps {
-  clientFirebaseConfig: any;
-  clientAppId: string;
-}
-
-const Iphone: React.FC<IphoneProps> = ({ clientFirebaseConfig, clientAppId }) => {
+const Iphone: React.FC<MomentumPageProps> = ({ clientFirebaseConfig, clientAppId }) => {
   return (
     <div className="lg:w-full flex justify-center items-center">
       <div className="iphone-frame">
