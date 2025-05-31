@@ -14,7 +14,7 @@ export function generateEmailHtml({
         <p style="margin: 0; font-size: 1rem; color: #666;">You have received a new message from:</p>
         <p style="margin: 4px 0 0; font-weight: bold; font-size: 1.2rem;">${name}</p>
         <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Email: <a href="mailto:${email}" style="color: #6366f1;">${email}</a></p>
-        <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Phone: <a href="tel:${countryCode}-${phone}" style="color: #6366f1;"><strong>${phone}</strong></a></p>
+        <p style="margin: 4px 0 0; font-size: 1rem; color: #666;">Phone: <a href="tel:${countryCode}${phone}" style="color: #6366f1;"><strong>${countryCode}-${phone}</strong></a></p>
         <h3 style="margin-bottom: 12px; color: #0f172a;">Message from ${name}</h3>
         </div>
 

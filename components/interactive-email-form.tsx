@@ -127,6 +127,11 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -40 }}
             transition={{ duration: 0.5 }}
+            onAnimationComplete={() => {
+              setTimeout(() => {
+                phoneInputRef.current?.focus();
+              }, 50);
+            }}
           >
             <label className="block text-xl font-medium text-neutral-700 dark:text-neutral-300 mb-4">
               Your contact number? 📞

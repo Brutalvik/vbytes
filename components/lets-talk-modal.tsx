@@ -11,6 +11,8 @@ import { fetchResume } from "@/app/api/send-email/fetch-resume";
 import { isEmpty, startCase, toLower } from "lodash";
 import InteractiveEmailForm from "@/components/interactive-email-form";
 import { EmailFormValues } from "@/types";
+import { useAppSelector } from "@/store/hooks";
+import { selectCountryCodes } from "@/store/slices/selectors";
 
 export function LetsTalkModal() {
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,7 @@ export function LetsTalkModal() {
   const [name, setName] = useState("");
   const [buffer, setBuffer] = useState<Buffer | null>(null);
   const [bufferError, setBufferError] = useState(false);
+  const countryCodes = useAppSelector(selectCountryCodes);
 
   const initialValues = useMemo(
     () => ({
@@ -37,11 +40,19 @@ export function LetsTalkModal() {
     validateOnBlur: true,
     validationSchema: letsTalkSchema,
     onSubmit: async (values, { resetForm }) => {
+      const selected = countryCodes.find((c) => c.code === values.countryCode);
+
+      const cleanedValues: Omit<typeof values, "token"> & { token?: string } = {
+        ...values,
+        countryCode: selected?.dial_code as string,
+        name: startCase(toLower(values.name)),
+      };
+      delete cleanedValues.token;
+
       setLoading(true);
       setSubmittedEmail(values.email);
       setName(startCase(toLower(values.name)));
 
-      // If there are validation errors, stop the submission
       if (!isEmpty(formik.errors)) {
         setLoading(false);
         return;
@@ -62,8 +73,9 @@ export function LetsTalkModal() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(cleanedValues),
         });
+
         await response.json();
         setEmailSent(true);
         resetForm();
