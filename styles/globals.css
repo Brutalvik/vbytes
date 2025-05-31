@@ -4,3 +4,133 @@
 @tailwind components;
 @tailwind utilities;
 
+/* momentum task master app css  - CUSTOM STYLES*/
+.app-bg-light { background-color: #f9fafb; /* gray-50 */ color: #1f2937; /* gray-800 */ }
+.app-bg-dark { background-color: #111827; /* gray-900 */ color: #f3f4f6; /* gray-100 */ }
+.app-text-light { color: #1f2937; }
+.app-text-dark { color: #f3f4f6; }
+
+/* Ensure input text color is explicitly set for both themes */
+.app-input-light { background-color: #ffffff; border-color: #d1d5db; /* gray-300 */ color: #111827 !important; /* gray-900 */ }
+.app-input-light::placeholder { color: #9ca3af; /* gray-400 */ }
+
+.app-input-dark { background-color: #374151; /* gray-700 */ border-color: #4b5563; /* gray-600 */ color: #f3f4f6 !important; /* gray-100 */ }
+.app-input-dark::placeholder { color: #9ca3af; /* gray-400 */ }
+
+.app-button-primary-light { background-color: #3b82f6; /* blue-500 */ color: white; }
+.app-button-primary-dark { background-color: #60a5fa; /* blue-400 */ color: #111827; /* gray-900 */ }
+.app-button-secondary-light { background-color: #e5e7eb; /* gray-200 */ color: #374151; /* gray-700 */ }
+.app-button-secondary-dark { background-color: #374151; /* gray-700 */ color: #e5e7eb; /* gray-200 */ }
+.app-border-light { border-color: #e5e7eb; /* gray-200 */ }
+.app-border-dark { border-color: #374151; /* gray-700 */ }
+.app-card-light { background-color: #ffffff; }
+.app-card-dark { background-color: #1f2937; /* gray-800 */ }
+
+.modal-overlay {
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000; 
+}
+.modal-content {
+    /* Styles are applied via themeClasses in the component */
+    /* padding: 20px; border-radius: 12px; min-width: 280px; max-width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); */
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #3b82f6; /* blue-500 */
+    animation: spin 1s linear infinite;
+}
+.spinner-small {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-left-color: #3b82f6; /* blue-500 */
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; /* Reduced gap slightly */ }
+.calendar-day {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.8rem; /* Adjusted font size */
+}
+.calendar-day.other-month { opacity: 0.4; cursor: default; }
+
+/* Ensure form checkbox styling if not using a UI library for it */
+.form-checkbox { 
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    padding: 0.4em; /* Adjust size */
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+}
+.form-checkbox:checked {
+    background-color: #3b82f6; /* blue-500 */
+    border-color: #3b82f6;
+}
+.form-checkbox:checked::after {
+    content: '✔';
+    font-size: 0.7em; 
+    color: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.dark .form-checkbox { /* For dark mode if Tailwind's dark mode variant is used on parent */
+     background-color: #374151;
+     border-color: #4b5563;
+}
+.dark .form-checkbox:checked {
+    background-color: #60a5fa;
+    border-color: #60a5fa;
+}
+.dark .form-checkbox:checked::after {
+    color: #111827;
+}
+
+.app-bg-light { background-color: #f9fafb; color: #1f2937; }
+.app-bg-dark { background-color: #111827; color: #f3f4f6; }
+.app-text-light { color: #1f2937; }
+.app-text-dark { color: #f3f4f6; }
+.app-input-light { background-color: #fff; border-color: #d1d5db; color: #111827; } 
+.app-input-dark { background-color: #374151; border-color: #4b5563; color: #f3f4f6; } 
+.app-button-primary-light { background-color: #3b82f6; color: white; }
+.app-button-primary-dark { background-color: #60a5fa; color: #111827; }
+.app-button-secondary-light { background-color: #e5e7eb; color: #374151; }
+.app-button-secondary-dark { background-color: #374151; color: #e5e7eb; }
+.app-border-light { border-color: #e5e7eb; }
+.app-border-dark { border-color: #374151; }
+.app-card-light { background-color: #ffffff; }
+.app-card-dark { background-color: #1f2937; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-content { padding: 20px; border-radius: 12px; min-width: 280px; max-width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+
+.spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #09f; animation: spin 1s ease infinite; }
+.spinner-small { border: 2px solid rgba(0, 0, 0, 0.1); width: 20px; height: 20px; border-radius: 50%; border-left-color: #09f; animation: spin 1s ease infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.calendar-day { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; transition: background-color 0.2s; }
+.calendar-day.other-month { opacity: 0.4; cursor: default; }

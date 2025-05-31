@@ -1,4 +1,12 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["comingsoon", "cooldown", "logopath", "pqina", "splinetool", "uuidv"]
+  "cSpell.words": [
+    "comingsoon",
+    "cooldown",
+    "firestore",
+    "logopath",
+    "pqina",
+    "splinetool",
+    "uuidv"
+  ]
 }

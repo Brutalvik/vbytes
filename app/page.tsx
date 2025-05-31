@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Loader from "@/components/ui/ui-loader/loader";
 
 // Lazy load HeroContent with loader
