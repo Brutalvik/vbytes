@@ -1,7 +1,12 @@
 import React, { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendar,
+  faCalendarAlt,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { doc, updateDoc } from "firebase/firestore";
 import { Task, TasksViewProps } from "./types";
 
@@ -19,7 +24,10 @@ const TasksView: React.FC<TasksViewProps> = ({
 }) => {
   const containerRef = useRef(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskDueDate, setNewTaskDueDate] = useState("");
+  const [newTaskDueDate, setNewTaskDueDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split("T")[0]; // format as YYYY-MM-DD
+  });
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -35,6 +43,15 @@ const TasksView: React.FC<TasksViewProps> = ({
     setNewTaskTitle("");
     setNewTaskDueDate("");
     setIsExpanded(false);
+  };
+
+  const openBubble = () => {
+    setIsExpanded((prev) => !prev);
+    if (!newTaskDueDate) {
+      const today = new Date();
+      const updateDate = today.toISOString().split("T")[0];
+      setNewTaskDueDate(updateDate);
+    }
   };
 
   const handleEditTask = (taskId: string, currentTitle: string, currentDueDate: string | null) => {
@@ -134,7 +151,7 @@ const TasksView: React.FC<TasksViewProps> = ({
           dragElastic={0}
           dragMomentum={false}
           className="absolute bottom-20 right-4 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-3xl z-20 pointer-events-auto"
-          onClick={() => setIsExpanded((prev) => !prev)}
+          onClick={openBubble}
         >
           {isExpanded ? "–" : "+"}
         </motion.button>
@@ -157,12 +174,17 @@ const TasksView: React.FC<TasksViewProps> = ({
                 placeholder="New task..."
                 className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
               />
-              <input
-                type="date"
-                value={newTaskDueDate}
-                onChange={(e) => setNewTaskDueDate(e.target.value)}
-                className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
-              />
+              <div className="relative w-full">
+                <input
+                  type="date"
+                  value={newTaskDueDate}
+                  onChange={(e) => setNewTaskDueDate(e.target.value)}
+                  className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                  <FontAwesomeIcon icon={faCalendarAlt} />
+                </span>
+              </div>
               <button
                 onClick={handleAdd}
                 className="h-10 w-full rounded-md border border-gray-600 bg-blue-600 text-white font-semibold hover:bg-blue-700"
