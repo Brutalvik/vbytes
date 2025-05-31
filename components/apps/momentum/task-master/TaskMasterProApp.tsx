@@ -25,7 +25,7 @@ import {
   updateDoc,
   setLogLevel, // For debugging Firestore
 } from "firebase/firestore";
-
+import { motion, AnimatePresence } from "framer-motion";
 
 // --- Main App Component ---
 interface TaskMasterProAppProps {
@@ -34,7 +34,11 @@ interface TaskMasterProAppProps {
   initialAuthToken?: string;
 }
 
-const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({ firebaseConfig, appId, initialAuthToken }) => {
+const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
+  firebaseConfig,
+  appId,
+  initialAuthToken,
+}) => {
   // --- Firebase State ---
   const [authInstance, setAuthInstance] = useState<ReturnType<typeof getAuth> | null>(null);
   const [dbInstance, setDbInstance] = useState<ReturnType<typeof getFirestore> | null>(null);
@@ -310,8 +314,7 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({ firebaseConfig, app
     } catch (error) {
       console.error("Error adding task:", error);
       showToast(
-        "Failed to add task: " +
-          (error instanceof Error ? error.message : String(error)),
+        "Failed to add task: " + (error instanceof Error ? error.message : String(error)),
         "error"
       );
       return false;
@@ -406,39 +409,36 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({ firebaseConfig, app
     await addTaskToFirestore(title, dueDate, currentUser, dbInstance);
   };
 
-interface HandleToggleTaskCompleteParams {
+  interface HandleToggleTaskCompleteParams {
     taskId: string;
     isCompleted: boolean;
-}
+  }
 
-const handleToggleTaskComplete = async (
-    taskId: string,
-    isCompleted: boolean
-): Promise<void> => {
+  const handleToggleTaskComplete = async (taskId: string, isCompleted: boolean): Promise<void> => {
     if (!currentUser || !dbInstance) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
     if (!tasksPath) return;
     const taskRef = doc(dbInstance, tasksPath, taskId);
     try {
-        await updateDoc(taskRef, { completed: isCompleted });
-        showToast(isCompleted ? "Task marked complete!" : "Task marked incomplete.", "success");
+      await updateDoc(taskRef, { completed: isCompleted });
+      showToast(isCompleted ? "Task marked complete!" : "Task marked incomplete.", "success");
     } catch (error) {
-        console.error("Error updating task:", error);
-        showToast("Failed to update task.", "error");
+      console.error("Error updating task:", error);
+      showToast("Failed to update task.", "error");
     }
-};
+  };
 
-interface HandleEditTaskParams {
+  interface HandleEditTaskParams {
     taskId: string;
     currentTitle: string;
     currentDueDate: string | null;
-}
+  }
 
-const handleEditTask = async (
+  const handleEditTask = async (
     taskId: string,
     currentTitle: string,
     currentDueDate: string | null
-): Promise<void> => {
+  ): Promise<void> => {
     if (!currentUser || !dbInstance) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
     if (!tasksPath) return;
@@ -448,57 +448,57 @@ const handleEditTask = async (
     if (newTitle === null) return; // User cancelled
 
     const newDueDateRaw = prompt(
-        "Edit due date (YYYY-MM-DD, leave blank for none):",
-        currentDueDate ? currentDueDate.split("T")[0] : ""
+      "Edit due date (YYYY-MM-DD, leave blank for none):",
+      currentDueDate ? currentDueDate.split("T")[0] : ""
     );
     if (newDueDateRaw === null) return; // User cancelled
 
     if (newTitle.trim() === "") {
-        showToast("Title cannot be empty.", "error");
-        return;
+      showToast("Title cannot be empty.", "error");
+      return;
     }
 
     const taskRef = doc(dbInstance, tasksPath, taskId);
     try {
-        await updateDoc(taskRef, {
-            title: newTitle.trim(),
-            dueDate: newDueDateRaw ? newDueDateRaw : null,
-        });
-        showToast("Task updated!", "success");
+      await updateDoc(taskRef, {
+        title: newTitle.trim(),
+        dueDate: newDueDateRaw ? newDueDateRaw : null,
+      });
+      showToast("Task updated!", "success");
     } catch (error) {
-        console.error("Error updating task:", error);
-        showToast("Failed to update task.", "error");
+      console.error("Error updating task:", error);
+      showToast("Failed to update task.", "error");
     }
-};
+  };
 
-interface HandleDeleteTaskParams {
+  interface HandleDeleteTaskParams {
     taskId: string;
-}
+  }
 
-const handleDeleteTask = (taskId: string): void => {
+  const handleDeleteTask = (taskId: string): void => {
     if (!currentUser || !dbInstance) return;
     const tasksPath = getUserTasksCollectionPath(currentUser.uid);
     if (!tasksPath) return;
 
     setModal({
-        isOpen: true,
-        title: "Confirm Delete",
-        message: "Are you sure you want to delete this task?",
-        onConfirm: async (): Promise<void> => {
-            const taskRef = doc(dbInstance, tasksPath, taskId);
-            try {
-                await deleteDoc(taskRef);
-                showToast("Task deleted!", "success");
-            } catch (error) {
-                console.error("Error deleting task:", error);
-                showToast("Failed to delete task.", "error");
-            }
-        },
-        onCancel: null,
-        confirmText: "Delete",
-        cancelText: "Cancel",
+      isOpen: true,
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this task?",
+      onConfirm: async (): Promise<void> => {
+        const taskRef = doc(dbInstance, tasksPath, taskId);
+        try {
+          await deleteDoc(taskRef);
+          showToast("Task deleted!", "success");
+        } catch (error) {
+          console.error("Error deleting task:", error);
+          showToast("Failed to delete task.", "error");
+        }
+      },
+      onCancel: null,
+      confirmText: "Delete",
+      cancelText: "Cancel",
     });
-};
+  };
 
   // --- Modal Component ---
   const Modal = () => {
@@ -565,13 +565,16 @@ const handleDeleteTask = (taskId: string): void => {
   // --- Toast Component ---
   const Toast = () => {
     if (!toast.isVisible) return null;
-    let bgColor = "bg-green-500"; // success
+
+    let bgColor = "bg-green-500"; // default = success
     if (toast.type === "error") bgColor = "bg-red-500";
     if (toast.type === "info") bgColor = "bg-blue-500";
 
     return (
       <div
-        className={`fixed bottom-20 right-4 left-4 z-[2000] p-3 rounded-lg text-white ${bgColor} shadow-lg transition-opacity duration-300 ${toast.isVisible ? "opacity-100" : "opacity-0"}`}
+        className={`absolute bottom-20 left-4 right-4 z-50 p-3 rounded-lg text-white ${bgColor} shadow-lg transition-opacity duration-300 ${
+          toast.isVisible ? "opacity-100" : "opacity-0"
+        }`}
       >
         {toast.message}
       </div>
@@ -730,7 +733,13 @@ interface AppHeaderProps {
   showToast: (message: string, type?: string) => void;
 }
 
-const AppHeader: React.FC<AppHeaderProps> = ({ themeClasses, currentTheme, toggleTheme, currentUser, showToast }) => (
+const AppHeader: React.FC<AppHeaderProps> = ({
+  themeClasses,
+  currentTheme,
+  toggleTheme,
+  currentUser,
+  showToast,
+}) => (
   <div className={`p-4 flex justify-between items-center ${themeClasses.border} border-b`}>
     <h1 className={`text-xl font-semibold ${themeClasses.text}`}>TaskMaster</h1>
     <div>
@@ -776,7 +785,11 @@ interface AppNavigationProps {
   setCurrentView: (view: string) => void;
 }
 
-const AppNavigation: React.FC<AppNavigationProps> = ({ themeClasses, currentView, setCurrentView }) => (
+const AppNavigation: React.FC<AppNavigationProps> = ({
+  themeClasses,
+  currentView,
+  setCurrentView,
+}) => (
   <nav
     className={`p-2 flex justify-around ${themeClasses.border} border-t mt-auto sticky bottom-0 ${themeClasses.bg} z-10`}
   >
@@ -837,16 +850,16 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-interface HandleSubmitEvent extends React.FormEvent<HTMLFormElement> {}
+  interface HandleSubmitEvent extends React.FormEvent<HTMLFormElement> {}
 
-const handleSubmit = (e: HandleSubmitEvent): void => {
+  const handleSubmit = (e: HandleSubmitEvent): void => {
     e.preventDefault();
     if (isLogin) {
-        onLogin(email, password);
+      onLogin(email, password);
     } else {
-        onRegister(email, password, confirmPassword);
+      onRegister(email, password, confirmPassword);
     }
-};
+  };
 
   return (
     <div
@@ -977,103 +990,130 @@ const TasksView: React.FC<TasksViewProps> = ({
 }) => {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDueDate, setNewTaskDueDate] = useState("");
-
-  const handleAdd = () => {
-    onAddTask(newTaskTitle, newTaskDueDate);
-    setNewTaskTitle("");
-    setNewTaskDueDate("");
-  };
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const allTasksToDisplay = currentUser ? tasks : temporaryTasks;
 
+  const handleAdd = () => {
+    if (!newTaskTitle.trim()) return;
+    onAddTask(newTaskTitle.trim(), newTaskDueDate);
+    setNewTaskTitle("");
+    setNewTaskDueDate("");
+    setIsExpanded(false); // Close the bubble after adding
+  };
+
   return (
-    <div className="space-y-3 relative pb-24">
-      {" "}
-      {/* Added padding-bottom for sticky input */}
-      {allTasksToDisplay.map((task) => (
-        <div
-          key={task.id}
-          id={`task-${task.id}`}
-          className={`task-item flex items-center justify-between p-3 rounded-lg shadow ${themeClasses.card} ${"completed" in task && task.completed ? "completed opacity-60" : ""} ${!currentUser ? "opacity-70" : ""}`}
-        >
-          <div className="flex items-center flex-grow min-w-0">
-            {" "}
-            {/* Added min-w-0 for text truncation */}
-            {currentUser && (
-              <input
-                type="checkbox"
-                checked={!!(task as Task).completed}
-                onChange={(e) => onToggleComplete(task.id, e.target.checked)}
-                className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-3 flex-shrink-0"
-              />
-            )}
-            <span
-              className={`task-title ${themeClasses.text} ${"completed" in task && task.completed ? "line-through" : ""} truncate`}
-            >
-              {task.title} {!currentUser && "(Unsaved)"}
-            </span>
-          </div>
-          <div className="flex items-center space-x-2 flex-shrink-0 ml-2">
-            {task.dueDate && (
-              <span className={`text-xs ${themeClasses.text} opacity-70`}>
-                {new Date(task.dueDate + "T00:00:00").toLocaleDateString("en-CA", {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
-            )}
-            {currentUser && (
-              <>
-                <button
-                  onClick={() => onEditTask(task.id, task.title, task.dueDate)}
-                  className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                >
-                  <i className="fas fa-edit"></i>
-                </button>
-                <button
-                  onClick={() => onDeleteTask(task.id)}
-                  className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                >
-                  <i className="fas fa-trash"></i>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      ))}
-      {allTasksToDisplay.length === 0 && (
-        <p className={`${themeClasses.text} text-center opacity-70`}>
-          {currentUser ? "No tasks yet. Add one below!" : "Add a task. Login or register to save."}
-        </p>
-      )}
-      <div
-        className={`absolute bottom-0 left-0 right-0 p-3 ${themeClasses.bg} border-t ${themeClasses.border} z-10`}
-      >
-        {" "}
-        {/* Adjusted for nav bar */}
-        <div className="flex space-x-2">
-          <input
-            type="text"
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-            placeholder="New task..."
-            className={`flex-grow p-3 rounded-lg border ${themeClasses.input} ${themeClasses.inputText} focus:ring-2 focus:ring-blue-500 outline-none`}
-          />
-          <input
-            type="date"
-            value={newTaskDueDate}
-            onChange={(e) => setNewTaskDueDate(e.target.value)}
-            className={`p-3 rounded-lg border ${themeClasses.input} ${themeClasses.inputText} focus:ring-2 focus:ring-blue-500 outline-none w-auto`}
-            title="Due Date"
-          />
-          <button
-            onClick={handleAdd}
-            className={`p-3 rounded-lg ${themeClasses.btnPrimary} font-semibold hover:opacity-90 w-auto`}
+    <div className="w-full h-full flex flex-col relative">
+      {/* Scrollable task list */}
+      <div className="flex-1 overflow-y-auto hide-scroll pr-1 space-y-3 pb-36">
+        {allTasksToDisplay.map((task) => (
+          <div
+            key={task.id}
+            id={`task-${task.id}`}
+            className={`task-item flex items-center justify-between p-3 rounded-lg shadow ${themeClasses.card} ${
+              "completed" in task && task.completed ? "completed opacity-60" : ""
+            } ${!currentUser ? "opacity-70" : ""}`}
           >
-            <i className="fas fa-plus"></i> Add
-          </button>
-        </div>
+            <div className="flex items-center flex-grow min-w-0">
+              {currentUser && (
+                <input
+                  type="checkbox"
+                  checked={!!(task as Task).completed}
+                  onChange={(e) => onToggleComplete(task.id, e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-3 flex-shrink-0"
+                />
+              )}
+              <span
+                className={`task-title ${themeClasses.text} ${
+                  "completed" in task && task.completed ? "line-through" : ""
+                } truncate`}
+              >
+                {task.title} {!currentUser && "(Unsaved)"}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2 flex-shrink-0 ml-2">
+              {task.dueDate && (
+                <span className={`text-xs ${themeClasses.text} opacity-70`}>
+                  {new Date(task.dueDate + "T00:00:00").toLocaleDateString("en-CA", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              )}
+              {currentUser && (
+                <>
+                  <button
+                    onClick={() => onEditTask(task.id, task.title, task.dueDate)}
+                    className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    <i className="fas fa-edit"></i>
+                  </button>
+                  <button
+                    onClick={() => onDeleteTask(task.id)}
+                    className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+
+        {allTasksToDisplay.length === 0 && (
+          <p className={`${themeClasses.text} text-center opacity-70`}>
+            {currentUser
+              ? "No tasks yet. Add one below!"
+              : "Add a task. Login or register to save."}
+          </p>
+        )}
       </div>
+
+      {/* Floating draggable + Button */}
+      <motion.button
+        drag
+        dragConstraints={{ top: 0, bottom: 600, left: 0, right: 300 }}
+        dragElastic={0.3}
+        onClick={() => setIsExpanded((prev) => !prev)}
+        className="absolute bottom-20 right-4 z-20 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-3xl"
+      >
+        {isExpanded ? "–" : "+"}
+      </motion.button>
+
+      {/* Add Task Bubble */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0, originX: 1, originY: 1 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className={`absolute bottom-36 right-4 left-4 sm:left-auto sm:right-4 sm:w-[calc(100%-2rem)] p-4 rounded-2xl ${themeClasses.bg} border border-gray-600 shadow-2xl z-10`}
+          >
+            <div className="flex flex-col gap-3">
+              <input
+                type="text"
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                placeholder="New task..."
+                className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              <input
+                type="date"
+                value={newTaskDueDate}
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                className="h-10 w-full p-2 rounded-md border border-gray-600 bg-white text-black focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              <button
+                onClick={handleAdd}
+                className="h-10 w-full rounded-md border border-gray-600 bg-blue-600 text-white font-semibold hover:bg-blue-700"
+              >
+                <i className="fas fa-plus mr-1"></i> Add Task
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -1094,7 +1134,12 @@ interface CalendarViewProps {
   };
 }
 
-const CalendarView: React.FC<CalendarViewProps> = ({ tasks, selectedDate, setSelectedDate, themeClasses }) => {
+const CalendarView: React.FC<CalendarViewProps> = ({
+  tasks,
+  selectedDate,
+  setSelectedDate,
+  themeClasses,
+}) => {
   const today = useMemo(() => new Date(), []);
   const year = selectedDate.getFullYear();
   const month = selectedDate.getMonth();
@@ -1259,7 +1304,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
     <div>
       <h3 className={`text-lg font-semibold ${themeClasses.text} mb-2`}>About</h3>
       <p className={`${themeClasses.text} text-sm`}>TaskMaster Pro v1.0.0 (React)</p>
-      <p className={`${themeClasses.text} text-sm`}>App ID: {appId || "N/A"}</p>
+      <p className={`${themeClasses.text} text-sm`}>Developed by: Vikram Kumar</p>
     </div>
   </div>
 );
