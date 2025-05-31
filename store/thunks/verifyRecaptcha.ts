@@ -21,7 +21,6 @@ export const verifyRecaptcha = createAsyncThunk<RecaptchaResponse, VerifyArgs>(
 
 
       const data: RecaptchaResponse = res.data;
-      console.log("DATA FROM RECAPTCHA = ", data)
 
       if (!data.success) {
         return thunkAPI.rejectWithValue("reCAPTCHA verification failed.");

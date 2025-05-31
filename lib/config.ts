@@ -6,5 +6,6 @@ export const CDN = {
   glassLoaderUrl: process.env.NEXT_PUBLIC_GLASS_LOADER_URL,
   pdfUrl: process.env.NEXT_PUBLIC_PDF_DOWNLOAD_URL,
   googleRecaptchaSiteKey: process.env.NEXT_PUBLIC_GOOGLE_CATPCHA_SITE_KEY,
-  googeleRecaptchaVerify: process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_VERIFY,
+  googleRecaptchaVerifyURL: process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_VERIFY,
+  googleRecaptchaSecretKey: process.env.NEXT_PUBLIC_GOOGLE_CAPTCHA_SECRET_KEY,
 };
