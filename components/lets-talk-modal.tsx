@@ -5,7 +5,6 @@ import styles from "@styles/lets-talk-button.module.css";
 import { useFormik } from "formik";
 import { letsTalkSchema } from "@/validation/letsTalkSchema";
 import EmailLoader from "@components/ui/email-loader";
-import EmailForm from "@components/email-form";
 import EmailSentMessage from "@components/email-sent-message";
 import EmailMessageWithAttachment from "@components/email-sent-message-with-attachment";
 import { fetchResume } from "@/app/api/send-email/fetch-resume";
@@ -121,8 +120,7 @@ export function LetsTalkModal() {
                     Talk
                   </span>
                 </h4>
-                {/* <EmailForm formik={formik} /> */}
-                <InteractiveEmailForm formik={formik} />
+                <InteractiveEmailForm formik={formik as any} />
               </>
             )}
           </ModalContent>
