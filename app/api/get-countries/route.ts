@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const response = await axios.get(CDN.countryCodesUrl as string);
     const countries = response.data;
-
+    console.log("RESPONSE FROM BACKEND : ", response.data);
     const countriesWithIds = countries.map((country: any) => ({
       ...country,
       id: uuidv4(),
