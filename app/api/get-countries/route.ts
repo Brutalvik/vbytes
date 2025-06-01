@@ -5,9 +5,10 @@ import { CDN } from "@/lib/config";
 
 export async function GET() {
   try {
-    const response = await axios.get(CDN.countryCodesUrl as string);
+    const response = await axios.get(
+      "https://lpkeoq39v7.execute-api.us-east-2.amazonaws.com/countries?file=country_code.json"
+    );
     const countries = response.data;
-    console.log("RESPONSE FROM BACKEND : ", response.data);
     const countriesWithIds = countries.map((country: any) => ({
       ...country,
       id: uuidv4(),
