@@ -21,7 +21,7 @@ const SettingsView: React.FC<SettingsViewProps> = ({
     <div>
       <h3 className={`text-lg font-semibold ${themeClasses.text} mb-2`}>Account</h3>
       <p className={`${themeClasses.text} text-sm mb-1 break-all`}>
-        Logged in as: {currentUser.email || `UID: ${currentUser.uid}`}
+        Logged in as: {currentUser.email}
       </p>
       <button
         onClick={onLogout}
@@ -38,4 +38,4 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   </div>
 );
 
-export default SettingsView
+export default SettingsView;
