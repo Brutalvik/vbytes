@@ -28,7 +28,6 @@ const LanguageDropdown = () => {
   const handleChange = (key: string | null) => {
     setSelectedKey(key);
     const selectedLanguage = languages.find((lang) => lang.key === key);
-    console.log("Selected language:", selectedLanguage);
     return selectedLanguage;
   };
 

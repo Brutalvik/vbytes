@@ -134,14 +134,11 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
         setAuthInstance(auth);
         setDbInstance(db);
         setIsFirebaseReady(true);
-        console.log("Firebase initialized.");
 
         const attemptSignIn = async () => {
           try {
             if (initialAuthToken) {
-              console.log("Attempting sign in with custom token...");
               await signInWithCustomToken(auth, initialAuthToken);
-              console.log("Successfully signed in with custom token.");
             } else {
               console.log(
                 "No custom token, onAuthStateChanged will handle existing session or no user."
@@ -160,7 +157,7 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
           setIsLoading(true);
           if (user) {
             setCurrentUser(user);
-            console.log("User logged in (onAuthStateChanged):", user.uid, user.email);
+
             if (temporaryTasks.length > 0) {
               setModal({
                 isOpen: true,
@@ -185,7 +182,7 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
             // fetchTasks will be called by the useEffect that depends on currentUser and dbInstance
           } else {
             setCurrentUser(null);
-            console.log("User logged out or not authenticated (onAuthStateChanged).");
+
             if (unsubscribeTasks) unsubscribeTasks(); // Call the function to unsubscribe
             setTasks([]);
             if (["tasks", "calendar", "settings"].includes(currentView)) {
@@ -197,7 +194,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
         });
 
         return () => {
-          console.log("Cleaning up auth listener.");
           unsubscribeAuth();
           if (unsubscribeTasks) unsubscribeTasks(); // Also cleanup task listener here
         };
@@ -266,7 +262,6 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
       setUnsubscribeTasks(() => unsubscribe); // Store the unsubscribe function
 
       return () => {
-        console.log("Cleaning up tasks listener.");
         unsubscribe(); // Unsubscribe on cleanup
       };
     } else if (!currentUser && isAuthCheckComplete) {
@@ -837,7 +832,5 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
     </div>
   );
 };
-
-
 
 export default TaskMasterProApp;

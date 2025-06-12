@@ -159,7 +159,7 @@ const InteractiveFormContent = ({ formik }: { formik: FormikProps<EmailFormValue
                   defaultItems={countryCodes}
                   selectedKey={formik.values.countryCode}
                   onChange={(e) => {
-                    console.log(e);
+                    e;
                   }}
                   onSelectionChange={(key) => {
                     formik.setFieldValue("countryCode", key);
