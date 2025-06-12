@@ -2,7 +2,7 @@ import { CDN } from "@/lib/config";
 import { motion } from "framer-motion";
 import React from "react";
 import { LetsTalkModal } from "@components/lets-talk-modal";
-import DownloadButton from "@components/ui/download-button";
+import DownloadButton from "@/components/ui/CollapsibleSidebar/download-button";
 import { FlipWords } from "@components/ui/flip-words";
 
 const words = [
