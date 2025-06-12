@@ -37,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="flex min-h-screen">
             <CollapsibleSidebar />
             <main className="flex-grow px-6 py-4 overflow-y-auto">{children}</main>
+            <Navbar />
           </div>
           <footer className="w-full flex items-center justify-center py-3 border-t border-white/10">
             {/* footer goes here */}

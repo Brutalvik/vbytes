@@ -2,14 +2,7 @@
 
 import React, { useState } from "react";
 import classNames from "classnames";
-import {
-  ChartNoAxesCombined,
-  ChevronLeft,
-  Menu,
-  PackageCheck,
-  PanelsTopLeft,
-  Plus,
-} from "lucide-react";
+import { ChevronLeft, Menu, PackageCheck, PanelsTopLeft, Plus } from "lucide-react";
 import Link from "next/link";
 
 const sidebarItems = [
@@ -33,7 +26,7 @@ export default function CollapsibleSidebar({
   return (
     <aside
       className={classNames(
-        "h-screen bg-blue/50 text-default-500 backdrop-blur-md backdrop-saturate-150 transition-all duration-300 shadow-lg rounded-xl border border-white/20",
+        "z-20 relative h-screen bg-white/10 text-default-500 backdrop-blur-md backdrop-saturate-150 transition-all duration-300 shadow-lg rounded-xl border border-white/20",
         collapsed ? "w-[60px]" : "w-[250px]"
       )}
     >
