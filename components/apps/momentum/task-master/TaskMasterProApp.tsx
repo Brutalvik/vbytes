@@ -36,6 +36,7 @@ import CalendarView from "./CalendarView";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { faCalendarDays, faGear, faListCheck } from "@fortawesome/free-solid-svg-icons";
+import { Timer } from "lucide-react";
 
 // --- Main App Component ---
 
@@ -758,6 +759,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({
       <i
         className={`fas fa-check-circle text-5xl ${themeClasses.btnPrimary.split(" ")[0].replace("bg-", "text-")} mb-3`}
       ></i>
+      <Timer size={45} />
       <h2 className={`text-3xl font-bold ${themeClasses.text}`}>
         {isLogin ? "Welcome Back!" : "Create Account"}
       </h2>
