@@ -16,17 +16,18 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { FaHome } from "react-icons/fa";
 
 const sidebarItems = [
-  { label: "Home", icon: <PanelsTopLeft />, path: "/" },
+  { label: "Home", icon: <FaHome />, path: "/" },
   {
     label: "Apps",
     icon: <PackageCheck />,
     submenu: [
       {
-        label: "Analytics",
+        label: "Momentum",
         icon: <BarChart3 />,
-        path: "/apps/analytics",
+        path: "/projects/momentum",
         submenu: [
           {
             label: "User Stats",
