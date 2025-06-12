@@ -29,7 +29,9 @@ export default function Momentum() {
       <Head>
         <title>Momentum | Task Master</title>
       </Head>
-      <MomentumPage clientFirebaseConfig={clientFirebaseConfig} clientAppId={clientAppId} />
+      <div className="mt-20">
+        <MomentumPage clientFirebaseConfig={clientFirebaseConfig} clientAppId={clientAppId} />
+      </div>
     </>
   );
 }
