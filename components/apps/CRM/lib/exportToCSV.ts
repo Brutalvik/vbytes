@@ -26,23 +26,40 @@ function formatCSVValue(value: any): string {
   return String(value).replace(/"/g, '""');
 }
 
-export function exportToCSV(data: any[], filename: string) {
+export async function exportToCSV(
+  data: any[],
+  filename: string,
+  setIsExporting?: (val: boolean) => void
+) {
   if (!Array.isArray(data) || data.length === 0) {
     alert("No data to export.");
     return;
   }
 
-  const headers = Object.keys(data[0]);
-  const rows = data.map((item) => headers.map((key) => `"${formatCSVValue(item[key])}"`).join(","));
+  try {
+    if (setIsExporting) setIsExporting(true);
 
-  const csvContent = [headers.join(","), ...rows].join("\n");
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
+    const headers = Object.keys(data[0]);
+    const rows = data.map((item) =>
+      headers.map((key) => `"${formatCSVValue(item[key])}"`).join(",")
+    );
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", `${filename}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    const csvContent = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${filename}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("CSV export failed:", error);
+    alert("Failed to export CSV.");
+  } finally {
+    if (setIsExporting) setIsExporting(false);
+  }
 }
+
+export { formatFirestoreTimestamp };
