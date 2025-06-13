@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Car {
   id?: string;
@@ -41,6 +41,22 @@ const CarFormModal: React.FC<CarFormModalProps> = ({ car, onClose, onSubmit, sho
     }
   );
 
+  useEffect(() => {
+    if (car) {
+      setFormData(car);
+    } else {
+      setFormData({
+        make: "",
+        model: "",
+        year: new Date().getFullYear(),
+        price: 0,
+        vin: "",
+        status: "Available",
+        imageUrl: "https://placehold.co/400x200/cccccc/333333?text=Car+Image",
+      });
+    }
+  }, [car]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -51,7 +67,11 @@ const CarFormModal: React.FC<CarFormModalProps> = ({ car, onClose, onSubmit, sho
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      imageUrl:
+        formData.imageUrl?.trim() || "https://placehold.co/400x200/cccccc/333333?text=Car+Image",
+    });
   };
 
   if (!show) return null;

@@ -1,24 +1,7 @@
 "use client";
 
 import React from "react";
-
-interface Car {
-  id?: string;
-  make: string;
-  model: string;
-  year: number;
-  price: number;
-  vin: string;
-  status: "Available" | "Sold" | "Pending";
-  imageUrl: string;
-}
-
-interface InventorySectionProps {
-  cars: Car[];
-  onAdd: () => void;
-  onEdit: (car: Car) => void;
-  onDelete: (id: string) => void;
-}
+import { Car, InventorySectionProps } from "@crm/lib/types";
 
 const InventorySection: React.FC<InventorySectionProps> = ({ cars, onAdd, onEdit, onDelete }) => {
   return (

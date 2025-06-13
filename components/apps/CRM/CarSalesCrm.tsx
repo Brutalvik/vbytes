@@ -3,7 +3,15 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "firebase/auth";
-import { collection, onSnapshot, addDoc, setDoc, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  addDoc,
+  setDoc,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+} from "firebase/firestore";
 
 import { db, auth, APP_ID } from "@components/apps/CRM/lib/firebase";
 import InventoryAnalytics from "./sections/InventoryAnalytics";
@@ -185,11 +193,12 @@ export default function App() {
   // CRUD Operations for Cars
   const addCar = useCallback(
     async (car: Omit<Car, "id">) => {
-      // `db` and `APP_ID` are implicitly stable here because they are imports
       if (!db || !userId || !APP_ID) return;
       try {
-        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/cars`), car);
-        console.log("Car added successfully.");
+        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/cars`), {
+          ...car,
+          createdAt: serverTimestamp(), // ← adds ISO timestamp
+        });
         setShowCarModal(false);
       } catch (e: any) {
         console.error("Error adding car: ", e);
@@ -197,7 +206,8 @@ export default function App() {
       }
     },
     [userId]
-  ); // `db` and `APP_ID` are not dependencies as they are constant imports
+  );
+  // `db` and `APP_ID` are not dependencies as they are constant imports
 
   const updateCar = useCallback(
     async (car: Car) => {
