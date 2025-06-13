@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { exportToCSV } from "@crm/lib/exportToCSV";
+import CSVExportButton from "@crm/components/CSVExportButton";
+import { formatFirestoreTimestamp } from "@crm/lib/utils";
 
 interface Car {
   id?: string;
@@ -23,13 +24,15 @@ interface Customer {
   notes: string;
 }
 
-interface Sale {
+export interface Sale {
   id?: string;
   carId: string;
   customerId: string;
   saleDate: string;
   salePrice: number;
   salespersonId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface SaleSectionProps {
@@ -76,24 +79,12 @@ const SaleSection: React.FC<SaleSectionProps> = ({
 
             <span>Record New Sale</span>
           </button>
-          <button
-            onClick={() => exportToCSV(sales, "sales")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 transition flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v4a1 1 0 11-2 0V4H5v12h4a1 1 0 110 2H4a1 1 0 01-1-1V3zm14.707 9.707a1 1 0 00-1.414-1.414L13 14.586V10a1 1 0 10-2 0v4.586l-3.293-3.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l5-5z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Export Sales CSV</span>
-          </button>
+          <CSVExportButton
+            data={sales}
+            filename="sales"
+            label="Export Sales CSV"
+            timestampField="saleDate"
+          />
         </div>
       </div>
 
@@ -115,6 +106,12 @@ const SaleSection: React.FC<SaleSectionProps> = ({
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Salesperson ID
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Created
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Updated
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -149,6 +146,8 @@ const SaleSection: React.FC<SaleSectionProps> = ({
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-xs break-all text-gray-700">
                       {sale.salespersonId}
                     </td>
+                    <td>{formatFirestoreTimestamp(sale.createdAt)}</td>
+                    <td>{formatFirestoreTimestamp(sale.updatedAt)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex space-x-3">
                         <button

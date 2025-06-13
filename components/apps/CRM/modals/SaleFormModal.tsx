@@ -34,7 +34,7 @@ interface Sale {
 interface SaleFormModalProps {
   sale?: Sale | null;
   onClose: () => void;
-  onSubmit: (sale: Omit<Sale, "id"> | Sale) => void;
+  onSubmit: (sale: Omit<Sale, "id"> | Sale) => void | Promise<void>;
   cars: Car[];
   customers: Customer[];
   userId: string | null;

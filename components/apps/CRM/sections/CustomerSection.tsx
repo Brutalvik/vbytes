@@ -1,5 +1,5 @@
-import { exportToCSV } from "@crm/lib/exportToCSV";
-
+import CSVExportButton from "@crm/components/CSVExportButton";
+import { formatFirestoreTimestamp } from "@crm/lib/utils";
 export interface Customer {
   id?: string;
   name: string;
@@ -7,6 +7,8 @@ export interface Customer {
   phone: string;
   address: string;
   notes: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface CustomerSectionProps {
@@ -48,26 +50,12 @@ const CustomerSection: React.FC<CustomerSectionProps> = ({
             <span>Add New Customer</span>
           </button>
           {/* Export Button */}
-          <button
-            onClick={() => exportToCSV(customers, "customers")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-700 transition flex items-center gap-2"
-          >
-            {/* Export Icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 3a1 1 0 011-1h12a1 1 0 011 1v4a1 1 0 11-2 0V4H5v12h4a1 1 0 110 2H4a1 1 0 01-1-1V3zm14.707 9.707a1 1 0 00-1.414-1.414L13 14.586V10a1 1 0 10-2 0v4.586l-3.293-3.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0l5-5z"
-                clipRule="evenodd"
-              />
-            </svg>
-
-            <span>Export Customers CSV</span>
-          </button>
+          <CSVExportButton
+            data={customers}
+            filename="customers"
+            label="Export Customers CSV"
+            timestampField="createdAt"
+          />
         </div>
       </div>
 
@@ -86,6 +74,12 @@ const CustomerSection: React.FC<CustomerSectionProps> = ({
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Address
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Created
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Updated
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -113,6 +107,12 @@ const CustomerSection: React.FC<CustomerSectionProps> = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     {customer.address}
+                  </td>
+                  <td className="text-sm text-gray-600">
+                    {formatFirestoreTimestamp(customer.createdAt)}
+                  </td>
+                  <td className="text-sm text-gray-600">
+                    {formatFirestoreTimestamp(customer.updatedAt)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex space-x-3">

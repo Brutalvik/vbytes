@@ -22,7 +22,7 @@ import CarFormModal from "@crm/modals/CarFormModal";
 import InventorySection from "@crm/sections/CarInventorySection";
 import CustomerFormModal from "@crm/modals/CustomerFormModal";
 import SaleFormModal from "@crm/modals/SaleFormModal";
-import SaleSection from "@crm/sections/SaleSection";
+import SaleSection, { Sale } from "@crm/sections/SaleSection";
 import Dashboard from "@crm/sections/Dashboard";
 import CustomerSection, { Customer } from "@crm/sections/CustomerSection";
 
@@ -37,20 +37,6 @@ export interface Car {
   status: "Available" | "Sold" | "Pending";
   imageUrl: string;
 }
-
-interface Sale {
-  id?: string;
-  carId: string;
-  customerId: string;
-  saleDate: string; // ISO date string e.g., 'YYYY-MM-DD'
-  salePrice: number;
-  salespersonId: string;
-}
-
-// Utility function to format numbers as currency
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
-};
 
 // Main CRM Component
 export default function App() {
@@ -214,7 +200,14 @@ export default function App() {
       if (!db || !userId || !APP_ID || !car.id) return;
       try {
         const carRef = doc(db, `artifacts/${APP_ID}/users/${userId}/cars`, car.id);
-        await setDoc(carRef, car, { merge: true });
+        await setDoc(
+          carRef,
+          {
+            ...car,
+            updatedAt: serverTimestamp(), // ✅ Add timestamp
+          },
+          { merge: true }
+        );
         console.log("Car updated successfully.");
         setShowCarModal(false);
         setEditingCar(null);
@@ -246,7 +239,10 @@ export default function App() {
     async (customer: Omit<Customer, "id">) => {
       if (!db || !userId || !APP_ID) return;
       try {
-        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/customers`), customer);
+        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/customers`), {
+          ...customer,
+          createdAt: serverTimestamp(),
+        });
         console.log("Customer added successfully.");
         setShowCustomerModal(false);
       } catch (e: any) {
@@ -262,8 +258,14 @@ export default function App() {
       if (!db || !userId || !APP_ID || !customer.id) return;
       try {
         const customerRef = doc(db, `artifacts/${APP_ID}/users/${userId}/customers`, customer.id);
-        await setDoc(customerRef, customer, { merge: true });
-        console.log("Customer updated successfully.");
+        await setDoc(
+          customerRef,
+          {
+            ...customer,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
         setShowCustomerModal(false);
         setEditingCustomer(null);
       } catch (e: any) {
@@ -294,7 +296,11 @@ export default function App() {
     async (sale: Omit<Sale, "id">) => {
       if (!db || !userId || !APP_ID) return;
       try {
-        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/sales`), sale);
+        await addDoc(collection(db, `artifacts/${APP_ID}/users/${userId}/sales`), {
+          ...sale,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
         console.log("Sale added successfully.");
 
         const soldCar = cars.find((c) => c.id === sale.carId);
@@ -309,14 +315,21 @@ export default function App() {
       }
     },
     [userId, cars, updateCar]
-  ); // `updateCar` is a dependency because it's called here
+  );
 
   const updateSale = useCallback(
     async (sale: Sale) => {
       if (!db || !userId || !APP_ID || !sale.id) return;
       try {
         const saleRef = doc(db, `artifacts/${APP_ID}/users/${userId}/sales`, sale.id);
-        await setDoc(saleRef, sale, { merge: true });
+        await setDoc(
+          saleRef,
+          {
+            ...sale,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
         console.log("Sale updated successfully.");
         setShowSaleModal(false);
         setEditingSale(null);

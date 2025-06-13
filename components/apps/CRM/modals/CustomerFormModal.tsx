@@ -14,7 +14,7 @@ interface Customer {
 interface CustomerFormModalProps {
   customer?: Customer | null;
   onClose: () => void;
-  onSubmit: (customer: Omit<Customer, "id"> | Customer) => void;
+  onSubmit: (customer: Omit<Customer, "id"> | Customer) => void | Promise<void>;
   show: boolean;
 }
 
