@@ -78,7 +78,7 @@ export default function CollapsibleSidebar({
         {!collapsed && <span className="text-white font-semibold text-lg">Overview</span>}
 
         <button
-          className="bg-white text-[#151A2D] p-1.5 rounded hover:bg-default-200"
+          className="bg-white text-[#151A2D] p-1.5 rounded hover:bg-default-300"
           onClick={toggleCollapsed}
         >
           {collapsed ? <Menu size={20} /> : <ChevronRight size={20} />}
@@ -156,7 +156,7 @@ export default function CollapsibleSidebar({
               {collapsed && hasSubmenu && submenuOpen && (
                 <div className="absolute left-full top-0 ml-2 w-48 bg-white text-black rounded shadow-lg py-2 z-30">
                   {item.submenu.map((sub) => (
-                    <div key={sub.label} className="px-4 py-1 hover:bg-gray-100">
+                    <div key={sub.label} className="px-4 py-1 hover:bg-gray-200">
                       <Link
                         href={sub.path || "#"}
                         className="flex items-center gap-2 text-sm"
