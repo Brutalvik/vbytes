@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Customer } from "@crm/sections/CustomerSection";
 
 interface Car {
   id?: string;
@@ -12,7 +13,6 @@ interface Car {
   status: "Available" | "Sold" | "Pending";
   imageUrl: string;
 }
-
 interface CarFormModalProps {
   car?: Car | null;
   onClose: () => void;
@@ -42,9 +42,9 @@ const CarFormModal: React.FC<CarFormModalProps> = ({ car, onClose, onSubmit, sho
   );
 
   useEffect(() => {
-    if (car) {
+    if (show && car) {
       setFormData(car);
-    } else {
+    } else if (show && !car) {
       setFormData({
         make: "",
         model: "",
@@ -55,7 +55,7 @@ const CarFormModal: React.FC<CarFormModalProps> = ({ car, onClose, onSubmit, sho
         imageUrl: "https://placehold.co/400x200/cccccc/333333?text=Car+Image",
       });
     }
-  }, [car]);
+  }, [car, show]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

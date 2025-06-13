@@ -505,6 +505,7 @@ export default function App() {
 
       {/* Modals */}
       <CarFormModal
+        key={editingCar?.id || "new"}
         show={showCarModal}
         car={editingCar}
         onClose={() => {
