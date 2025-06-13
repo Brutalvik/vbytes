@@ -28,18 +28,6 @@ const sidebarItems = [
         label: "Momentum",
         icon: <BarChart3 />,
         path: "/projects/momentum",
-        submenu: [
-          {
-            label: "User Stats",
-            icon: <Users />,
-            path: "/apps/analytics/users",
-          },
-          {
-            label: "System Health",
-            icon: <Activity />,
-            path: "/apps/analytics/health",
-          },
-        ],
       },
       { label: "Velocity", icon: <LayoutGrid />, path: "/projects/velocity" },
     ],
@@ -90,7 +78,7 @@ export default function CollapsibleSidebar({
         {!collapsed && <span className="text-white font-semibold text-lg">Overview</span>}
 
         <button
-          className="bg-white text-[#151A2D] p-1.5 rounded hover:bg-gray-200"
+          className="bg-white text-[#151A2D] p-1.5 rounded hover:bg-default-200"
           onClick={toggleCollapsed}
         >
           {collapsed ? <Menu size={20} /> : <ChevronRight size={20} />}
@@ -110,7 +98,7 @@ export default function CollapsibleSidebar({
                   "flex items-center justify-between px-4 py-2 rounded-md transition-colors cursor-pointer",
                   active || submenuOpen
                     ? "bg-blue-500 text-white font-semibold"
-                    : "hover:bg-white hover:text-[#151A2D]"
+                    : "hover:bg-gray-200 hover:text-default-500"
                 )}
                 onClick={(e) => {
                   if (hasSubmenu) {
@@ -144,61 +132,21 @@ export default function CollapsibleSidebar({
                           "flex items-center justify-between px-2 py-1 rounded-md transition-colors",
                           isActive(sub.path) || openNested === sub.label
                             ? "bg-blue-500 text-white font-medium"
-                            : "hover:bg-white/20 hover:text-white"
+                            : "hover:bg-gray-200 hover:text-default-500"
                         )}
                       >
                         <Link
                           href={sub.path || "#"}
                           className="flex items-center gap-3 w-full text-sm"
                           onClick={(e) => {
-                            if (sub.submenu) {
-                              e.preventDefault();
-                              handleNestedToggle(sub.label);
-                            } else {
-                              setOpenSubmenu(null);
-                              setOpenNested(null);
-                            }
+                            setOpenSubmenu(null);
+                            setOpenNested(null);
                           }}
                         >
                           <span>{sub.icon}</span>
                           <span>{sub.label}</span>
                         </Link>
-                        {sub.submenu && (
-                          <button onClick={() => handleNestedToggle(sub.label)}>
-                            {openNested === sub.label ? (
-                              <ChevronDown size={14} />
-                            ) : (
-                              <ChevronRight size={14} />
-                            )}
-                          </button>
-                        )}
                       </div>
-
-                      {/* Nested submenu */}
-                      {sub.submenu && openNested === sub.label && (
-                        <ul className="ml-6 mt-1 space-y-1">
-                          {sub.submenu.map((nested) => (
-                            <li key={nested.label}>
-                              <Link
-                                href={nested.path}
-                                onClick={() => {
-                                  setOpenSubmenu(null);
-                                  setOpenNested(null);
-                                }}
-                                className={classNames(
-                                  "flex items-center gap-2 px-2 py-1 text-sm rounded-md transition-colors",
-                                  isActive(nested.path)
-                                    ? "bg-blue-500 text-white font-semibold"
-                                    : "hover:bg-white/20 hover:text-white"
-                                )}
-                              >
-                                <span>{nested.icon}</span>
-                                <span>{nested.label}</span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
                     </li>
                   ))}
                 </ul>
