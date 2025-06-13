@@ -41,7 +41,7 @@ const sidebarItems = [
           },
         ],
       },
-      { label: "CRM", icon: <LayoutGrid />, path: "/apps/crm" },
+      { label: "Velocity", icon: <LayoutGrid />, path: "/projects/velocity" },
     ],
   },
   { label: "Add Product", icon: <Plus />, path: "/seller/upload" },

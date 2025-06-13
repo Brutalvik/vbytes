@@ -1,7 +1,10 @@
 "use client";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { firebaseConfig as importedFirebaseConfig, dynamicAppId } from "@lib/firebase";
+import {
+  firebaseConfig as importedFirebaseConfig,
+  dynamicAppId,
+} from "@/components/apps/momentum/lib/firebase";
 import dynamic from "next/dynamic";
 import Loader from "@/components/ui/ui-loader/loader";
 
