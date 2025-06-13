@@ -2,7 +2,7 @@
 
 import React from "react";
 
-type TabType = "dashboard" | "inventory" | "customers" | "sales" | "analytics";
+export type TabType = "dashboard" | "inventory" | "customers" | "sales" | "analytics";
 
 export interface TabButtonProps {
   label: string;
