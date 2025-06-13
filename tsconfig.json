@@ -30,7 +30,8 @@
       "@hooks/*": ["./hooks/*"],
       "@api/*": ["./app/api/*"],
       "@config/*": ["./config/*"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@crm/*": ["./components/apps/CRM/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

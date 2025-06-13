@@ -5,34 +5,11 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "firebase/auth";
 import { collection, onSnapshot, addDoc, setDoc, deleteDoc, doc } from "firebase/firestore";
 
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { db, auth, APP_ID } from "@components/apps/CRM/lib/firebase";
+import InventoryAnalytics from "./InventoryAnalytics";
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_CRM_API_KEY!,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_CRM_AUTH_DOMAIN!,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_CRM_PROJECT_ID!,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_CRM_STORAGE_BUCKET!,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_CRM_MESSAGING_SENDER_ID!,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_CRM_APP_ID!,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_CRM_MEASUREMENT_ID,
-};
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyADKPzqzYA0h-D_1QVVlBXvvX5SiigtZvs",
-//   authDomain: "car-sales-crm-vbytes.firebaseapp.com",
-//   projectId: "car-sales-crm-vbytes",
-//   storageBucket: "car-sales-crm-vbytes.firebasestorage.app",
-//   messagingSenderId: "531546663826",
-//   appId: "1:531546663826:web:9b89539d44b47d1f54ef4b",
-//   measurementId: "G-XMT2K1XY4H",
-// };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const APP_ID = process.env.NEXT_PUBLIC_FIREBASE_CRM_APP_ID!;
+//COMPONENTS
+import TabButton, { TabType } from "@crm/TabButton";
 
 // Define interfaces for data models
 interface Car {
@@ -413,7 +390,7 @@ export default function App() {
   const modalOverlayClass =
     "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
   const modalContentClass =
-    "bg-white p-6 rounded-lg shadow-xl max-w-lg w-full transform transition-all duration-300 scale-95 opacity-0 data-[state=open]:scale-100 data-[state=open]:opacity-100";
+    "bg-white p-6 rounded-lg shadow-xl max-w-lg w-full transform transition-all duration-300";
   const inputClass =
     "w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500";
   const buttonClass = "px-4 py-2 rounded-md transition-colors duration-200";
@@ -451,7 +428,11 @@ export default function App() {
 
     return (
       <div className={modalOverlayClass} data-state={showCarModal ? "open" : "closed"}>
-        <div className={modalContentClass}>
+        <div
+          className={`${modalContentClass} ${
+            showCarModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
+        >
           <h2 className="text-2xl font-semibold mb-4">{car ? "Edit Car" : "Add New Car"}</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -602,7 +583,11 @@ export default function App() {
 
     return (
       <div className={modalOverlayClass} data-state={showCustomerModal ? "open" : "closed"}>
-        <div className={modalContentClass}>
+        <div
+          className={`${modalContentClass} ${
+            showCarModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
+        >
           <h2 className="text-2xl font-semibold mb-4">
             {customer ? "Edit Customer" : "Add New Customer"}
           </h2>
@@ -744,7 +729,11 @@ export default function App() {
 
     return (
       <div className={modalOverlayClass} data-state={showSaleModal ? "open" : "closed"}>
-        <div className={modalContentClass}>
+        <div
+          className={`${modalContentClass} ${
+            showCarModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
+        >
           <h2 className="text-2xl font-semibold mb-4">{sale ? "Edit Sale" : "Add New Sale"}</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -899,11 +888,17 @@ export default function App() {
           setActiveTab={setActiveTab}
         />
         <TabButton label="Sales" tab="sales" activeTab={activeTab} setActiveTab={setActiveTab} />
+        <TabButton
+          label="Analytics"
+          tab="analytics"
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 p-6 overflow-auto">
-        {activeTab === "dashboard" && <Dashboard stats={dashboardStats} />}
+        {activeTab === "dashboard" && <Dashboard stats={dashboardStats} cars={cars} />}
 
         {activeTab === "inventory" && (
           <InventorySection
@@ -951,6 +946,8 @@ export default function App() {
             onDelete={deleteSale}
           />
         )}
+
+        {activeTab === "analytics" && <InventoryAnalytics cars={cars} />}
       </div>
 
       {/* Modals */}
@@ -991,34 +988,6 @@ export default function App() {
   );
 }
 
-// Helper Components (These remain unchanged from previous versions)
-// Tab type for navigation
-type TabType = "dashboard" | "inventory" | "customers" | "sales";
-
-interface TabButtonProps {
-  label: string;
-  tab: TabType;
-  activeTab: TabType;
-  setActiveTab: (tab: TabType) => void;
-}
-
-const TabButton: React.FC<TabButtonProps> = ({ label, tab, activeTab, setActiveTab }) => {
-  const isActive = activeTab === tab;
-  return (
-    <button
-      className={`px-6 py-3 text-lg font-medium transition-colors duration-200 ease-in-out
-        ${
-          isActive
-            ? "text-blue-700 border-b-4 border-blue-700 bg-blue-50/50"
-            : "text-gray-600 hover:text-blue-700 hover:bg-gray-100"
-        }`}
-      onClick={() => setActiveTab(tab)}
-    >
-      {label}
-    </button>
-  );
-};
-
 interface DashboardProps {
   stats: {
     totalCars: number;
@@ -1029,9 +998,10 @@ interface DashboardProps {
     totalRevenue: number;
     averageSalePrice: number;
   };
+  cars: Car[];
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ stats }) => {
+const Dashboard: React.FC<DashboardProps> = ({ stats, cars }) => {
   const statCardClass =
     "bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center text-center hover:shadow-lg transition-shadow duration-300";
   const statValueClass = "text-4xl font-bold text-blue-600 mb-2";
@@ -1067,6 +1037,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats }) => {
         <div className={statValueClass}>{formatCurrency(stats.averageSalePrice)}</div>
         <div className={statLabelClass}>Avg. Sale Price</div>
       </div>
+      <InventoryAnalytics cars={cars} />
     </div>
   );
 };
