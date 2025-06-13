@@ -165,7 +165,7 @@ const SaleFormModal: React.FC<SaleFormModalProps> = ({
               type="number"
               id="salePrice"
               name="salePrice"
-              value={formData.salePrice}
+              value={formData.salePrice === 0 ? "" : formData.salePrice}
               onChange={handleChange}
               className={inputClass}
               required
