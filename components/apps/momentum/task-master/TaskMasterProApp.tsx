@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -12,8 +12,6 @@ import {
   signOut,
   onAuthStateChanged,
   signInWithCustomToken,
-  signInWithRedirect,
-  FacebookAuthProvider,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -127,7 +125,7 @@ const TaskMasterProApp: React.FC<TaskMasterProAppProps> = ({
   useEffect(() => {
     if (firebaseConfig && appId) {
       try {
-        const app = initializeApp(firebaseConfig);
+        const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         setLogLevel("debug"); // Optional: for Firestore debugging
